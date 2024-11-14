@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, g
 import sqlite3,os
 
 app = Flask(__name__)
-DATABASE = 'fff.db'
+DATABASE = 'MythicForge.db'
 
 # Function to get database connection
 def get_db():
