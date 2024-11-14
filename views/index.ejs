@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DND Fantasy Chat - Fantasy Grounds Style</title>
+  <link rel="stylesheet" href="basicstyles.min.css">
+  <script>
+    async function submitForm() {
+        const name = document.getElementById('name').value;
+        const description = document.getElementById('description').value;
+
+        const response = await fetch('/execute', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, description })
+        });
+
+        const result = await response.json();
+        alert(result.message);
+        location.reload();
+    }
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="burger-menu" onclick="toggleSidebars()">☰</div>
+    <h1>DND Fantasy Chat</h1>
+  </header>
+  <div class="container">
+    <!-- Left Sidebar -->
+    <aside class="sidebar left-sidebar">
+      <h2>Character Info</h2>
+      <ul>
+        <li>Character Info</li>
+        <li>Inventory</li>
+        <li>Spells</li>
+      </ul>
+    </aside>
+
+    <!-- Main Chat Section -->
+    <main class="chat-section">
+      <div class="chat-frame">
+        <div class="chat-content">
+          <!-- Chat Messages -->
+          <div class="message">NPC: Welcome to the tavern, adventurer!</div>
+          <div class="message user">You: Thank you, I'm looking for a quest.</div>
+          <!-- More messages go here -->
+          <% entries.forEach(entry => { %>
+            <li><%= entry[1] %> - <%= entry[2] %></li>
+        <% }); %>
+        </div>
+      </div>
+      <!-- Chat Input Bar -->
+      <div class="chat-bar fantasy-bar">
+        <input type="text" placeholder="Type your message here...">
+        <button>Send</button>
+      </div>
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside class="sidebar right-sidebar">
+      <h2>Quests</h2>
+      <ul>
+        <li>Quests</li>
+        <li>Party Members</li>
+        <li>Map</li>
+      </ul>
+    </aside>
+  </div>
+
+  <script>
+    function toggleSidebars() {
+      document.querySelector('.left-sidebar').classList.toggle('visible');
+      document.querySelector('.right-sidebar').classList.toggle('visible');
+    }
+  </script>
+</body>
+</html>
