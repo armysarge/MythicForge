@@ -148,14 +148,6 @@ CREATE TABLE quests (
     FOREIGN KEY (character_id) REFERENCES characters(character_id)
 );
 
--- Create table for money (currency) carried by the character
-CREATE TABLE currency (
-    character_id INTEGER,
-    currency_type TEXT NOT NULL,  -- e.g., "Gold", "Silver", "Copper"
-    amount INTEGER NOT NULL DEFAULT 0,
-    FOREIGN KEY (character_id) REFERENCES characters(character_id)
-);
-
 CREATE TABLE campaigns (
     campaign_id INTEGER PRIMARY KEY AUTOINCREMENT,
     campaign_name TEXT NOT NULL,
