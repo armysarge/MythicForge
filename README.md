@@ -145,6 +145,7 @@ This project is licensed under the AGPL License - see the [LICENSE](LICENSE) fil
 
 - Create an [Issue](https://github.com/armysarge/mythicforge/issues)
 - Join our [Discord](https://discord.gg/eGeMyCYSny)
+- Telegram [Group](https://t.me/+jg68TLcxyl9kYWI8)
 - Email: armysarge.ss@gmail.com
 
 ---
