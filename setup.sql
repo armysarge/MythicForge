@@ -19,6 +19,8 @@ CREATE TABLE characters (
     armor_class INTEGER NOT NULL DEFAULT 10,
     initiative INTEGER NOT NULL DEFAULT 0,
     speed INTEGER NOT NULL DEFAULT 30,
+    alive BOOLEAN NOT NULL DEFAULT 1,
+    resurrectable BOOLEAN NOT NULL DEFAULT 1,
     proficiency_bonus INTEGER NOT NULL DEFAULT 2
 );
 
@@ -166,4 +168,16 @@ CREATE TABLE campaign_characters (
     character_id INTEGER,
     FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),
     FOREIGN KEY (character_id) REFERENCES characters(character_id)
+);
+
+CREATE TABLE event_history (
+    event_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    campaign_id INTEGER,
+    event_name TEXT NOT NULL,
+    event_prompt TEXT,
+    event_summary TEXT,
+    event_importance TEXT NOT NULL DEFAULT 'NORMAL',
+    event_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    event_location TEXT,
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),
 );
