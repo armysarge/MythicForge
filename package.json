@@ -2,7 +2,7 @@
   "name": "mythicforge",
   "version": "0.0.1",
   "main": "server.js",
-  "logo": "assets/images/icon-small.webp",
+  "logo": "assets/icons/icon-small.webp",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"

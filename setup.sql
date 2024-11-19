@@ -157,7 +157,7 @@ CREATE TABLE campaigns (
     campaign_start_level INTEGER NOT NULL DEFAULT 1,
     campaign_difficulty TEXT NOT NULL DEFAULT 'NORMAL',
     campaign_dm TEXT,
-    campaign_start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    campaign_start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     campaign_status TEXT NOT NULL DEFAULT 'INTRO'
 );
 
