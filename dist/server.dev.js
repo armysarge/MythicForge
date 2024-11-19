@@ -12,7 +12,7 @@ var _require = require('child_process'),
 var app = express();
 var PORT = 3000; // Middleware to serve static files
 
-app.use(express["static"]('public'));
+app.use(express["static"]('assets'));
 app.use(bodyParser.json());
 app.set('view engine', 'ejs'); // Start the Python server
 

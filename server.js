@@ -6,7 +6,7 @@ const app = express();
 const PORT = 3000;
 
 // Middleware to serve static files
-app.use(express.static('public'));
+app.use(express.static('assets'));
 app.use(bodyParser.json());
 app.set('view engine', 'ejs');
 
