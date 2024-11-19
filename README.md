@@ -1,11 +1,10 @@
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js](https://img.shields.io/badge/Node.js-14.x+-green.svg)](https://nodejs.org/)
 
 <div align="center">
   <img src="assets/images/logo-big.webp" alt="MythicForge Logo" width="300px">
-
 </div>
 
 ---
@@ -60,7 +59,7 @@
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/mythicforge.git
+git clone https://github.com/armysarge/mythicforge.git
 cd mythicforge
 ```
 
@@ -142,7 +141,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 💬 Support
 
-- Create an [Issue](https://github.com/yourusername/mythicforge/issues)
+- Create an [Issue](https://github.com/armysarge/mythicforge/issues)
 - Join our [Discord](https://discord.gg/mythicforge)
 - Email: armysarge.ss@gmail.com
 
