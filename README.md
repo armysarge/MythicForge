@@ -15,7 +15,9 @@
 
 ---
 
-## ✨ Features
+## VERSION: 0.0.1 PRE-ALPHA
+
+## ✨ Projected Features
 
 - **Complete D&D 5E Database**
   - Spells, items, monsters, and more
@@ -131,7 +133,7 @@ Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md)
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the AGPL License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
