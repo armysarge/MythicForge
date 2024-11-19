@@ -49,6 +49,11 @@
   - Initiative tracker
   - Interactive maps
 
+- **Dice Roller**
+  - Customizable dice sets
+  - Advanced roll modifiers
+  - History and statistics tracking
+
 ## 🚀 Getting Started
 
 ### Prerequisites
