@@ -113,11 +113,11 @@ For offline AI functionality:
 
 ## 📚 Documentation
 
-For detailed documentation, visit our [Wiki](https://github.com/yourusername/mythicforge/wiki)
+For detailed documentation, visit our [Wiki](https://github.com/armysarge/MythicForge/wiki)
 
-- [API Reference](https://github.com/yourusername/mythicforge/wiki/API-Reference)
-- [Custom Content Guide](https://github.com/yourusername/mythicforge/wiki/Custom-Content)
-- [AI Configuration](https://github.com/yourusername/mythicforge/wiki/AI-Configuration)
+- [API Reference](https://github.com/armysarge/MythicForge/wiki/API-Reference)
+- [Custom Content Guide](https://github.com/armysarge/MythicForge/wiki/Custom-Content)
+- [AI Configuration](https://github.com/armysarge/MythicForge/wiki/AI-Configuration)
 
 ## 🤝 Contributing
 
@@ -144,7 +144,7 @@ This project is licensed under the AGPL License - see the [LICENSE](LICENSE) fil
 ## 💬 Support
 
 - Create an [Issue](https://github.com/armysarge/mythicforge/issues)
-- Join our [Discord](https://discord.gg/mythicforge)
+- Join our [Discord](https://discord.gg/eGeMyCYSny)
 - Email: armysarge.ss@gmail.com
 
 ---
