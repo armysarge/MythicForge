@@ -16,7 +16,7 @@ app.use(express["static"]('assets'));
 app.use(bodyParser.json());
 app.set('view engine', 'ejs'); // Start the Python server
 
-var pythonProcess = spawn('python', ['app.py']); // Listen for output from the Python server (for debugging)
+var pythonProcess = spawn('python', ['scripts/app.py']); // Listen for output from the Python server (for debugging)
 
 pythonProcess.stdout.on('data', function (data) {
   console.log("Python Server: ".concat(data));

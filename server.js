@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.set('view engine', 'ejs');
 
 // Start the Python server
-const pythonProcess = spawn('python', ['app.py']);
+const pythonProcess = spawn('python', ['scripts/app.py']);
 
 // Listen for output from the Python server (for debugging)
 pythonProcess.stdout.on('data', (data) => {
