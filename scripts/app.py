@@ -14,7 +14,7 @@ def init_db():
     with app.app_context():
         db = get_db()
         with open('setup.sql', 'r') as f:
-            db.executescript(f.read())
+            db.executescript(f.read)
         db.commit()
 
 # Endpoint to get data from the database

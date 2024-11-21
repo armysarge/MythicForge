@@ -23,7 +23,6 @@ def convert_value(value):
         return ''
     return value
 
-
 class GitHubAutoUpdater:
     def __init__(self, repo_owner: str, repo_name: str, copy: bool = True, backup: bool = True):
         self.repo_owner = repo_owner
@@ -297,7 +296,7 @@ def main():
                     #print(os.path.join(root, file))
                     filename = file.split('.')[0]
                     with open(os.path.join(root, file), 'r') as f:
-                        TableName = filename.replace('5e-SRD-', '').replace('-', '')
+                        TableName = filename.replace('5e-SRD-', '')
                         data = json.load(f)
                         columns = []
                         columndatatype = []
