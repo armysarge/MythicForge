@@ -296,7 +296,7 @@ def main():
                     #print(os.path.join(root, file))
                     filename = file.split('.')[0]
                     with open(os.path.join(root, file), 'r') as f:
-                        TableName = filename.replace('5e-SRD-', '')
+                        TableName = filename.replace('5e-SRD-', '').replace('-', '_')
                         data = json.load(f)
                         columns = []
                         columndatatype = []
