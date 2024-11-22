@@ -4,6 +4,8 @@ server.min.js
 
 # Logs
 *.log
+*.min.js
+*.min.css
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
