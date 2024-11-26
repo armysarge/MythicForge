@@ -31,7 +31,7 @@ const randomNum = Math.floor(Math.random() * 2) + 1;
       }
     </script>
 </head>
-<body class="theme<%= randomNum %>">
+<body class="theme<%=randomNum %>">
     <div class="logo"><img src="/assets/images/logo-small.webp" alt="MythicForge Logo" width="350"></div>
     <div class="menu-container">
         <div class="border-img"></div>
@@ -45,8 +45,12 @@ const randomNum = Math.floor(Math.random() * 2) + 1;
                 <button class="btn fantasy-button btn-lg"><div class="border-img"></div><div>Logout</div></button>
             </div>
         </div>
-  </div>
+    </div>
 
+    <%- include("database") %>
+
+    <script src="/assets/js/jquery-3.7.1.js"></script>
     <script src="/assets/js/bootstrap.bundle.js"></script>
+    <script src="/assets/js/script.js"></script>
 </body>
 </html>
