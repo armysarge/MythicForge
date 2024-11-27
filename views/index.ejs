@@ -32,18 +32,17 @@ const randomNum = Math.floor(Math.random() * 2) + 1;
     </script>
 </head>
 <body class="theme<%=randomNum %>">
-    <div class="logo"><img src="/assets/images/logo-small.webp" alt="MythicForge Logo" width="350"></div>
-    <div class="menu-container">
-        <div class="border-img"></div>
-        <div class="fantasy-menu p-4 text-center">
-            <div class="d-grid gap-2">
-                <button class="btn fantasy-button btn-lg"><div class="border-img"></div><div>Campaigns</div></button>
-                <button class="btn fantasy-button btn-lg"><div class="border-img"></div><div>Characters</div></button>
-                <button class="btn fantasy-button btn-lg"><div class="border-img"></div><div>Tools</div></button>
-                <button class="btn fantasy-button btn-lg"><div class="border-img"></div><div>Database</div></button>
-                <button class="btn fantasy-button btn-lg"><div class="border-img"></div><div>Settings</div></button>
-                <button class="btn fantasy-button btn-lg"><div class="border-img"></div><div>Logout</div></button>
-            </div>
+    <div class="logo"><img src="/assets/images/logo-small.webp" alt="MythicForge Logo"></div>
+    <div class="menu-container mythicForgeWindow">
+        <div class="windowContent">
+            <center>
+                <button class="btn fantasy-button fixed-width btn-lg">Campaigns</button>
+                <button class="btn fantasy-button fixed-width btn-lg">Characters</button>
+                <button class="btn fantasy-button fixed-width btn-lg">Tools</button>
+                <button class="btn fantasy-button fixed-width btn-lg showDatabase">Database</button>
+                <button class="btn fantasy-button fixed-width btn-lg">Settings</button>
+                <!--<button class="btn fantasy-button fixed-width btn-lg">Logout</button>-->
+            </center>
         </div>
     </div>
 

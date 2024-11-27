@@ -7,6 +7,10 @@ body, html {
   background-repeat: no-repeat;
 }
 
+.logo img {
+  width: 200px;
+}
+
 body.theme1 {
   background-image: url('/assets/images/bg1.webp');
 }
@@ -32,36 +36,35 @@ body.theme2 {
 }
 
 .fantasy-button {
-  font-family: 'Merriweather', serif;
+  font-family: 'cinzel decorative', serif;
   transition: all 0.3s ease;
   z-index: 1;
-  padding:10px;
+  font-weight: bold;
+  font-size: 16px;
+  padding-left:14px;
+  padding-right:14px;
   position: relative;
-  height:50px;
+  border-width: 10px;
+  color:black;
+  line-height: 0px;
+  height:30px;
+  border-image: url('/assets/images/ui/rect_button_border.webp') 50 50 50 50 ;
+}
+
+.fantasy-button.fixed-width {
+  width: 150px;
 }
 
 .fantasy-button:hover{
   transform: scale(1.05);
 }
 
-.fantasy-button > .border-img {
-  width: calc(100% + 5px);
-  height: calc(100% + 3px);
-  background-image: url('/assets/images/ui/rect_button_border.webp');
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  position: absolute;
-  top: 0;
-  left: -4px;
-  z-index: 2;
-}
 .fantasy-button > .border-img:active{
   border: none;
 }
 
 .fantasy-button > div:last-child {
-  background-color: rgba(218, 165, 32, 1);
+  background-color:  rgb(172, 32, 32);
   color: black;
   font-weight: bold;
   font-family: 'Cinzel Decorative', serif;
@@ -70,43 +73,44 @@ body.theme2 {
   position: relative;
   top:-5px;
   line-height: 40px;
+  z-index: 3;
 }
 
 .fantasy-button:hover > div:last-child {
-  background-color: rgba(218, 165, 32, 0.5);
+  background-color: rgb(146, 21, 21);
 }
-
-.menu-container > .border-img {
-  width: calc(100% + 40px);
-  height: calc(100% + 20px);
-  background-image: url('/assets/images/ui/menu_border.webp');
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  position: absolute;
-  top: -10px;
-  left: -20px;
-}
-
-.menu-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 250px;
-    border:none;
-}
-
 
 .mythicForgeWindow {
   position: absolute;
-  background: #2a2a2a;
-  top:50px;
-  left:50px;
-  width:300px;
-  height:200px;
+  background: transparent;
+  font-family: 'Cinzel Decorative', serif;
   border-style: solid;
-  border-width: 8px;
-  border-image: url('../images/ui/window-border.webp') 10 10 10 10 repeat;
+  border-width: 16px;
+  background: url(../images/ui/window-bg-portrait.webp) center no-repeat;
+  background-size: 100% 100%;
+  background-origin: border-box;
+  border-image: url('../images/ui/window-border.webp') 35 35 35 35;
+  z-index: 10;
+}
+
+.mythicForgeWindow > .windowHeading{
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  background-color: rgba(0,0,0,0.5);
+  position: absolute;
+}
+
+.mythicForgeWindow.landscape {
+  background: url(../images/ui/window-bg-landscape.webp) center no-repeat;
+}
+
+.menu-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 240px;
 }
 
 /* Corners */
@@ -120,8 +124,8 @@ body.theme2 {
 
 /* Top Left Corner */
 .mythicForgeWindow::before {
-  top: -12px;
-  left: -15px;
+  top: -20px;
+  left: -22px;
   width: 50px;
   height: 50px;
   background: url('../images/ui/window-border-top-left.webp') center no-repeat;
@@ -130,8 +134,8 @@ body.theme2 {
 
 /* Top Right Corner */
 .mythicForgeWindow::after {
-  top: -12px;
-  right: -15px;
+  top: -20px;
+  right: -22px;
   width: 50px;
   height: 50px;
   background: url('../images/ui/window-border-top-right.webp') center no-repeat;
@@ -145,6 +149,7 @@ body.theme2 {
   height:100%;
   top:0px;
   left:0px;
+  padding:10px;
 }
 
 /* Bottom Corners - Using pseudo elements of child div */
@@ -152,8 +157,8 @@ body.theme2 {
   content: '';
   position: absolute;
   display: block;
-  bottom: -12px;
-  left: -15px;
+  bottom: -20px;
+  left: -22px;
   width: 50px;
   height: 50px;
   background: url('../images/ui/window-border-bottom-left.webp') center no-repeat;
@@ -164,12 +169,21 @@ body.theme2 {
   content: '';
   position: absolute;
   display: block;
-  bottom: -12px;
-  right: -15px;
+  bottom: -20px;
+  right: -22px;
   width: 50px;
   height: 50px;
   background: url('../images/ui/window-border-bottom-right.webp') center no-repeat;
   background-size: 100%;
+}
+
+.databaseWindow{
+  position: absolute;
+  width:100%;
+  height:100%;
+  max-width: 800px;
+  max-height: 600px;
+  display: none;
 }
 
 @media (max-width: 768px) {

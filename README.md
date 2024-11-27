@@ -22,7 +22,6 @@
 - **Complete D&D 5E Database**
   - Spells, items, monsters, and more
   - Quick search and filtering
-  - Homebrew content support
 
 - **Character Creation & Management**
   - Interactive character builder
@@ -86,14 +85,14 @@ cp .env.example .env
 # Edit .env with your API keys and preferences
 ```
 
-5. Initialize the database
-```bash
-python scripts/init_db.py
-```
-
-6. Start the application
+5. Start the application
 ```bash
 npm run start
+```
+
+6. To update the application, run
+```bash
+python scripts/update.py
 ```
 
 The application will be available at `http://localhost:3000`
@@ -110,31 +109,40 @@ OPENAI_API_KEY=your_key_here
 GEMINI_API_KEY=your_key_here
 ```
 
-### Local AI Setup
+<!--### Local AI Setup
 
 For offline AI functionality:
 1. Download the required models using `python scripts/download_local_models.py`
-2. Enable local AI mode in settings
+2. Enable local AI mode in settings-->
 
-## 📚 Documentation
+## 📋 Roadmap
 
-For detailed documentation, visit our [Wiki](https://github.com/armysarge/MythicForge/wiki)
+- [x] Create D&D 5E database
+- [ ] Basic UI/UX Design (Currently in progress)
+- [ ] Database integration
+- [ ] DM tools (Dice roller, encounter generator, etc.)
+- [ ] Character builder
+- [ ] Campaign manager
+- [ ] AI Integration (Local & Online)
+- [ ] AI-powered DM tools
+- [ ] AI-powered character builder
+- [ ] AI-powered campaign tools
+- [ ] Dungeon Generator
+- [ ] Multi-language support
+- [ ] Soundboard for ambient sounds
+- [ ] Mobile companion app
 
-- [API Reference](https://github.com/armysarge/MythicForge/wiki/API-Reference)
-- [Custom Content Guide](https://github.com/armysarge/MythicForge/wiki/Custom-Content)
-- [AI Configuration](https://github.com/armysarge/MythicForge/wiki/AI-Configuration)
+<!--## 📚 Documentation
+
+For detailed documentation, visit our [Wiki](https://github.com/armysarge/MythicForge/wiki)-->
+
+## 📈 Progress Screeshot
+
+![Progress](progress.jpg)
 
 ## 🤝 Contributing
 
 Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
-## 📋 Roadmap
-
-- [ ] Virtual tabletop integration
-- [ ] Multi-language support
-- [ ] Audio integration for ambient sounds
-- [ ] Mobile companion app
-- [ ] Campaign sharing platform
 
 ## 📄 License
 
@@ -145,6 +153,7 @@ This project is licensed under the AGPL License - see the [LICENSE](LICENSE) fil
 - OpenAI and Google for AI capabilities
 - The 5e data was taken from [D&D 5e API](https://www.dnd5eapi.co/). All data is owned by Wizards of the Coast. The data is licensed under the Open Gaming License.
 - The D&D community for inspiration and feedback
+- Various open-source projects that made this possible (see [package.json](package.json), [requirements.txt](requirements.txt), Jquery, Bootstrap, etc.)
 
 ## 💬 Support
 
