@@ -1,6 +1,7 @@
 package-lock.json
 MythicForge.db
 server.min.js
+backup_*
 
 # Logs
 *.log
