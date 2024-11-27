@@ -7,6 +7,10 @@ $.when( $.ready ).then(function() {
     });
 
     $(".showDatabase").on("click tap", function(evt) {
+        if ($(".databaseWindow").css("display") == "block") {
+            $(".databaseWindow").css("display", "none");
+            return;
+        }
         $(".databaseWindow").css({
             "display": "block",
             "z-index": mythicForgeWindowIndex(),

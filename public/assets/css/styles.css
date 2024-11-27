@@ -93,13 +93,25 @@ body.theme2 {
   z-index: 10;
 }
 
-.mythicForgeWindow > .windowHeading{
+.mythicForgeWindow > .windowHeader{
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
-  padding: 10px;
-  background-color: rgba(0,0,0,0.5);
   position: absolute;
+  width: 100%;
+  max-width: 400px;
+  background-color:transparent;
+  background: url(../images/ui/window-header.webp);
+  color: #bfab73;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  margin-top: 10p;
+  height: 50px;
+  left:50%;
+  top:-35px;
+  padding-top: 10px;
+  font-size: 18px;
+  transform: translateX(-50%);
 }
 
 .mythicForgeWindow.landscape {
