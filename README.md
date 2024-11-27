@@ -136,7 +136,7 @@ For offline AI functionality:
 
 For detailed documentation, visit our [Wiki](https://github.com/armysarge/MythicForge/wiki)-->
 
-## 📈 Progress Screeshot
+## 📈 Progress Screenshot
 
 ![Progress](progress.jpg)
 
