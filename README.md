@@ -15,9 +15,9 @@
 
 ---
 
-## VERSION: 0.0.1 PRE-ALPHA
+## VERSION: 0.0.1 EARLY PRE-ALPHA
 
-## ✨ Projected Features
+## ✨ Planned Features
 
 - **Complete D&D 5E Database**
   - Spells, items, monsters, and more
@@ -117,20 +117,22 @@ For offline AI functionality:
 
 ## 📋 Roadmap
 
-- [x] Create D&D 5E database
-- [ ] Basic UI/UX Design (Currently in progress)
+- [x] Include D&D 5E database (Thanks to [D&D 5e API](https://www.dnd5eapi.co/))
+- [ ] Basic UI/UX Design (In progress)
 - [ ] Database integration
-- [ ] DM tools (Dice roller, encounter generator, etc.)
+- [ ] DM tools (Dice roller, encounter generator,  Initiative tracker, etc.)
 - [ ] Character builder
 - [ ] Campaign manager
-- [ ] AI Integration (Local & Online)
+- [ ] AI Integration (OpenAI, Google Gemini)
+- [ ] AI Integration (Local AI Model, requires extra setup)
 - [ ] AI-powered DM tools
 - [ ] AI-powered character builder
 - [ ] AI-powered campaign tools
-- [ ] Dungeon Generator
-- [ ] Multi-language support
+- [ ] Dungeon/Map Generator
 - [ ] Soundboard for ambient sounds
+- [ ] Multi-language support
 - [ ] Mobile companion app
+- [ ] Customizable character artwork
 
 <!--## 📚 Documentation
 
