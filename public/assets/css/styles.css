@@ -29,6 +29,9 @@ body.theme2 {
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
 
 .fantasy-menu {
@@ -64,6 +67,9 @@ body.theme2 {
 }
 
 .fantasy-button > div:last-child {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
   background-color:  rgb(172, 32, 32);
   color: black;
   font-weight: bold;
@@ -94,6 +100,9 @@ body.theme2 {
 }
 
 .mythicForgeWindow > .windowHeader{
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
@@ -105,13 +114,13 @@ body.theme2 {
   color: #bfab73;
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  margin-top: 10p;
   height: 50px;
   left:50%;
   top:-35px;
   padding-top: 10px;
   font-size: 18px;
   transform: translateX(-50%);
+  z-index:1;
 }
 
 .mythicForgeWindow.landscape {
@@ -142,6 +151,9 @@ body.theme2 {
   height: 50px;
   background: url('../images/ui/window-border-top-left.webp') center no-repeat;
   background-size: 100%;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
 
 /* Top Right Corner */
@@ -152,6 +164,9 @@ body.theme2 {
   height: 50px;
   background: url('../images/ui/window-border-top-right.webp') center no-repeat;
   background-size: 100%;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
 
 .mythicForgeWindow > div.windowContent{
@@ -162,6 +177,9 @@ body.theme2 {
   top:0px;
   left:0px;
   padding:10px;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
 
 /* Bottom Corners - Using pseudo elements of child div */
@@ -175,6 +193,9 @@ body.theme2 {
   height: 50px;
   background: url('../images/ui/window-border-bottom-left.webp') center no-repeat;
   background-size: 100%;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
 
 .mythicForgeWindow > div.windowContent::after {
@@ -187,6 +208,9 @@ body.theme2 {
   height: 50px;
   background: url('../images/ui/window-border-bottom-right.webp') center no-repeat;
   background-size: 100%;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
 
 .databaseWindow{
