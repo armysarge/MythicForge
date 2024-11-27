@@ -119,7 +119,7 @@ For offline AI functionality:
 
 - [x] Include D&D 5E database (Thanks to [D&D 5e API](https://www.dnd5eapi.co/))
 - [ ] Basic UI/UX Design (In progress)
-- [ ] Database integration
+- [ ] Database integration & search functionality
 - [ ] DM tools (Dice roller, encounter generator,  Initiative tracker, etc.)
 - [ ] Character builder
 - [ ] Campaign manager
