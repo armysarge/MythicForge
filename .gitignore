@@ -3,6 +3,7 @@ MythicForge.db
 server.min.js
 backup_*
 dist
+node_modules
 
 # Logs
 *.log
