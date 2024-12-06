@@ -1,0 +1,231 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Merriweather', serif;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.logo img {
+  width: 200px;
+}
+
+body.theme1 {
+  background-image: url('/assets/images/bg1.webp');
+}
+
+body.theme2 {
+  background-image: url('/assets/images/bg2.webp');
+}
+
+.logo {
+  font-family: 'Cinzel Decorative', cursive;
+  color: goldenrod;
+  text-shadow: 3px 3px 2px rgba(0,0,0,0.7);
+  font-size: 3rem;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+.fantasy-menu {
+  background-color: rgba(218, 165, 32, 0.7);
+}
+
+.fantasy-button {
+  font-family: 'cinzel decorative', serif;
+  transition: all 0.3s ease;
+  z-index: 1;
+  font-weight: bold;
+  font-size: 16px;
+  padding-left:14px;
+  padding-right:14px;
+  position: relative;
+  border-width: 10px;
+  color:black;
+  line-height: 0px;
+  height:30px;
+  border-image: url('/assets/images/ui/rect_button_border.webp') 50 50 50 50 ;
+}
+
+.fantasy-button.fixed-width {
+  width: 150px;
+}
+
+.fantasy-button:hover{
+  transform: scale(1.05);
+}
+
+.fantasy-button > .border-img:active{
+  border: none;
+}
+
+.fantasy-button > div:last-child {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  background-color:  rgb(172, 32, 32);
+  color: black;
+  font-weight: bold;
+  font-family: 'Cinzel Decorative', serif;
+  transform: scale(1.05);
+  height: 40px;
+  position: relative;
+  top:-5px;
+  line-height: 40px;
+  z-index: 3;
+}
+
+.fantasy-button:hover > div:last-child {
+  background-color: rgb(146, 21, 21);
+}
+
+.mythicForgeWindow {
+  position: absolute;
+  background: transparent;
+  font-family: 'Cinzel Decorative', serif;
+  border-style: solid;
+  border-width: 16px;
+  background: url(../images/ui/window-bg-portrait.webp) center no-repeat;
+  background-size: 100% 100%;
+  background-origin: border-box;
+  border-image: url('../images/ui/window-border.webp') 35 35 35 35;
+  z-index: 10;
+}
+
+.mythicForgeWindow > .windowHeader{
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  position: absolute;
+  width: 100%;
+  max-width: 400px;
+  background-color:transparent;
+  background: url(../images/ui/window-header.webp);
+  color: #bfab73;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  height: 50px;
+  left:50%;
+  top:-35px;
+  padding-top: 10px;
+  font-size: 18px;
+  transform: translateX(-50%);
+  z-index:1;
+}
+
+.mythicForgeWindow.landscape {
+  background: url(../images/ui/window-bg-landscape.webp) center no-repeat;
+}
+
+.menu-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 240px;
+}
+
+/* Corners */
+.mythicForgeWindow::before,
+.mythicForgeWindow::after {
+  content: '';
+  position: absolute;
+  width: 32px;
+  height: 32px;
+}
+
+/* Top Left Corner */
+.mythicForgeWindow::before {
+  top: -20px;
+  left: -22px;
+  width: 50px;
+  height: 50px;
+  background: url('../images/ui/window-border-top-left.webp') center no-repeat;
+  background-size: 100%;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Top Right Corner */
+.mythicForgeWindow::after {
+  top: -20px;
+  right: -22px;
+  width: 50px;
+  height: 50px;
+  background: url('../images/ui/window-border-top-right.webp') center no-repeat;
+  background-size: 100%;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+.mythicForgeWindow > div.windowContent{
+  position: relative;
+  z-index: 1;
+  width:100%;
+  height:100%;
+  top:0px;
+  left:0px;
+  padding:10px;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Bottom Corners - Using pseudo elements of child div */
+.mythicForgeWindow > div.windowContent::before {
+  content: '';
+  position: absolute;
+  display: block;
+  bottom: -20px;
+  left: -22px;
+  width: 50px;
+  height: 50px;
+  background: url('../images/ui/window-border-bottom-left.webp') center no-repeat;
+  background-size: 100%;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+.mythicForgeWindow > div.windowContent::after {
+  content: '';
+  position: absolute;
+  display: block;
+  bottom: -20px;
+  right: -22px;
+  width: 50px;
+  height: 50px;
+  background: url('../images/ui/window-border-bottom-right.webp') center no-repeat;
+  background-size: 100%;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+.bestiaryWindow{
+  position: absolute;
+  width:100%;
+  height:100%;
+  max-width: 800px;
+  max-height: 600px;
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .menu-container {
+      position: static;
+      width: 90%;
+      margin: 0 auto;
+  }
+}

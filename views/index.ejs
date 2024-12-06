@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<%
+'random num between 1 and 2'
+const randomNum = Math.floor(Math.random() * 2) + 1;
+%>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MythicForge - Forge Your Legends</title>
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/jquery-ui.css">
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+    <script>
+      async function getMonsterStats(id) {
+          const response = await fetch('/data?type=monster&q=' + id);
+
+          const result = await response.json();
+      }
+    </script>
+</head>
+<body class="theme<%=randomNum %>">
+    <div class="logo"><img src="/assets/images/logo-small.webp" alt="MythicForge Logo"></div>
+    <div class="menu-container mythicForgeWindow">
+        <div class="windowContent">
+            <center>
+                <button class="btn fantasy-button fixed-width btn-lg">Campaigns</button>
+                <button class="btn fantasy-button fixed-width btn-lg">Characters</button>
+                <button class="btn fantasy-button fixed-width btn-lg showBestiary">Bestiary</button>
+                <button class="btn fantasy-button fixed-width btn-lg">Tools</button>
+                <button class="btn fantasy-button fixed-width btn-lg">Settings</button>
+                <!--<button class="btn fantasy-button fixed-width btn-lg">Logout</button>-->
+            </center>
+        </div>
+    </div>
+
+    <%- include("bestiary") %>
+
+    <script src="/assets/js/jquery-3.7.1.js"></script>
+    <script src="/assets/js/jquery-ui.js"></script>
+    <script src="/assets/js/bootstrap.bundle.js"></script>
+    <script src="/assets/js/script.js"></script>
+</body>
+</html>

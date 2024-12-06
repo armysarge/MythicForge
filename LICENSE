@@ -1,0 +1,53 @@
+GNU AFFERO GENERAL PUBLIC LICENSE
+                       Version 3, 19 November 2007
+
+Copyright (c) 2024 MythicForge
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+                     ADDITIONAL TERMS AND CONDITIONS
+
+In addition to the terms and conditions of the GNU Affero General Public License
+version 3, the following additional terms apply to this software:
+
+1. PERSONAL AND PRIVATE USE
+   You may use, modify, and distribute this software for personal, private,
+   non-commercial purposes. This includes using the software for private
+   Dungeons & Dragons games, personal campaign management, and home use.
+
+2. COMMERCIAL USE RESTRICTIONS
+   You may not use this software, in whole or in part, for any commercial
+   purposes without explicit written permission from the copyright holder.
+   Commercial purposes include, but are not limited to:
+   - Operating a service where users pay to access the software
+   - Using the software in a commercial D&D gaming service
+   - Incorporating the software into a commercial product
+   - Operating a public instance of the software for profit
+
+3. PUBLIC DEPLOYMENT RESTRICTIONS
+   You may not deploy this software as a public service, whether free or paid,
+   without explicit written permission from the copyright holder. This includes:
+   - Hosting public instances of the software
+   - Providing access to the software as a service
+   - Operating the software on publicly accessible servers
+
+4. ATTRIBUTION REQUIREMENT
+   Any permitted distribution or deployment of this software must maintain
+   all copyright notices, this license, and attribution to the original
+   copyright holder.
+
+For permissions beyond the scope of this license, please contact:
+armysarge.ss@gmail.com
+
+Note: The above additional terms supplement but do not replace the terms of
+the GNU Affero General Public License version 3.

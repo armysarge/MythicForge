@@ -1,0 +1,27 @@
+{
+  "name": "mythicforge",
+  "version": "0.0.1",
+  "main": "server.js",
+  "logo": "assets/icons/icon-small.webp",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "D&D",
+    "AI",
+    "campaign",
+    "character",
+    "management",
+    "tool"
+  ],
+  "author": "Shaun Scholtz",
+  "license": "AGPL-3.0-only",
+  "description": "🏰 A powerful D&D 5E campaign management and character creation tool powered by AI. MythicForge combines traditional tabletop gaming with advanced AI capabilities to enhance your roleplaying experience. 🧙‍♂️",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "body-parser": "^1.20.3",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1"
+  }
+}
