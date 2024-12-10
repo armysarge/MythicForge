@@ -155,7 +155,11 @@ This project is licensed under the AGPL License - see the [LICENSE](LICENSE) fil
 - OpenAI and Google for AI capabilities
 - The 5e data was taken from [D&D 5e API](https://www.dnd5eapi.co/). All data is owned by Wizards of the Coast. The data is licensed under the Open Gaming License.
 - The D&D community for inspiration and feedback
-- Various open-source projects that made this possible (see [package.json](package.json), [requirements.txt](requirements.txt), Jquery, Bootstrap, etc.)
+- BoxIcons for the icons used in the project [BoxIcons](https://boxicons.com/)
+- Jquery for the JavaScript library [Jquery](https://jquery.com/)
+- Bootstrap for the CSS framework [Bootstrap](https://getbootstrap.com/)
+- Node.js for the JavaScript runtime [Node.js](https://nodejs.org/)
+- Other open-source projects that made this possible (see [package.json](package.json), [requirements.txt](requirements.txt))
 
 ## 💬 Support
 

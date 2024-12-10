@@ -8,6 +8,10 @@ $.when( $.ready ).then(function() {
         $(this).css("z-index", mythicForgeWindowIndex()).addClass("focused");
     });
 
+    $(".mythicForgeWindow").on("click tap", ".windowClose", function(evt) {
+        $(this).parent().css("display", "none");
+    });
+
     // Open and close the database window
     $(".showBestiary").on("click tap", function(evt) {
         if ($(".bestiaryWindow").css("display") == "block") {
@@ -16,7 +20,7 @@ $.when( $.ready ).then(function() {
         }
         $(".bestiaryWindow").css({
             "display": "block",
-            "z-index": mythicForgeWindowIndex(),
+            "z-index": mythicForgeWindowIndex()+1,
         });
         centerDivToScreen(".bestiaryWindow");
     });
@@ -39,7 +43,7 @@ function mythicForgeWindowIndex(){
         if (currentZ > highestZ)
             highestZ = currentZ;
     });
-    return highestZ+1;
+    return highestZ;
 }
 
 // Function to center a div to the screen
