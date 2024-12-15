@@ -3,12 +3,16 @@ const bodyParser = require('body-parser');
 const axios = require('axios');
 const { spawn } = require('child_process');
 const app = express();
+const path = require('path');
 const PORT = 3000;
 
 // Middleware to serve static files
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.set('view engine', 'ejs');
+
+// Set the views directory
+app.set('views', path.join(__dirname, 'views'));
 
 // Start the Python server
 const pythonProcess = spawn('python', ['scripts/MythicForge.py']);
@@ -36,7 +40,7 @@ app.get('/', async (req, res) => {
 
         // Render the page with data
         entries = []
-        res.render('index', { entries });
+        res.render('index.ejs', { entries });
     } catch (error) {
         console.error('Error fetching data from Python API:', error);
         res.status(500).send('Error fetching data');

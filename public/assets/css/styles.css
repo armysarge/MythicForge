@@ -118,6 +118,18 @@ body, html {
   z-index:1;
 }
 
+.rollbox,.rollbox-min{
+  display: none;
+}
+
+.mythicForgeWindow .monsterStatBlock{
+  max-height: 500px;
+  max-width: 400px;
+  overflow: hidden;
+  overflow-y: auto;
+  margin-top:20px;
+}
+
 .mythicForgeWindow.landscape {
   background: url(../images/ui/window-bg-landscape.webp) center no-repeat;
 }
@@ -207,7 +219,6 @@ body, html {
   height:100%;
   top:0px;
   left:0px;
-  padding:20px;
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -253,14 +264,10 @@ body, html {
 
 .monsterStatBlock {
   text-align: left;
-  margin: 20px;
   display: inline-block;
   vertical-align: top;
-  width: 17%;
   min-width:280px;
-  background: #FDF1DC;
   padding: 5px 10px 20px;
-  box-shadow: 0 0 1.5em #867453;
 }
 .monsterStatBlock.wide{
   width: 46.5%;
@@ -280,6 +287,25 @@ body, html {
 .monsterStatBlock.wide .section-right{
   margin-left: 1.5%;
 }
+.monsterStatBlock::-webkit-scrollbar {
+  width: 4px;
+}
+.monsterStatBlock::-webkit-scrollbar-thumb {
+  background-color: #7a1f0d9d;
+  border-radius: 10px;
+}
+.monsterStatBlock::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.monsterStatBlock::-webkit-scrollbar-thumb:hover {
+  background-color: #7a1f0d9d;
+}
+.monsterStatBlockImage{
+  text-align: center;
+  margin: 20px 0 -15px;
+  width:100%;
+}
+.monsterStatBlockImage img{max-height: 200px;}
 @media screen and (max-width: 675px){
 	.monsterStatBlock.wide{
 		min-width: 280px;
