@@ -112,8 +112,8 @@ body, html {
   height: 50px;
   left:50%;
   top:-35px;
-  padding-top: 10px;
-  font-size: 18px;
+  padding-top: 12px;
+  font-size: 14px;
   transform: translateX(-50%);
   z-index:1;
 }
@@ -212,6 +212,13 @@ body, html {
   -webkit-user-select: none;
 }
 
+.mythicForgeWindow:has(.windowHeader) > div.windowContent{
+
+}
+.mythicForgeWindow:has(.windowHeader) > div.windowContent::before,.mythicForgeWindow:has(.windowHeader) > div.windowContent::after {
+  bottom: -18px;
+}
+
 .mythicForgeWindow > div.windowContent{
   position: relative;
   z-index: 1;
@@ -257,8 +264,9 @@ body, html {
 
 .bestiaryWindow{
   position: absolute;
-  width:500px;
+  width:800px;
   height:500px;
+  max-width: 100%;
   display: none;
 }
 
@@ -287,17 +295,17 @@ body, html {
 .monsterStatBlock.wide .section-right{
   margin-left: 1.5%;
 }
-.monsterStatBlock::-webkit-scrollbar {
+.monsterStatBlock::-webkit-scrollbar, .bestiaryContent::-webkit-scrollbar {
   width: 4px;
 }
-.monsterStatBlock::-webkit-scrollbar-thumb {
+.monsterStatBlock::-webkit-scrollbar-thumb, .bestiaryContent::-webkit-scrollbar-thumb {
   background-color: #7a1f0d9d;
   border-radius: 10px;
 }
-.monsterStatBlock::-webkit-scrollbar-track {
+.monsterStatBlock::-webkit-scrollbar-track, .bestiaryContent::-webkit-scrollbar-track {
   background-color: transparent;
 }
-.monsterStatBlock::-webkit-scrollbar-thumb:hover {
+.monsterStatBlock::-webkit-scrollbar-thumb:hover, .bestiaryContent::-webkit-scrollbar-thumb:hover {
   background-color: #7a1f0d9d;
 }
 .monsterStatBlockImage{
@@ -306,6 +314,67 @@ body, html {
   width:100%;
 }
 .monsterStatBlockImage img{max-height: 200px;}
+
+.bestiaryContent{
+  width:100%;
+  height:calc(100% - 10px);
+  margin-top: 10px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.searchBestiary{
+  display: block;
+  width: 100%;
+  margin: 20px 0 10px;
+  padding: 8px;
+  background: transparent;
+  color: #000000;
+  font-size: 14px;
+  line-height: 1.2em;
+  border: none;
+  border-bottom: 1px solid #7a1f0d;
+}
+
+.searchBestiary:active,
+.searchBestiary:focus{
+  background: transparent !important;
+  -webkit-appearance: none;
+  box-shadow: none;
+}
+
+/* Override autocomplete styles */
+.searchBestiary:-webkit-autofill,
+.searchBestiary:-webkit-autofill:hover,
+.searchBestiary:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+    -webkit-text-fill-color: #000000;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.bestiaryList{
+  position: relative;
+  width: 100%;
+  color: #000000;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.bestiaryList th,.bestiaryList td {
+  padding: 0.1em 1.5em;
+  font-weight: normal;
+  border: 1px solid #974;
+}
+
+.bestiaryList thead { text-transform: uppercase; }
+.bestiaryList th { white-space: nowrap; font-weight: bold; }
+.bestiaryList td {font-size: 12px;font-family: 'Merriweather', serif;}
+.bestiaryList tbody tr:hover { background-color: #f5f5f5; cursor: pointer;}
+
+.bestiaryList tbody tr:first-child * {
+  border-top: 0; /* fixes that border */
+}
+
 @media screen and (max-width: 675px){
 	.monsterStatBlock.wide{
 		min-width: 280px;

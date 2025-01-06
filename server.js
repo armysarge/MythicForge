@@ -47,6 +47,8 @@ app.get('/', async (req, res) => {
     }
 });
 
+
+
 app.get('/data', async (req, res) => {
     try {
         // Fetch data from the Python API
@@ -62,6 +64,17 @@ app.get('/data', async (req, res) => {
     } catch (error) {
         console.error('Error fetching data from Python API:', error);
         res.status(500).send('Error fetching data');
+    }
+});
+
+// Route to trigger a Python function
+app.post('/story', async (req, res) => {
+    try {
+        const response = await axios.post('http://127.0.0.1:5000/story', req.body.monster);
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error executing Python function:', error);
+        res.status(500).send('Error executing Python function');
     }
 });
 

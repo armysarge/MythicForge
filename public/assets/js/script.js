@@ -1,4 +1,5 @@
 AllMonsters = [];
+SRDonly = true;
 
 class MythicForgeWindow {
     constructor() {
@@ -16,18 +17,24 @@ class MythicForgeWindow {
         </div>`;
         this.el = $(html);
         $("body").append(this.el);
-        this.centerDivToScreen();
-        this.initEvents();
+        setTimeout(() => {
+            this.centerDivToScreen();
+            this.initEvents();
+        }, 1);
+        console.log(this);
     }
 
     monsterStatBlock(name,source){
         var that = this;
         getMonsterByName(name,source).then(function(monster){
-            var monsterPicture = (monster.fluff.images[0].href.path) ? `<div class="monsterStatBlockImage"><img src="/assets/images/${monster.fluff.images[0].href.path}"></div>` : "";
-            var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
-            var monsterHP = Renderer.monster.getRenderedHp(monster.hp,{isPlainText:true});
-    
             if(monster){
+
+                that.monster = monster;
+
+                var monsterPicture = (monster.fluff)?(monster.fluff.images)?(monster.fluff.images[0].href.path) ? `<div class="monsterStatBlockImage"><img src="/assets/images/${monster.fluff.images[0].href.path}"></div>` : "":"":"";
+                var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
+                var monsterHP = Renderer.monster.getRenderedHp(monster.hp,{isPlainText:true});
+
                 var html = `
                 ${monsterPicture}
                 <div class="monsterStatBlock">
@@ -151,9 +158,13 @@ class MythicForgeWindow {
                 </div>
                 </div>`;
                 that.el.find(".windowContent").html(html);
-                that.el.fadeIn();
+                that.el.fadeIn(function(){
+                });
+                that.centerDivToScreen();
+                that.createMonsterStory();
             }
         });
+
     }
 
     initEvents() {
@@ -184,24 +195,49 @@ class MythicForgeWindow {
     }
 
     centerDivToScreen(){
-        var $window = $(window);
-        var windowWidth = $window.width();
-        var windowHeight = $window.height();
-
-        // Ensure the element is visible to get correct dimensions
-        this.el.css("visibility", "hidden").show();
-        var divWidth = this.el.outerWidth();
-        var divHeight = this.el.outerHeight();
-
-        var left = Math.max(0, (windowWidth - divWidth) / 2);
-        var top = Math.max(0, (windowHeight - divHeight) / 2);
+        var windowWidth = $(window).width();
+        var windowHeight = $(window).height();
+        var elementWidth = this.el.outerWidth();
+        var elementHeight = this.el.outerHeight();
 
         this.el.css({
-            "position": "absolute",
-            "left": left + "px",
-            "top": top + "px",
+            "position": "fixed",
+            "left": (windowWidth - elementWidth) / 2,
+            "top": (windowHeight - elementHeight) / 2,
             "visibility": "visible"
-        }).hide();
+        });
+
+        var resizeTimer;
+
+        // Recenter on window resize
+        $(window).on('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                this.centerDivToScreen();
+            }, 200);
+        });
+    }
+
+    async createMonsterStory(){
+        //create monster story using AI
+        console.log(this.monster);
+        if (this.monster){
+
+                const response = await fetch('/story', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({monster: this.monster})
+                });
+
+                console.log(await response.json());
+            /*
+            var monsterStory = new MythicForgeWindow();
+            monsterStory.createWindow("Monster Story", "");
+            monsterStory.el.fadeIn();
+            monsterStory.centerDivToScreen();*/
+        }
     }
 }
 
@@ -211,8 +247,8 @@ $.when( $.ready ).then(function() {
     DataLoader.pCacheAndGetAllSite(UrlUtil.PG_BESTIARY,1).then(function(data){
         AllMonsters = data;
         correctMonsterDetails();
-        getMonsterByName("Goblin","Mm").then(function(monster){console.log(monster)});
-        createMonsterStatBlock("Goblin","mm");
+        //getMonsterByName("Goblin","Mm").then(function(monster){console.log(monster)});
+        //createMonsterStatBlock("Goblin","mm");
     });
 
     // Open and close the bestiary window
@@ -220,10 +256,51 @@ $.when( $.ready ).then(function() {
         if ($(".bestiaryWindow").length == 0) {
             var bestiaryWindow = new MythicForgeWindow();
             bestiaryWindow.createWindow("Bestiary", `
+                <div class="bestiaryContent">
                 <input type="search" id="lst_search" class="mythicForgeInput searchBestiary" placeholder="Search here">
+                <table class="bestiaryList">
+                    <thead>
+                        <tr>
+                            <th>Monster</th>
+                            <th>Type</th>
+                            <th>CR</th>
+                            <th>Source</th>
+                        </tr>
+                    </thead>
+                </table>
+                </div>
             `);
             bestiaryWindow.el.addClass("bestiaryWindow");
             bestiaryWindow.el.fadeIn();
+
+            $(".bestiaryWindow").on("click tap", ".bestiaryList .bestiaryItem", function(evt) {
+                var monsterName = $(this).data("name");
+                var monsterSource = $(this).data("source");
+                createMonsterStatBlock(monsterName,monsterSource);
+            });
+
+            $(".bestiaryWindow").on("keyup", ".searchBestiary", function(evt) {
+                var search = $(this).val().toLowerCase();
+                var bestiaryList = $(".bestiaryWindow .bestiaryList");
+                bestiaryList.find("tbody").remove();
+                var tbody = $("<tbody></tbody>");
+
+                $.each(AllMonsters, function(monsterIndex, monster){
+                    if (monster.name.toLowerCase().includes(search)){
+                        console.log(monster);
+                        var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
+                        var monsterCR = monster.cr;
+                        var tr = `<tr class='bestiaryItem' data-name='${monster.name}' data-source='${monster.source}'>
+                            <td>${monster.name}</td>
+                            <td>${monsterAlignment}</td>
+                            <td>${monsterCR}</td>
+                            <td>${monster.source}</td>
+                        </tr>`;
+                        tbody.append(tr);
+                    }
+                });
+                bestiaryList.append(tbody);
+            });
         }else{
             if ($(".bestiaryWindow").css("display") == "block" && $(".bestiaryWindow").hasClass("focused")) {
                 $(".bestiaryWindow").css("display", "none");
@@ -234,14 +311,6 @@ $.when( $.ready ).then(function() {
         }
     });
 });
-
-function createMonsterStatBlock(monster,source){
-    getMonsterByName(monster,source).then(function(theMonster){
-        var monsterStatBlock = new MythicForgeWindow();
-        monsterStatBlock.createWindow(theMonster.name, "");
-        monsterStatBlock.monsterStatBlock(theMonster.name,theMonster.source);
-    });
-}
 
 // Function to center a div to the screen
 function centerDivToScreen(div){
@@ -255,10 +324,30 @@ function centerDivToScreen(div){
     });
 }
 
+// Monster related functions
+function createMonsterStatBlock(monster,source){
+    getMonsterByName(monster,source).then(function(theMonster){
+        var monsterStatBlock = new MythicForgeWindow();
+        monsterStatBlock.createWindow(theMonster.name, "");
+        monsterStatBlock.monsterStatBlock(theMonster.name,theMonster.source);
+    });
+}
+
 function correctMonsterDetails(){
     $.each(AllMonsters, function(monsterIndex, monster){
-        //if (Array.isArray(monster.alignment))
-        //    monster.alignment = monster.alignment.map(a => Parser.alignmentAbvToFull(a)).join(" ").toTitleCase();
+        if (monster){
+            if (SRDonly)
+                if (monster.srd){
+                    //if srd is true, then the monster is from the srd
+                    if (!monster.srd){
+                        //remove the monster from the list
+                        AllMonsters.splice(monsterIndex, 1);
+                    }
+                }else{
+                    //remove the monster from the list
+                    AllMonsters.splice(monsterIndex, 1);
+                }
+        }
     });
 }
 
@@ -279,3 +368,4 @@ function getMonsterByName(name, source) {
             .catch(err => reject(err));
     });
 }
+

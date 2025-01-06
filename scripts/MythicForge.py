@@ -32,28 +32,46 @@ mythicforge = MythicForge(app)
 # Register close_db function to run after each request
 app.teardown_appcontext(mythicforge.close_db)
 
-@app.route('/') 
+@app.route('/')
 def index():
     #redirect to the localhost:3000
     new_url = "http://localhost:3000"
     return redirect(new_url)
 
-@app.route('/data', methods=['GET'])
-def get_data():
-    results = ""
-    if request.args.get('type') == 'monsters':
-        search_term = request.args.get('q')
-        if search_term:
-            if search_term != "":
-                results = mythicforge.lookup_monsters(search_term)
+@app.route('/story', methods=['POST'])
+def create_story():
+    #get post json data of a monster, use Google gemini AI to create a story and return it
 
-    if request.args.get('type') == 'monster':
-        monster_id = request.args.get('q')
-        if monster_id:
-            if monster_id != "":
-                results = mythicforge.monster_details(monster_id)
+    #do a post request to the gemini AI
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
+    params = {
+        "key": "AIzaSyCPGgHNLlI5ihmVsxsT-k4jxQW0wiPWLX8"
+    }
+    headers = {
+        "Content-Type": "application/json"
+    }
 
-    return results
+    payload = {
+        "system_instruction": {
+        "parts":
+        {
+            "text": "You are a story teller and you are telling a fantasy story about a monster backstory. You will receive json data about the monster, use it to tell a interesting short summarized back story about it with a name."}},
+            "contents": [
+            {
+                "parts": [
+                    {
+                        "text": json.dumps(request.json).replace('\n', '')
+                    }
+                ]
+            }
+        ]
+    }
+
+    print("Payload: ", payload)
+
+    response = requests.post(url, params=params, headers=headers, json=payload)
+    print(response.json())
+    return response.json()
 
 @app.route('/execute', methods=['POST'])
 def execute_command():
