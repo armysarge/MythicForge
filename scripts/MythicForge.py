@@ -44,8 +44,8 @@ def create_story():
 
     #do a post request to the gemini AI
     url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
-    params = {
-        "key": "AIzaSyCPGgHNLlI5ihmVsxsT-k4jxQW0wiPWLX8"
+    params {
+        "key" : ""
     }
     headers = {
         "Content-Type": "application/json"
