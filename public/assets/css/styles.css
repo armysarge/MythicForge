@@ -363,7 +363,6 @@ body, html {
 .bestiaryContent{
   width:100%;
   height:calc(100% - 10px);
-  margin-top: 10px;
   overflow: hidden;
   overflow-y: auto;
 }
