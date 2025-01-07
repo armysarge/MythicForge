@@ -5,6 +5,133 @@ const { spawn } = require('child_process');
 const app = express();
 const path = require('path');
 const PORT = 3000;
+const fs = require('fs');
+const fsPromises = require('fs').promises;
+const fsExtra = require('fs-extra')
+const https = require('https');
+const StreamZip = require('node-stream-zip');
+const { rimraf } = require('rimraf');
+
+const DEBUG_MODE = process.env.DEBUG_MODE === 'true' || false;
+
+// Start the Python server
+const pythonProcess = spawn('python', ['scripts/MythicForge.py'], {
+    env: { ...process.env, DEBUG_MODE: DEBUG_MODE.toString() }
+});
+
+// Listen for output from the Python server (for debugging)
+if (DEBUG_MODE) {
+    pythonProcess.stdout.on('data', async (data) => {
+        console.log(`Python Server: ${data}`);
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+        console.error(`Python Error: ${data}`);
+    });
+} else {
+    pythonProcess.stderr.on('data', (data) => {
+        if (data.toString().includes('Error')) {
+            console.error(`Python Error: ${data}`);
+        }
+    });
+}
+
+pythonProcess.on('close', (code) => {
+    console.log(`Python server exited with code ${code}`);
+});
+
+const cleanupDirectory = async (dirPath, maxRetries = 3) => {
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            await rimraf(dirPath);
+            return;
+        } catch (error) {
+            if (i === maxRetries - 1) throw error;
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+    }
+};
+
+const extractLargeZip = async (zipPath, outputPath) => {
+    const zip = new StreamZip.async({ file: zipPath });
+    try {
+        await zip.extract(null, outputPath);
+    } finally {
+        await zip.close();
+    }
+};
+
+const downloadDataFrom5eTools = async () => {
+    const dataPath = 'public/data';
+    const sourcePath = '5etools/5etools-src-main/data';
+
+    if (!fs.existsSync(dataPath)) {
+        console.log('Downloading 5eTools data, Please wait...');
+        try {
+            const url = 'https://github.com/5etools-mirror-3/5etools-src/archive/refs/heads/master.zip';
+            const response = await axios({
+                url,
+                method: 'GET',
+                responseType: 'arraybuffer'
+            });
+
+            await fsPromises.writeFile('5etools.zip', response.data);
+            console.log('Download complete, extracting...');
+
+            await extractLargeZip('5etools.zip', '5etools');
+            await fsPromises.mkdir(dataPath, { recursive: true });
+
+            // Verify source exists
+            if (!fs.existsSync(sourcePath)) {
+                throw new Error('Source data directory not found after extraction');
+            }
+
+            // Move files using async/await
+            await fsExtra.move(sourcePath, dataPath, {
+                overwrite: true
+            });
+
+            // Cleanup
+            await fsPromises.unlink('5etools.zip');
+            await cleanupDirectory('5etools');
+            console.log('5eTools data downloaded');
+        } catch (error) {
+            console.error('Error downloading data:', error);
+            throw error;
+        }
+    }
+};
+
+const downloadImagesFrom5eTools = async () => {
+    const imagePath = 'public/assets/images/5eTools';
+    if (!fs.existsSync(imagePath)) {
+        console.log('Downloading 5eTools images, Please wait, this can take a long while...');
+        try {
+            if (fs.existsSync('5etools-img-main.zip')) {
+                await extractLargeZip('5etools-img-main.zip', 'public/assets/images');
+                await fsPromises.rename('public/assets/images/5etools-img-main', imagePath);
+            } else {
+                const url = 'https://github.com/5etools-mirror-3/5etools-img/archive/refs/heads/master.zip';
+                const response = await axios({
+                    url,
+                    method: 'GET',
+                    responseType: 'arraybuffer'
+                });
+
+                await fsPromises.writeFile('5etools.zip', response.data);
+
+                await fsPromises.mkdir('public/assets/images', { recursive: true });
+                await extractLargeZip('5etools-img.zip', 'public/assets/images');
+                await fsPromises.rename('public/assets/images/5etools-img-main', imagePath);
+                await fsPromises.unlink('5etools-img.zip');
+            }
+            console.log('5eTools images downloaded');
+        } catch (error) {
+            console.error('Error downloading images:', error);
+            throw error;
+        }
+    }
+};
 
 // Middleware to serve static files
 app.use(express.static('public'));
@@ -13,24 +140,6 @@ app.set('view engine', 'ejs');
 
 // Set the views directory
 app.set('views', path.join(__dirname, 'views'));
-
-// Start the Python server
-const pythonProcess = spawn('python', ['scripts/MythicForge.py']);
-
-// Listen for output from the Python server (for debugging)
-pythonProcess.stdout.on('data', (data) => {
-    console.log(`Python Server: ${data}`);
-});
-
-pythonProcess.stderr.on('data', (data) => {
-    console.error(`Python Error: ${data}`);
-});
-
-pythonProcess.on('close', (code) => {
-    console.log(`Python server exited with code ${code}`);
-});
-
-// Route to display the main page
 
 app.get('/', async (req, res) => {
     try {
@@ -46,8 +155,6 @@ app.get('/', async (req, res) => {
         res.status(500).send('Error fetching data');
     }
 });
-
-
 
 app.get('/data', async (req, res) => {
     try {
@@ -90,8 +197,11 @@ app.post('/execute', async (req, res) => {
 });
 
 // Start the Node.js server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`Node.js server running at http://127.0.0.1:${PORT}`);
+
+    await downloadDataFrom5eTools();
+    await downloadImagesFrom5eTools();
 });
 
 // Ensure Python process is killed when Node.js exits

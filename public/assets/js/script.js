@@ -27,10 +27,10 @@ class MythicForgeWindow {
         var that = this;
         getMonsterByName(name,source).then(function(monster){
             if(monster){
-
+                console.log(monster);
                 that.monster = monster;
 
-                var monsterPicture = (monster.fluff)?(monster.fluff.images)?(monster.fluff.images[0].href.path) ? `<div class="monsterStatBlockImage"><img src="/assets/images/${monster.fluff.images[0].href.path}"></div>` : "":"":"";
+                var monsterPicture = (monster.fluff)?(monster.fluff.images)?(monster.fluff.images[0].href.path) ? `<div class="monsterStatBlockImage"><img src="/assets/images/5etools/${monster.fluff.images[0].href.path}"></div>` : "":"":"";
                 var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
                 var monsterHP = Renderer.monster.getRenderedHp(monster.hp,{isPlainText:true});
 
@@ -39,7 +39,7 @@ class MythicForgeWindow {
                 <div class="monsterStatBlock">
                     <div class="section-left">
                         <div class="creature-heading">
-                            <h1>${monster.name}</h1>
+                            <!--<h1>${monster.name}</h1>-->
                             <h2>${monsterAlignment}</h2>
                         </div> <!-- creature heading -->
                         <svg height="5" width="100%" class="tapered-rule">
@@ -219,7 +219,6 @@ class MythicForgeWindow {
 
     async createMonsterStory(){
         //create monster story using AI
-        console.log(this.monster);
         if (this.monster){
 
                 const response = await fetch('/story', {
@@ -344,6 +343,17 @@ $.when( $.ready ).then(function() {
                 var tbody = $("<tbody></tbody>");
 
                 $.each(AllMonsters, function(monsterIndex, monster){
+                    if (SRDonly)
+                        if (typeof monster.srd != "undefined"){
+                            //if srd is true, then the monster is from the srd
+                            if (!monster.srd){
+                                //remove the monster from the list
+                                return;
+                            }
+                        }else{
+                            //remove the monster from the list
+                            return;
+                        }
                     if (monster.name.toLowerCase().includes(search)){
                         var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
                         var monsterCR = monster.cr;
@@ -394,7 +404,7 @@ function correctMonsterDetails(){
     $.each(AllMonsters, function(monsterIndex, monster){
         if (monster){
             if (SRDonly)
-                if (monster.srd){
+                if (typeof monster.srd != "undefined"){
                     //if srd is true, then the monster is from the srd
                     if (!monster.srd){
                         //remove the monster from the list

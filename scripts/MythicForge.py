@@ -25,7 +25,6 @@ class MythicForge:
         if main_db is not None:
             main_db.close()
 
-
 app = Flask(__name__)
 mythicforge = MythicForge(app)
 
@@ -37,6 +36,15 @@ def index():
     #redirect to the localhost:3000
     new_url = "http://localhost:3000"
     return redirect(new_url)
+
+@app.route('/init', methods=['GET'])
+def init():
+    #get query from the request
+    query = request.args.get('q')
+    if query == "download_data":
+        mythicforge.download_data_from5etools()
+        mythicforge.download_images_from5etools()
+    return jsonify({"status": "success"})
 
 @app.route('/story', methods=['POST'])
 def create_story():
@@ -67,8 +75,6 @@ def create_story():
         ]
     }
 
-    print("Payload: ", payload)
-
     response = requests.post(url, params=params, headers=headers, json=payload)
     print(response.json())
     return response.json()
@@ -86,5 +92,4 @@ def execute_command():
     return jsonify({"status": "success"})
 
 if __name__ == '__main__':
-    #mythicforge.download_data_from5etools()
     app.run(debug=True)
