@@ -4,7 +4,7 @@ server.min.js
 backup_*
 dist
 node_modules
-public/data/*
+public/data/*.*
 
 # Logs
 *.log
