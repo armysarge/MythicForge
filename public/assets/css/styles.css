@@ -195,7 +195,7 @@ body, html {
 .loading-progress {
   width: 0%;
   height: 100%;
-  background: #8b0000;
+  background: hsl(27, 90%, 52%);
   transition: width 0.5s ease;
 }
 
