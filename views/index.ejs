@@ -14,13 +14,6 @@ const randomNum = Math.floor(Math.random() * 2) + 1;
     <link rel="stylesheet" href="/assets/plugins/boxicons/css/boxicons.css">
     <link rel="stylesheet" href="/assets/css/styles.css">
     <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
-    <script>
-      async function getMonsterStats(id) {
-          const response = await fetch('/data?type=monster&q=' + id);
-
-          const result = await response.json();
-      }
-    </script>
 </head>
 <body>
 
@@ -28,7 +21,14 @@ const randomNum = Math.floor(Math.random() * 2) + 1;
     <div id="navbar" style="display: none;"></div>
     <div class="form-control search omni__input" style="display: none;"></div>
 
-    <div class="logo"><img src="/assets/images/logo-small.webp" alt="MythicForge Logo"></div>
+    <div class="loading-container">
+        <div class="logo">
+            <img src="/assets/images/logo-small.webp" alt="MythicForge Logo">
+        </div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+    </div>
     <div class="menu-container mythicForgeWindow">
         <div class="windowContent">
             <center>
@@ -68,5 +68,6 @@ const randomNum = Math.floor(Math.random() * 2) + 1;
     <script type="text/javascript" defer src="/assets/plugins/boxicons/dist/boxiconss.js"></script>
 
     <script src="/assets/js/script.js"></script>
+
 </body>
 </html>

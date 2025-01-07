@@ -241,8 +241,67 @@ class MythicForgeWindow {
     }
 }
 
+class FakeLoader {
+    constructor() {
+        this.loadingProgress = document.querySelector('.loading-progress');
+        this.loadingContainer = document.querySelector('.loading-container');
+        this.menuContainer = document.querySelector('.menu-container');
+        this.progress = 0;
+    }
+
+    start() {
+        // Phase 1: Initial Load (0-30%)
+        this.animateProgress(0, 30, 1000, () => {
+            // Phase 2: Processing (30-70%)
+            this.animateProgress(30, 70, 2000, () => {
+                // Phase 3: Finalizing (70-100%)
+                this.animateProgress(70, 100, 1000, () => {
+                    this.complete();
+                });
+            });
+        });
+    }
+
+    animateProgress(start, end, duration, callback) {
+        const startTime = performance.now();
+
+        const animate = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min((elapsed / duration), 1);
+
+            this.progress = start + (progress * (end - start));
+            this.loadingProgress.style.width = `${this.progress}%`;
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else if (callback) {
+                callback();
+            }
+        };
+
+        requestAnimationFrame(animate);
+    }
+
+    complete() {
+        this.loadingContainer.classList.add('loaded');
+        setTimeout(() => {
+            this.menuContainer.classList.add('visible');
+        }, 500);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const loader = new FakeLoader();
+    loader.start();
+});
+
 // Document ready function
 $.when( $.ready ).then(function() {
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const loader = new Loader();
+        loader.start();
+    });
 
     DataLoader.pCacheAndGetAllSite(UrlUtil.PG_BESTIARY,1).then(function(data){
         AllMonsters = data;
