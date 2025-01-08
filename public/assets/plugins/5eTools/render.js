@@ -11272,8 +11272,8 @@ Renderer.item = class {
 	// ---
 
 	static async _pAddPrereleaseBrewPropertiesAndTypes () {
-		if (typeof PrereleaseUtil !== "undefined") Renderer.item.addPrereleaseBrewPropertiesAndTypesFrom({data: await PrereleaseUtil.pGetBrewProcessed()});
-		if (typeof BrewUtil2 !== "undefined") Renderer.item.addPrereleaseBrewPropertiesAndTypesFrom({data: await BrewUtil2.pGetBrewProcessed()});
+		//if (typeof PrereleaseUtil !== "undefined") Renderer.item.addPrereleaseBrewPropertiesAndTypesFrom({data: await PrereleaseUtil.pGetBrewProcessed()});
+		//if (typeof BrewUtil2 !== "undefined") Renderer.item.addPrereleaseBrewPropertiesAndTypesFrom({data: await BrewUtil2.pGetBrewProcessed()});
 	}
 
 	static addPrereleaseBrewPropertiesAndTypesFrom ({data}) {

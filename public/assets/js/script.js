@@ -32,7 +32,7 @@ class MythicForgeWindow {
 
                 var monsterPicture = (monster.fluff)?(monster.fluff.images)?(monster.fluff.images[0].href.path) ? `<div class="monsterStatBlockImage"><img src="/assets/images/5etools/${monster.fluff.images[0].href.path}"></div>` : "":"":"";
                 var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
-                var monsterHP = Renderer.monster.getRenderedHp(monster.hp,{isPlainText:true});
+                var monsterHP = Renderer.monster.getRenderedHp(monster.hp,{isPlainText:false});
 
                 var html = `
                 ${monsterPicture}
@@ -48,7 +48,7 @@ class MythicForgeWindow {
                         <div class="top-stats">
                             <div class="property-line first">
                                 <h4>Armor Class</h4>
-                                <p>18 (natural armor)</p>
+                                <p>${Parser.acToFull(monster.ac)}</p>
                             </div> <!-- property line -->
                             <div class="property-line">
                                 <h4>Hit Points</h4>
@@ -56,7 +56,7 @@ class MythicForgeWindow {
                             </div> <!-- property line -->
                             <div class="property-line last">
                                 <h4>Speed</h4>
-                                <p>25ft.</p>
+                                <p>${Parser.getSpeedString(monster)}</p>
                             </div> <!-- property line -->
                             <svg height="5" width="100%" class="tapered-rule">
                                 <polyline points="0,0 400,2.5 0,5"></polyline>
@@ -64,27 +64,27 @@ class MythicForgeWindow {
                             <div class="abilities">
                                 <div class="ability-strength">
                                     <h4>STR</h4>
-                                    <p>${monster.str} (+2)</p>
+                                    <p>${Renderer.utils.getAbilityRoller(monster, "str")}</p>
                                 </div> <!-- ability strength -->
                                 <div class="ability-dexterity">
                                     <h4>DEX</h4>
-                                    <p>${monster.dex} (+0)</p>
+                                    <p>${Renderer.utils.getAbilityRoller(monster, "dex")}</p>
                                 </div> <!-- ability dexterity -->
                                 <div class="ability-constitution">
                                     <h4>CON</h4>
-                                    <p>${monster.con} (+1)</p>
+                                    <p>${Renderer.utils.getAbilityRoller(monster, "con")}</p>
                                 </div> <!-- ability constitution -->
                                 <div class="ability-intelligence">
                                     <h4>INT</h4>
-                                    <p>${monster.int} (-5)</p>
+                                    <p>${Renderer.utils.getAbilityRoller(monster, "int")}</p>
                                 </div> <!-- ability intelligence -->
                                 <div class="ability-wisdom">
                                     <h4>WIS</h4>
-                                    <p>${monster.wis} (-4)</p>
+                                    <p>${Renderer.utils.getAbilityRoller(monster, "wis")}</p>
                                 </div> <!-- ability wisdom -->
                                 <div class="ability-charisma">
                                     <h4>CHA</h4>
-                                    <p>${monster.cha} (-5)</p>
+                                    <p>${Renderer.utils.getAbilityRoller(monster, "cha")}</p>
                                 </div> <!-- ability charisma -->
                             </div> <!-- abilities -->
                             <svg height="5" width="100%" class="tapered-rule">
