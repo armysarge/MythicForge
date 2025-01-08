@@ -218,10 +218,9 @@ app.post('/execute', async (req, res) => {
 
 // Start the Node.js server
 app.listen(PORT, async () => {
-    console.log(`Node.js server running at http://127.0.0.1:${PORT}`);
-
     await downloadDataFrom5eTools();
     await downloadImagesFrom5eTools();
+    console.log(`MythicForge server running at http://127.0.0.1:${PORT}`);
 });
 
 // Ensure Python process is killed when Node.js exits

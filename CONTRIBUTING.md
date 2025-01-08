@@ -80,7 +80,7 @@ git checkout -b feature/amazing-feature
 
 ## ❓ Questions?
 
-Join our [Discord server](https://discord.gg/mythicforge) or open a GitHub issue for support.
+Join our [Discord server](https://discord.gg/G5W2QZBevz) or open a GitHub issue for support.
 
 ## 📖 License
 

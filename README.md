@@ -166,7 +166,7 @@ The data is licensed under the Open Gaming License.
 ## 💬 Support
 
 - Create an [Issue](https://github.com/armysarge/mythicforge/issues)
-- Join our [Discord](https://discord.gg/eGeMyCYSny)
+- Join our [Discord](https://discord.gg/G5W2QZBevz)
 - Telegram [Group](https://t.me/+jg68TLcxyl9kYWI8)
 - Email: armysarge.ss@gmail.com
 
