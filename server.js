@@ -102,28 +102,49 @@ const downloadDataFrom5eTools = async () => {
     }
 };
 
+const downloadAndSaveZip = async (url, zipFilePath, maxRetries = 3) => {
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            const response = await axios({
+                url,
+                method: 'GET',
+                responseType: 'arraybuffer'
+            });
+            await fsPromises.writeFile(zipFilePath, response.data);
+            return;
+        } catch (error) {
+            if (i === maxRetries - 1) throw error;
+            console.log(`Retrying download (${i + 1}/${maxRetries})...`);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+    }
+};
+
+const extractAndRename = async (zipFilePath, imagePath) => {
+    try {
+        await fsPromises.mkdir('public/assets/images', { recursive: true });
+        await StreamZip(zipFilePath, 'public/assets/images');
+        await fsPromises.rename('public/assets/images/5etools-img-main', imagePath);
+    } catch (error) {
+        console.error('Error extracting ZIP file:', error);
+        throw error;
+    }
+};
+
 const downloadImagesFrom5eTools = async () => {
     const imagePath = 'public/assets/images/5eTools';
+    const zipFilePath = '5etools.zip';
+    const zipUrl = 'https://github.com/5etools-mirror-3/5etools-img/archive/refs/heads/master.zip';
+
     if (!fs.existsSync(imagePath)) {
         console.log('Downloading 5eTools images, Please wait, this can take a long while...');
         try {
-            if (fs.existsSync('5etools-img-main.zip')) {
-                await extractLargeZip('5etools-img-main.zip', 'public/assets/images');
-                await fsPromises.rename('public/assets/images/5etools-img-main', imagePath);
+            if (fs.existsSync(zipFilePath)) {
+                await extractAndRename(zipFilePath, imagePath);
             } else {
-                const url = 'https://github.com/5etools-mirror-3/5etools-img/archive/refs/heads/master.zip';
-                const response = await axios({
-                    url,
-                    method: 'GET',
-                    responseType: 'arraybuffer'
-                });
-
-                await fsPromises.writeFile('5etools.zip', response.data);
-
-                await fsPromises.mkdir('public/assets/images', { recursive: true });
-                await extractLargeZip('5etools-img.zip', 'public/assets/images');
-                await fsPromises.rename('public/assets/images/5etools-img-main', imagePath);
-                await fsPromises.unlink('5etools-img.zip');
+                await downloadAndSaveZip(zipUrl, zipFilePath);
+                await extractAndRename(zipFilePath, imagePath);
+                await fsPromises.unlink(zipFilePath);
             }
             console.log('5eTools images downloaded');
         } catch (error) {
@@ -132,7 +153,6 @@ const downloadImagesFrom5eTools = async () => {
         }
     }
 };
-
 // Middleware to serve static files
 app.use(express.static('public'));
 app.use(bodyParser.json());
