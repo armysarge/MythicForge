@@ -89,6 +89,7 @@ body, html {
   z-index: 10;
   box-shadow: 0px 0px 10px 6px rgba(0, 0, 0, 0.5);
   border-radius: 8px;
+  min-width: 250px;
 }
 
 .mythicForgeWindow > .windowHeader{
@@ -263,7 +264,7 @@ a{
 }
 
 .mythicForgeWindow:has(.windowHeader) > div.windowContent{
-
+  padding-top: 20px;
 }
 .mythicForgeWindow:has(.windowHeader) > div.windowContent::before,.mythicForgeWindow:has(.windowHeader) > div.windowContent::after {
   bottom: -18px;
@@ -310,6 +311,13 @@ a{
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
+}
+
+.mythicForgeWindow > div.windowContent .inlineContent{
+  padding:20px;
+  padding-top: 0px;
+  width:400px;
+  max-width:100%;
 }
 
 .bestiaryWindow{

@@ -76,17 +76,6 @@ class MythicForgeWindow {
      */
     dataParser(obj,type,subType){
         var that = this;
-        var resplace5etoolsLinks = function (el) {
-            $(el).find("a[data-vet-page]").each(function() {
-                $(this).attr("onclick","MythicForgeWindow.openInlineContent('"+$(this).attr("data-vet-page")+"','"+$(this).attr("data-vet-source")+"','"+$(this).attr("data-vet-hash")+"')");
-                $(this).attr("href",`#`);
-                $(this).removeAttr("onmouseover");
-                $(this).removeAttr("onmousemove");
-                $(this).removeAttr("onmouseleave");
-                $(this).removeAttr("ontouchstart");
-                $(this).removeAttr("ondragstart");
-            });
-        }
 
         switch(type){
             case "ability":
@@ -95,13 +84,25 @@ class MythicForgeWindow {
                 return Renderer.monster.getTypeAlignmentPart(obj);
             case "ac":
                 var theAC = $("<div>"+Parser.acToFull(obj.ac)+"</div>");
-                resplace5etoolsLinks(theAC);
+                that.replace5etoolsLinks(theAC);
                 return theAC.html();
             case "hp":
                 return Renderer.monster.getRenderedHp(obj.hp,{isPlainText:false});
             case "speed":
                 return Parser.getSpeedString(obj);
         }
+    }
+
+    replace5etoolsLinks(el) {
+        $(el).find("a[data-vet-page]").each(function() {
+            $(this).attr("onclick","MythicForgeWindow.openInlineContent('"+$(this).attr("data-vet-page")+"','"+$(this).attr("data-vet-source")+"','"+$(this).attr("data-vet-hash")+"')");
+            $(this).attr("href",`#`);
+            $(this).removeAttr("onmouseover");
+            $(this).removeAttr("onmousemove");
+            $(this).removeAttr("onmouseleave");
+            $(this).removeAttr("ontouchstart");
+            $(this).removeAttr("ondragstart");
+        });
     }
 
     /**
@@ -127,13 +128,39 @@ class MythicForgeWindow {
      * @returns {string} HTML string containing formatted inline content
      */
     inlineContentHtml(data,type){
+        var that = this;
         var html = "";
+        console.log(data,Renderer.item.getHtmlAndTextTypes(data));
         switch(type.split(".")[0]){
             case "items":
-                var itemType = Renderer.item.getHtmlAndTextTypes(data).map(t => t != "" ? `<span class="stats-inline-type">${t}</span>` : "").join("");
-                html = itemType;
+
+                const [ptDamage, ptProperties] = Renderer.item.getRenderedDamageAndProperties(data);
+                const ptMastery = Renderer.item.getRenderedMastery(data);
+
+                const theCostandWeight = [
+                    ptDamage,
+                    ptProperties,
+                    ptMastery,
+                ]
+                    .filter(Boolean)
+                    .map(pt => `<div class="ve-text-wrap-balance ve-text-right">${pt.uppercaseFirst()}</div>`)
+                    .join("");
+
+                var ItemType = $(`<div>${Renderer.item.getTypeRarityAndAttunementText(data).join("")}</div>`);
+                that.replace5etoolsLinks(ItemType)
+                var ItemDesc = $(`<div>${Renderer.item.hasEntries(data) ? Renderer.item.getRenderedEntries(data, {isCompact: true}) : ""}</div>`);
+                that.replace5etoolsLinks(ItemDesc)
+                html = `<div class='inlineContent'>
+                    ${ItemType.html()}</br>
+                    ${[Parser.itemValueToFullMultiCurrency(data), Parser.itemWeightToFull(data)].filter(Boolean).join(", ").uppercaseFirst()}</br>
+                    ${theCostandWeight}
+                    <svg height="5" width="100%" class="tapered-rule">
+                        <polyline points="0,0 400,2.5 0,5"></polyline>
+                    </svg>
+                    ${ItemDesc.html()}
+                    </div>`;
         }
-        return html;
+        return (!SRDonly)?html:(data.srd)?html:"";
     }
 
     /**
