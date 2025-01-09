@@ -31,7 +31,7 @@
 AllMonsters = [];
 AllSpells = [];
 AllItems = [];
-SRDonly = true;
+SRDonly = false;
 
 class MythicForgeWindow {
     constructor() {
@@ -79,18 +79,25 @@ class MythicForgeWindow {
 
         switch(type){
             case "ability":
+                if (obj[subType])
                 return Renderer.utils.getAbilityRoller(obj,subType);
             case "alignment":
-                return Renderer.monster.getTypeAlignmentPart(obj);
+                if(obj.alignment)
+                    return Renderer.monster.getTypeAlignmentPart(obj);
             case "ac":
-                var theAC = $("<div>"+Parser.acToFull(obj.ac)+"</div>");
-                that.replace5etoolsLinks(theAC);
-                return theAC.html();
+                if(obj.ac){
+                    var theAC = $("<div>"+Parser.acToFull(obj.ac)+"</div>");
+                    that.replace5etoolsLinks(theAC);
+                    return theAC.html();
+                }
             case "hp":
+                if(obj.hp)
                 return Renderer.monster.getRenderedHp(obj.hp,{isPlainText:false});
             case "speed":
+                if (obj.speed)
                 return Parser.getSpeedString(obj);
         }
+        return "-";
     }
 
     replace5etoolsLinks(el) {
@@ -497,12 +504,12 @@ $.when( $.ready ).then(function() {
                         }
                     if (monster.name.toLowerCase().includes(search)){
                         var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
-                        var monsterCR = monster.cr;
+                        var monsterCR = (monster.cr)?monster.cr:"-";
                         var tr = `<tr class='bestiaryItem' data-name='${monster.name}' data-source='${monster.source}'>
                             <td>${monster.name}</td>
                             <td>${monsterAlignment}</td>
                             <td>${monsterCR}</td>
-                            <td>${monster.source}</td>
+                            <td>${monster.source?monster.source:"-"}</td>
                         </tr>`;
                         tbody.append(tr);
                     }
