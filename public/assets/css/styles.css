@@ -199,6 +199,11 @@ body, html {
   transition: width 0.5s ease;
 }
 
+a{
+  color: #c90c0c;
+  text-decoration: none;
+}
+
 .loading-container.loaded .loading-bar {
   opacity: 0;
 }

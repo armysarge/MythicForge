@@ -14,6 +14,7 @@ const randomNum = Math.floor(Math.random() * 2) + 1;
     <link rel="stylesheet" href="/assets/plugins/boxicons/css/boxicons.css">
     <link rel="stylesheet" href="/assets/css/styles.css">
     <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+    <script src="/assets/js/loader.js"></script>
 </head>
 <body>
 
@@ -35,6 +36,8 @@ const randomNum = Math.floor(Math.random() * 2) + 1;
                 <button class="btn fantasy-button fixed-width btn-lg">Campaigns</button>
                 <button class="btn fantasy-button fixed-width btn-lg">Characters</button>
                 <button class="btn fantasy-button fixed-width btn-lg showBestiary">Bestiary</button>
+                <button class="btn fantasy-button fixed-width btn-lg showSpells">Spells</button>
+                <button class="btn fantasy-button fixed-width btn-lg showItems">Items</button>
                 <button class="btn fantasy-button fixed-width btn-lg">Tools</button>
                 <button class="btn fantasy-button fixed-width btn-lg">Settings</button>
                 <!--<button class="btn fantasy-button fixed-width btn-lg">Logout</button>-->
@@ -49,7 +52,7 @@ const randomNum = Math.floor(Math.random() * 2) + 1;
     <script src="/assets/js/bootstrap.bundle.js"></script>
 
     <!-- 5e Tools -->
-    <script type="text/javascript" defer src="/assets/plugins/5eTools/consts.js"></script>
+    <script type="module" type="text/javascript" defer src="/assets/plugins/5eTools/consts.js"></script>
     <script type="text/javascript" defer src="/assets/plugins/5eTools/parser.js"></script>
     <script type="text/javascript" defer src="/assets/plugins/5eTools/utils.js"></script>
     <script type="text/javascript" defer src="/assets/plugins/5eTools/utils-ui.js"></script>
@@ -65,8 +68,7 @@ const randomNum = Math.floor(Math.random() * 2) + 1;
     <script type="text/javascript" defer src="/assets/plugins/5eTools/utils-list.js"></script>
     <script type="text/javascript" defer src="/assets/plugins/5eTools/utils-tableview.js"></script>
     <script type="text/javascript" defer src="/assets/plugins/5eTools/render.js"></script>
-    <script type="text/javascript" defer src="/assets/plugins/5eTools/render-bestiary.js"></script>
-    <script type="text/javascript" defer src="/assets/plugins/5eTools/render-bestiary.js"></script>
+    <script type="module" type="text/javascript" defer src="/assets/plugins/5eTools/render-bestiary.js"></script>
     <script type="text/javascript" defer src="/assets/plugins/5eTools/render-dice.js"></script>
     <script type="text/javascript" defer src="/assets/plugins/5eTools/scalecreature.js"></script>
     <script type="text/javascript" defer src="/assets/plugins/boxicons/dist/boxiconss.js"></script>
