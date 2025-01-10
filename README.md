@@ -10,7 +10,7 @@
 ---
 
 <div align="center">
-  <strong>🏰 A powerful D&D 5E campaign management and character creation tool powered by AI. MythicForge combines traditional tabletop gaming with advanced AI capabilities to enhance your roleplaying experience. 🧙‍♂️</strong>
+  <strong>🏰 A powerful D&D 5E campaign management, database, character creation and various tools powered by AI. MythicForge combines traditional tabletop gaming with advanced AI capabilities to enhance your roleplaying experience. 🧙‍♂️</strong>
 </div>
 
 ---
@@ -150,7 +150,7 @@ Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md)
 
 This project is licensed under the AGPL License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🙏 Acknowledgements
 
 - OpenAI and Google for AI capabilities
 - The data was taken from [5eTools](https://5e.tools/).
