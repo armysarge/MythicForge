@@ -10,7 +10,7 @@
 ---
 
 <div align="center">
-  <strong>🏰 A powerful D&D 5E campaign management, database, character creation and various tools powered by AI. MythicForge combines traditional tabletop gaming with advanced AI capabilities to enhance your roleplaying experience. 🧙‍♂️</strong>
+  <strong>🏰 A powerful D&D 5E campaign management, digital reference, character creation and various tools powered by AI. MythicForge combines traditional tabletop gaming with advanced AI capabilities to enhance your roleplaying experience. 🧙‍♂️</strong>
 </div>
 
 ---
