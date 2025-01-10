@@ -31,7 +31,7 @@
 AllMonsters = [];
 AllSpells = [];
 AllItems = [];
-SRDonly = false;
+SRDonly = true;
 
 class MythicForgeWindow {
     constructor() {
