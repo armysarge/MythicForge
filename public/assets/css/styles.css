@@ -126,6 +126,7 @@ body, html {
   overflow: hidden;
   overflow-y: auto;
   margin-top:20px;
+  font-family: 'Merriweather', serif;
 }
 
 .mythicForgeWindow.landscape {
@@ -207,6 +208,11 @@ a{
 
 .loading-container.loaded .loading-bar {
   opacity: 0;
+}
+
+.loading-container .logo img{
+  width: 500px;
+  transition: all 0.8s ease;
 }
 
 .loading-container.loaded .logo img{
@@ -318,6 +324,7 @@ a{
   padding-top: 0px;
   width:400px;
   max-width:100%;
+  font-family: 'Merriweather', serif;
 }
 
 .bestiaryWindow{
