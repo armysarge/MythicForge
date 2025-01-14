@@ -3,6 +3,10 @@ class MythicForgeWindow {
 
     }
 
+    destroy() {
+        this.el.remove();
+    }
+
     /**
      * Creates and appends a new window element to the document body
      * @param {string} title - The title text to display in the window header
@@ -40,6 +44,7 @@ class MythicForgeWindow {
      * with inline content handlers and removing unwanted event handlers.
      */
     dataParser(obj,type,subType){
+        var theRenderer = Renderer.get();
         var that = this;
 
         switch(type){
@@ -61,14 +66,56 @@ class MythicForgeWindow {
             case "speed":
                 if (obj.speed)
                 return Parser.getSpeedString(obj);
+            case "skills":
+                var theSkills = $("<div>"+Renderer.monster.getSkillsString(theRenderer,obj)+"</div>");
+                that.replace5etoolsLinks(theSkills);
+                return theSkills.html();
+            case "senses":
+                var theSenses = $("<div>"+Renderer.monster.getSensesPart(obj)+"</div>");
+                that.replace5etoolsLinks(theSenses);
+                return theSenses.html();
+            case "cr":
+                return (obj.cr)?Renderer.monster._getChallengeRatingPart_classic({mon:obj}):"-";
+            case "traits":
+                var html = "";
+                var theTraits = Renderer.monster.getOrderedTraits(obj, theRenderer);
+                if (theTraits.length > 0){
+                    var allTraits = "";
+
+                    $.each(theTraits, function(i, it) {
+                        allTraits += `<div class="property-block"><h4>${it.name}. </h4><p>${it.entries.join("</p><p>")}</p></div>`;
+                    });
+
+                    html = `
+                    <div class="actions">
+                        <h3>Traits</h3>
+                        ${allTraits}
+                    </div> <!-- actions -->`;
+                }
+
+                return html;
+            case "actions":
+                var html = "";
+                var theActions = Renderer.monster.getCompactRenderedStringSection({mon:obj, action: obj.action}, Renderer.get(), "Actions", "action", 2)
+                if (theActions.length > 0){
+                    var monsterTable = $("<table>"+theActions+"</table>");
+
+                    html = `
+                    <div class="actions">
+                        <h3>Traits</h3>
+                        ${allTraits}
+                    </div> <!-- actions -->`;
+                }
+                return html;
         }
         return "-";
     }
 
     replace5etoolsLinks(el) {
-        $(el).find("a[data-vet-page]").each(function() {
+        $(el).find("[data-vet-page]").each(function() {
             $(this).attr("onclick","MythicForgeWindow.openInlineContent('"+$(this).attr("data-vet-page")+"','"+$(this).attr("data-vet-source")+"','"+$(this).attr("data-vet-hash")+"')");
-            $(this).attr("href",`#`);
+            $(this).removeAttr("href",`#`);
+            $(this).addClass("hoverLink");
             $(this).removeAttr("onmouseover");
             $(this).removeAttr("onmousemove");
             $(this).removeAttr("onmouseleave");
@@ -87,9 +134,14 @@ class MythicForgeWindow {
     static openInlineContent(type,source,hash){
         DataLoader.pCacheAndGet(type,source,hash).then(function(data){
             var inlineContent = new MythicForgeWindow();
-            inlineContent.createWindow(data.name, inlineContent.inlineContentHtml(data,type));
-            inlineContent.el.fadeIn();
-            inlineContent.centerDivToScreen();
+            var theContent = inlineContent.inlineContentHtml(data,type);
+            if (theContent != ""){
+                inlineContent.createWindow(data.name, theContent);
+                inlineContent.el.fadeIn();
+                inlineContent.centerDivToScreen();
+            }else{
+                inlineContent.destroy();
+            }
         });
     }
 
@@ -102,8 +154,25 @@ class MythicForgeWindow {
     inlineContentHtml(data,type){
         var that = this;
         var html = "";
-        console.log(data,Renderer.item.getHtmlAndTextTypes(data));
+
         switch(type.split(".")[0]){
+            case "skill":
+                html = `<div class='inlineContent'>
+                ${typeof data.ability !="undefined"?`
+                Ability: ${Parser.ATB_ABV_TO_FULL[data.ability]}
+                </br>
+                <svg height="5" width="100%" class="tapered-rule">
+                    <polyline points="0,0 400,2.5 0,5"></polyline>
+                </svg>
+                `:""}
+                <p>${data.entries.join("</p><p>")}</p>
+                </div>`;
+                break;
+            case "sense":
+                html = `<div class='inlineContent'>
+                <p>${data.entries.join("</p><p>")}</p>
+                </div>`;
+                break;
             case "items":
 
                 const [ptDamage, ptProperties] = Renderer.item.getRenderedDamageAndProperties(data);
@@ -131,6 +200,7 @@ class MythicForgeWindow {
                     </svg>
                     ${ItemDesc.html()}
                     </div>`;
+                break;
         }
         return (!SRDonly)?html:(data.srd)?html:"";
     }
@@ -153,6 +223,9 @@ class MythicForgeWindow {
                 that.monster = monster;
 
                 var monsterPicture = (monster.fluff)?(monster.fluff.images)?(monster.fluff.images[0].href.path) ? `<div class="monsterStatBlockImage"><img src="/assets/images/5etools/${monster.fluff.images[0].href.path}"></div>` : "":"":"";
+
+                var monsterSkills = that.dataParser(monster,"skills");
+                var monsterSenses = that.dataParser(monster,"senses");
 
                 var html = `
                 ${monsterPicture}
@@ -210,7 +283,29 @@ class MythicForgeWindow {
                             <svg height="5" width="100%" class="tapered-rule">
                                 <polyline points="0,0 400,2.5 0,5"></polyline>
                             </svg>
-                            <div class="property-line first">
+                            ${monsterSkills != "" ? `
+                            <div class="property-line">
+                                <h4>Skills</h4>
+                                <p>${monsterSkills}</p>
+                            </div> <!-- property line -->` : ""}
+                            ${monsterSenses != "" ? `
+                            <div class="property-line">
+                                <h4>Senses</h4>
+                                <p>${monsterSenses}</p>
+                            </div> <!-- property line -->` : ""}
+                            ${monster.languages.length > 0 ? `
+                            <div class="property-line">
+                                <h4>Languages</h4>
+                                <p>${monster.languages.join(", ")}</p>
+                            </div> <!-- property line -->` : ""}
+                            <div class="property-line">
+                                <h4>Challenge</h4>
+                                <p>${that.dataParser(monster,"cr")}</p>
+                            </div> <!-- property line -->
+                            <svg height="5" width="100%" class="tapered-rule">
+                                <polyline points="0,0 400,2.5 0,5"></polyline>
+                            </svg>
+                            <div class="property-line">
                                 <h4>Damage Immunities</h4>
                                 <p>poison, psychic</p>
                             </div> <!-- property line -->
@@ -226,7 +321,7 @@ class MythicForgeWindow {
                                 <h4>Languages</h4>
                                 <p>&mdash;</p>
                             </div> <!-- property line -->
-                            <div class="property-line last">
+                            <div class="property-line">
                                 <h4>Challenge</h4>
                                 <p>1 (200 XP)</p>
                             </div> <!-- property line -->
@@ -247,6 +342,7 @@ class MythicForgeWindow {
                         </div> <!-- property block -->
                     </div> <!-- section left -->
                     <div class="section-right">
+                        ${that.dataParser(monster,"traits")}
                         <div class="actions">
                             <h3>Actions</h3>
                             <div class="property-block">
@@ -313,6 +409,14 @@ class MythicForgeWindow {
         that.el.draggable({containment: "parent",onStart: function() {
             that.mythicForgeWindowIndex();
         }});
+
+        //set windowContent height to be the size of mythicForgeWindow
+        that.el.find(".windowContent").css("height",that.el.height());
+
+        //on window resize set windowContent height to be the size of mythicForgeWindow
+        $(window).on('resize', function(){
+            that.el.find(".windowContent").css("height",that.el.height());
+        });
     }
 
     /**

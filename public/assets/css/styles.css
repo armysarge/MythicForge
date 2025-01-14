@@ -90,6 +90,7 @@ body, html {
   box-shadow: 0px 0px 10px 6px rgba(0, 0, 0, 0.5);
   border-radius: 8px;
   min-width: 250px;
+  max-height:calc(100% - 40px);
 }
 
 .mythicForgeWindow > .windowHeader{
@@ -122,11 +123,15 @@ body, html {
 
 .mythicForgeWindow .monsterStatBlock{
   max-height: 500px;
-  max-width: 400px;
   overflow: hidden;
   overflow-y: auto;
-  margin-top:20px;
+  margin-top:5px;
   font-family: 'Merriweather', serif;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+  align-self: auto;
+  order: 1;
 }
 
 .mythicForgeWindow.landscape {
@@ -199,11 +204,6 @@ body, html {
   height: 100%;
   background: hsl(27, 90%, 52%);
   transition: width 0.5s ease;
-}
-
-a{
-  color: #c90c0c;
-  text-decoration: none;
 }
 
 .loading-container.loaded .loading-bar {
@@ -286,6 +286,8 @@ a{
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Bottom Corners - Using pseudo elements of child div */
@@ -321,10 +323,11 @@ a{
 
 .mythicForgeWindow > div.windowContent .inlineContent{
   padding:20px;
-  padding-top: 0px;
+  padding-top: 20px;
   width:400px;
   max-width:100%;
   font-family: 'Merriweather', serif;
+  font-size:12px;
 }
 
 .bestiaryWindow{
@@ -337,11 +340,22 @@ a{
 
 .monsterStatBlock {
   text-align: left;
-  display: inline-block;
+  display: inline-flex;
   vertical-align: top;
   min-width:280px;
   padding: 5px 10px 20px;
 }
+
+.hoverLink{
+  color: #c90c0c;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.monsterStatBlock > div{
+  width: 350px;
+}
+
 .monsterStatBlock.wide{
   width: 46.5%;
   min-width: 560px;
@@ -351,7 +365,6 @@ a{
 .monsterStatBlock.wide .section-right{
   display: inline-block;
   vertical-align: top;
-  width: 48%;
   text-align: left;
 }
 .monsterStatBlock.wide .section-left{
@@ -360,25 +373,28 @@ a{
 .monsterStatBlock.wide .section-right{
   margin-left: 1.5%;
 }
-.monsterStatBlock::-webkit-scrollbar, .bestiaryContent::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: 4px;
 }
-.monsterStatBlock::-webkit-scrollbar-thumb, .bestiaryContent::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background-color: #7a1f0d9d;
   border-radius: 10px;
 }
-.monsterStatBlock::-webkit-scrollbar-track, .bestiaryContent::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background-color: transparent;
 }
-.monsterStatBlock::-webkit-scrollbar-thumb:hover, .bestiaryContent::-webkit-scrollbar-thumb:hover {
+*::-webkit-scrollbar-thumb:hover {
   background-color: #7a1f0d9d;
 }
 .monsterStatBlockImage{
   text-align: center;
-  margin: 20px 0 -15px;
+  margin: 0;
   width:100%;
+  flex-grow: 0;
+  flex-shrink: 1;
+  order: 0;
 }
-.monsterStatBlockImage img{max-height: 200px;}
+.monsterStatBlockImage img{max-height: 150px;}
 
 .bestiaryContent{
   width:100%;
@@ -431,7 +447,7 @@ a{
 }
 
 .bestiaryList thead { text-transform: uppercase; }
-.bestiaryList th { white-space: nowrap; font-weight: bold; }
+.bestiaryList th { white-space: nowrap; font-weight: bold; font-size: 12px;}
 .bestiaryList td {font-size: 12px;font-family: 'Merriweather', serif;}
 .bestiaryList tbody tr:hover { background-color: #f5f5f5; cursor: pointer;}
 
@@ -475,6 +491,7 @@ a{
   color: #922610;
   fill: #922610;
   stroke: #922610;
+  margin: 5px 0 5px;
 }
 .creature-heading h1{
   font-family: 'Libre Baskerville', 'Lora', 'Calisto MT', 'Bookman Old Style', Bookman, 'Goudy Old Style', Garamond, 'Hoefler Text', 'Bitstream Charter', Georgia, serif;
@@ -490,30 +507,25 @@ a{
   font-weight: normal;
   font-style: italic;
   font-size: 12px;
-  line-height: 1.2em;
-  margin: 0 0 10px;
+  line-height: 1em;
+  margin: 0;
 }
 .property-line h4,
 .property-line p{
   display: inline;
   margin: 0;
   color: #922610;
-  font-size: 13.5px;
+  font-size: 12px;
   line-height: 1.2em;
 }
 .property-line h4{
   color: #7A200D;
+  font-weight: bold;
 }
 .property-line{
   text-indent: -1em;
   padding-left: 1.1em;
   line-height: 1.4em;
-}
-.property-line.first{
-  margin: 8px 0 0
-}
-.property-line.last{
-  margin: 0 0 10px;
 }
 .abilities{
   text-align: center;
@@ -528,38 +540,38 @@ a{
   line-height: 1em;
 }
 .abilities h4{
-  margin: 10px 0 2px;
-  font-size: 14px;
+  margin: 0px 0 2px;
+  font-size: 12px;
   line-height: 1.2em;
   text-transform: uppercase;
   color: #7A200D;
 }
 .abilities p{
-  margin: 0 0 10px;
-  line-height: 1.2em;
+  margin: 0;
+  line-height: 1em;
 }
 .property-block h4,
 .property-block p{
-  font-size: 13.5px;
-  line-height: 1.2em;
+  font-size: 12px;
   display: inline;
   margin: 0;
 }
 .property-block h4{
   font-style: italic;
+  font-weight: bold;
 }
 .property-block{
-  padding: 10px 2px 0;
+  padding: 5px 2px 0;
 }
 .actions h3{
   border-bottom: 1px solid #7A200D;
   color: #7A200D;
-  font-size: 21px;
+  font-size: 18px;
   font-variant: small-caps;
   font-weight: normal;
   letter-spacing: 1px;
-  margin: 20px 0 0;
-  padding: 0 0 10px;
+  margin: 10px 0 0;
+  padding: 0 0 5px;
   text-indent: 5px;
 }
 .actions{
