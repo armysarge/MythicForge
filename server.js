@@ -15,7 +15,7 @@ const { rimraf } = require('rimraf');
 const DEBUG_MODE = process.env.DEBUG_MODE === 'true' || false;
 
 // Start the Python server
-const pythonProcess = spawn('python', ['scripts/MythicForge.py'], {
+const pythonProcess = spawn('python', ['scripts/MythicForge.py', '--port', '4000'], {
     env: { ...process.env, DEBUG_MODE: DEBUG_MODE.toString() }
 });
 
@@ -164,7 +164,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.get('/', async (req, res) => {
     try {
         // Fetch data from the Python API
-        //const response = await axios.get('http://127.0.0.1:5000/data');
+        //const response = await axios.get('http://127.0.0.1:4000/data');
         //const entries = response.data;
 
         // Render the page with data
@@ -181,7 +181,7 @@ app.get('/data', async (req, res) => {
         // Fetch data from the Python API
         const requestData = {
             method: 'GET',
-            url: 'http://127.0.0.1:5000/data?type='+req.query.type+'&q='+req.query.q,
+            url: 'http://127.0.0.1:4000/data?type='+req.query.type+'&q='+req.query.q,
         };
         const response = await axios(requestData);
         const entries = response.data;
@@ -197,7 +197,7 @@ app.get('/data', async (req, res) => {
 // Route to trigger a Python function
 app.post('/story', async (req, res) => {
     try {
-        const response = await axios.post('http://127.0.0.1:5000/story', req.body.monster);
+        const response = await axios.post('http://127.0.0.1:4000/story', req.body.monster);
         res.json(response.data);
     } catch (error) {
         console.error('Error executing Python function:', error);
@@ -208,7 +208,7 @@ app.post('/story', async (req, res) => {
 // Route to trigger a Python function
 app.post('/execute', async (req, res) => {
     try {
-        const response = await axios.post('http://127.0.0.1:5000/execute', req.body);
+        const response = await axios.post('http://127.0.0.1:4000/execute', req.body);
         res.json(response.data);
     } catch (error) {
         console.error('Error executing Python function:', error);

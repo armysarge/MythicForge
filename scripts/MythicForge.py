@@ -3,6 +3,7 @@ import json,time,sqlite3,sys
 from flask import Flask, jsonify, request, g
 from pathlib import Path
 from typing import List, Dict
+
 class MythicForge:
     def __init__(self, app):
         self.app = app
@@ -92,4 +93,4 @@ def execute_command():
     return jsonify({"status": "success"})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=4000, debug=True)
