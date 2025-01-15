@@ -518,7 +518,7 @@ class MythicForgeWindow {
                                 <p>${monsterSenses}</p>
                             </div> <!-- property line -->` : ""}
 
-                            ${monster.languages.length > 0 ? `
+                            ${monster.languages ? `
                             <div class="property-line">
                                 <h4>Languages</h4>
                                 <p>${monster.languages.join(", ")}</p>
