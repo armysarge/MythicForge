@@ -80,7 +80,7 @@ $.when( $.ready ).then(function() {
 
                 var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
                 var monsterCR = (monster.cr)?monster.cr:"-";
-                if (typeof monsterCR == "object") monsterCR = monsterCR[0];
+                if (typeof monsterCR == "object") monsterCR = monsterCR.cr;
                 var tr = `<tr class='bestiaryItem' data-name='${monster.name}' data-source='${monster.source}'>
                     <td>${monster.name}</td>
                     <td>${monsterAlignment}</td>
