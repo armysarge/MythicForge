@@ -290,6 +290,28 @@ body, html {
   flex-direction: column;
 }
 
+.MythicForgeTable{
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.MythicForgeTable th{
+  background-color: #922610;
+  color: #000000;
+  font-weight: bold;
+  text-align: center;
+  padding: 2px;
+  border: 1px solid #5a5656;
+}
+
+.MythicForgeTable td{
+  color: #000000;
+  text-align: center;
+  padding: 2px;
+  border: 1px solid #5a5656;
+}
+
 /* Bottom Corners - Using pseudo elements of child div */
 .mythicForgeWindow > div.windowContent::before {
   content: '';
@@ -321,13 +343,23 @@ body, html {
   -webkit-user-select: none;
 }
 
+.mythicForgeWindow > div.windowContent:has(.inlineContent){
+  max-height: 400px;
+}
+
 .mythicForgeWindow > div.windowContent .inlineContent{
   padding:20px;
-  padding-top: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   width:400px;
   max-width:100%;
   font-family: 'Merriweather', serif;
   font-size:12px;
+  overflow-y: auto;
+}
+
+.mythicForgeWindow > div.windowContent .inlineContent p{
+  margin-bottom: 0.6em;
 }
 
 .bestiaryWindow{
@@ -346,7 +378,7 @@ body, html {
   padding: 5px 10px 20px;
 }
 
-.hoverLink{
+.hoverLink,.roller.render-roller{
   color: #c90c0c;
   text-decoration: none;
   cursor: pointer;
@@ -354,6 +386,8 @@ body, html {
 
 .monsterStatBlock > div{
   width: 350px;
+  margin-right:5px;
+  height: 100%;
 }
 
 .monsterStatBlock.wide{
@@ -361,6 +395,12 @@ body, html {
   min-width: 560px;
   text-align: center;
 }
+
+.monsterStatBlock .section-left{
+  position: sticky;
+  top: 0; /* Sticks to the top when scrolling */
+}
+
 .monsterStatBlock.wide .section-left,
 .monsterStatBlock.wide .section-right{
   display: inline-block;
@@ -394,7 +434,10 @@ body, html {
   flex-shrink: 1;
   order: 0;
 }
-.monsterStatBlockImage img{max-height: 150px;}
+.monsterStatBlockImage img,.fluff-image img{
+  max-height: 150px;
+  max-width:100%;
+}
 
 .bestiaryContent{
   width:100%;
@@ -525,7 +568,7 @@ body, html {
 .property-line{
   text-indent: -1em;
   padding-left: 1.1em;
-  line-height: 1.4em;
+  line-height: 0.8em;
 }
 .abilities{
   text-align: center;
@@ -551,19 +594,29 @@ body, html {
   line-height: 1em;
 }
 .property-block h4,
-.property-block p{
+.property-block p,
+.actions > p,
+.actions > ul li{
   font-size: 12px;
   display: inline;
   margin: 0;
 }
-.property-block h4{
+.actions > p{
+  display: block;
+}
+.actions > ul li{
+  display: list-item;
+}
+.property-block h4,.actions h4{
   font-style: italic;
   font-weight: bold;
 }
 .property-block{
   padding: 5px 2px 0;
+  line-height: 1em;
 }
-.actions h3{
+.actions h3,
+.actions > h4{
   border-bottom: 1px solid #7A200D;
   color: #7A200D;
   font-size: 18px;
@@ -574,11 +627,25 @@ body, html {
   padding: 0 0 5px;
   text-indent: 5px;
 }
+.actions > h4{
+  font-size: 16px;
+  border: none;
+  margin-left: -4px;
+}
+
 .actions{
   margin: 0 0 20px;
 }
 .actions:last-child{
   margin: 0;
+}
+
+.actions > ul li .property-block, .inlineContent .property-block{
+  line-height: 1.4em;
+}
+
+.actions > ul li .property-block h4,.inlineContent .property-block h4{
+  margin-right: 5px;
 }
 
 @media print{

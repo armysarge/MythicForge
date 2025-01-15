@@ -30,7 +30,7 @@
 AllMonsters = [];
 AllSpells = [];
 AllItems = [];
-SRDonly = true;
+SRDonly = false;
 
 // Document ready function
 $.when( $.ready ).then(function() {
@@ -71,37 +71,43 @@ $.when( $.ready ).then(function() {
                 createMonsterStatBlock(monsterName,monsterSource);
             });
 
+            let searchTimeout;
             $(".bestiaryWindow").on("keyup", ".searchBestiary", function(evt) {
-                var search = $(this).val().toLowerCase();
-                var bestiaryList = $(".bestiaryWindow .bestiaryList");
-                bestiaryList.find("tbody").remove();
-                var tbody = $("<tbody></tbody>");
+                const search = $(this).val().toLowerCase();
+                if (search.length < 3) return;
 
-                $.each(AllMonsters, function(monsterIndex, monster){
-                    if (SRDonly)
-                        if (typeof monster.srd != "undefined"){
-                            //if srd is true, then the monster is from the srd
-                            if (!monster.srd){
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const bestiaryList = $(".bestiaryWindow .bestiaryList");
+                    bestiaryList.find("tbody").remove();
+                    const tbody = $("<tbody></tbody>");
+
+                    $.each(AllMonsters, function(monsterIndex, monster){
+                        if (SRDonly)
+                            if (typeof monster.srd != "undefined"){
+                                //if srd is true, then the monster is from the srd
+                                if (!monster.srd){
+                                    //remove the monster from the list
+                                    return;
+                                }
+                            }else{
                                 //remove the monster from the list
                                 return;
                             }
-                        }else{
-                            //remove the monster from the list
-                            return;
+                        if (monster.name.toLowerCase().includes(search)){
+                            var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
+                            var monsterCR = (monster.cr)?monster.cr:"-";
+                            var tr = `<tr class='bestiaryItem' data-name='${monster.name}' data-source='${monster.source}'>
+                                <td>${monster.name}</td>
+                                <td>${monsterAlignment}</td>
+                                <td>${monsterCR}</td>
+                                <td>${monster.source?monster.source:"-"}</td>
+                            </tr>`;
+                            tbody.append(tr);
                         }
-                    if (monster.name.toLowerCase().includes(search)){
-                        var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
-                        var monsterCR = (monster.cr)?monster.cr:"-";
-                        var tr = `<tr class='bestiaryItem' data-name='${monster.name}' data-source='${monster.source}'>
-                            <td>${monster.name}</td>
-                            <td>${monsterAlignment}</td>
-                            <td>${monsterCR}</td>
-                            <td>${monster.source?monster.source:"-"}</td>
-                        </tr>`;
-                        tbody.append(tr);
-                    }
-                });
-                bestiaryList.append(tbody);
+                    });
+                    bestiaryList.append(tbody);
+                }, 500);
             });
         }else{
             if ($(".bestiaryWindow").css("display") == "block" && $(".bestiaryWindow").hasClass("focused")) {
