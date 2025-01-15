@@ -437,7 +437,7 @@ class MythicForgeWindow {
                 var monsterSenses = that.dataParser(monster,"senses");
                 var monsterImmunities = that.dataParser(monster,"immunities");
 
-                //TODO - add Resistances, Initiative
+                //TODO - add Resistances, Initiative, use Token (if available) if fluff image is not available
 
                 var html = `
                 <div class="monsterStatBlock">
