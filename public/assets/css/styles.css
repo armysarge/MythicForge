@@ -475,6 +475,10 @@ body, html {
     transition: background-color 5000s ease-in-out 0s;
 }
 
+.searchBestiary::placeholder {
+  color: #000000;
+}
+
 .bestiaryList{
   position: relative;
   width: 100%;
