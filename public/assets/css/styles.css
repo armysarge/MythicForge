@@ -475,7 +475,7 @@ body, html {
     transition: background-color 5000s ease-in-out 0s;
 }
 
-.searchBestiary::placeholder {
+input::placeholder {
   color: #000000;
 }
 
@@ -497,6 +497,7 @@ body, html {
 .bestiaryList th { white-space: nowrap; font-weight: bold; font-size: 12px;}
 .bestiaryList td {font-size: 12px;font-family: 'Merriweather', serif;}
 .bestiaryList tbody tr:hover { background-color: #f5f5f5; cursor: pointer;}
+.bestiaryList tr td:last-child { white-space: nowrap; }
 
 .bestiaryList tbody tr:first-child * {
   border-top: 0; /* fixes that border */

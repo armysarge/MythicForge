@@ -59,9 +59,36 @@ $.when( $.ready ).then(function() {
                             <th>Source</th>
                         </tr>
                     </thead>
+                    <tbody></tbody>
                 </table>
                 </div>
             `);
+
+            $.each(AllMonsters, function(monsterIndex, monster){
+                if (monsterIndex > 100) return;
+                if (SRDonly)
+                    if (typeof monster.srd != "undefined"){
+                        //if srd is true, then the monster is from the srd
+                        if (!monster.srd){
+                            //remove the monster from the list
+                            return;
+                        }
+                    }else{
+                        //remove the monster from the list
+                        return;
+                    }
+
+                var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
+                var monsterCR = (monster.cr)?monster.cr:"-";
+                var tr = `<tr class='bestiaryItem' data-name='${monster.name}' data-source='${monster.source}'>
+                    <td>${monster.name}</td>
+                    <td>${monsterAlignment}</td>
+                    <td>${monsterCR}</td>
+                    <td>${monster.source?monster.source:"-"}</td>
+                </tr>`;
+                bestiaryWindow.el.find(".bestiaryList tbody").append(tr);
+            });
+
             bestiaryWindow.el.addClass("bestiaryWindow");
             bestiaryWindow.el.fadeIn();
 
