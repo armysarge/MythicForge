@@ -437,6 +437,8 @@ class MythicForgeWindow {
                 var monsterSenses = that.dataParser(monster,"senses");
                 var monsterImmunities = that.dataParser(monster,"immunities");
 
+                //TODO - add Resistances, Initiative
+
                 var html = `
                 <div class="monsterStatBlock">
                     <div class="section-left">
