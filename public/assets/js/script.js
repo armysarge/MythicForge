@@ -10,9 +10,6 @@
  * @requires DataLoader
  * @requires UrlUtil
  *
- * @global {Array} AllMonsters - Array containing all monster data
- * @global {Array} AllSpells - Array containing all spell data
- * @global {Array} AllItems - Array containing all item data
  * @global {boolean} SRDonly - Flag to determine if only SRD content should be displayed
  *
  * @author Shaun Scholtz
@@ -27,20 +24,15 @@
  * // Display monster stat block
  * createMonsterStatBlock('Goblin', 'MM');
  */
-AllMonsters = [];
-AllSpells = [];
-AllItems = [];
+var AllMonsters = [];
 SRDonly = false;
 
 // Document ready function
 $.when( $.ready ).then(function() {
 
-    // Load all monster data from 5etools and correct the data
+    //Load all monster data from 5etools
     DataLoader.pCacheAndGetAllSite(UrlUtil.PG_BESTIARY,1).then(function(data){
         AllMonsters = data;
-        correctMonsterDetails();
-        //getMonsterByName("Goblin","Mm").then(function(monster){console.log(monster)});
-        //createMonsterStatBlock("Goblin","mm");
     });
 
     // Open and close the bestiary window
@@ -64,32 +56,6 @@ $.when( $.ready ).then(function() {
                 </div>
             `);
 
-            $.each(AllMonsters, function(monsterIndex, monster){
-                if (monsterIndex > 100) return;
-                if (SRDonly)
-                    if (typeof monster.srd != "undefined"){
-                        //if srd is true, then the monster is from the srd
-                        if (!monster.srd){
-                            //remove the monster from the list
-                            return;
-                        }
-                    }else{
-                        //remove the monster from the list
-                        return;
-                    }
-
-                var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
-                var monsterCR = (monster.cr)?monster.cr:"-";
-                if (typeof monsterCR == "object") monsterCR = monsterCR.cr;
-                var tr = `<tr class='bestiaryItem' data-name='${monster.name}' data-source='${monster.source}'>
-                    <td>${monster.name}</td>
-                    <td>${monsterAlignment}</td>
-                    <td>${monsterCR}</td>
-                    <td title='${monster.source?Parser.sourceJsonToFull(monster.source):"N/A"}'>${monster.source?monster.source:"-"}</td>
-                </tr>`;
-                bestiaryWindow.el.find(".bestiaryList tbody").append(tr);
-            });
-
             bestiaryWindow.el.addClass("bestiaryWindow");
             bestiaryWindow.el.fadeIn();
 
@@ -110,28 +76,32 @@ $.when( $.ready ).then(function() {
                     bestiaryList.find("tbody").remove();
                     const tbody = $("<tbody></tbody>");
 
-                    $.each(AllMonsters, function(monsterIndex, monster){
-                        if (SRDonly)
-                            if (typeof monster.srd != "undefined"){
-                                //if srd is true, then the monster is from the srd
-                                if (!monster.srd){
-                                    //remove the monster from the list
-                                    return;
-                                }
-                            }else{
-                                //remove the monster from the list
-                                return;
-                            }
-                        if (monster.name.toLowerCase().includes(search)){
-                            var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
-                            var monsterCR = (monster.cr)?monster.cr:"-";
-                            var tr = `<tr class='bestiaryItem' data-name='${monster.name}' data-source='${monster.source}'>
-                                <td>${monster.name}</td>
-                                <td>${monsterAlignment}</td>
-                                <td>${monsterCR}</td>
-                                <td title='${monster.source?Parser.sourceJsonToFull(monster.source):"N/A"}'>${monster.source?monster.source:"-"}</td>
-                            </tr>`;
-                            tbody.append(tr);
+                    var results = SearchAll(search, "monster");
+                    $.each(results, function(i, monster){
+                        if (i > 100) return;
+                        var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
+                        var monsterCR = (monster.cr)?monster.cr:"-";
+                        if (typeof monsterCR == "object") monsterCR = monsterCR.cr;
+                        var tr = `<tr class='bestiaryItem' data-name='${monster.name}' data-source='${monster.source}'>
+                            <td>${monster.name}</td>
+                            <td>${monsterAlignment}</td>
+                            <td>${monsterCR}</td>
+                            <td title='${monster.source?Parser.sourceJsonToFull(monster.source):"N/A"}'>${monster.source?monster.source:"-"}</td>
+                        </tr>`;
+                        tbody.append(tr);
+
+                        if (monster.reprintedAs){
+                            $.each(monster.reprintedAs, function(r, reprinted){
+                                var reprintedName = reprinted.split("|")[0];
+                                var reprintedSource = reprinted.split("|")[1];
+                                var tr = `<tr class='bestiaryItem' data-name='${reprintedName}' data-source='${reprintedSource}'>
+                                    <td>${reprintedName}</td>
+                                    <td>${monsterAlignment}</td>
+                                    <td>${monsterCR}</td>
+                                    <td title='${reprintedSource?Parser.sourceJsonToFull(reprintedSource):"N/A"}'>${reprintedSource?reprintedSource:"-"}</td>
+                                </tr>`;
+                                tbody.append(tr);
+                            });
                         }
                     });
                     bestiaryList.append(tbody);
@@ -146,7 +116,49 @@ $.when( $.ready ).then(function() {
             }
         }
     });
+
+    const RollboxWindow = new MythicForgeWindow();
+    RollboxWindow.createWindow('Dice Roller', $(".rollbox")[0]);
+    RollboxWindow.el.addClass("rollboxWindow");
+    RollboxWindow.el.show();
 });
+
+function SearchAll(term, where) {
+    var results = [];
+
+    $.each(AllMonsters, function(monsterIndex, monster){
+        if (SRDonly)
+            if (typeof monster.srd != "undefined"){
+                //if srd is true, then the monster is from the srd
+                if (!monster.srd){
+                    //remove the monster from the list
+                    return;
+                }
+            }else{
+                //remove the monster from the list
+                return;
+            }
+
+        var monsterName = monster.name.toLowerCase();
+        var monsterSource = monster.source.toLowerCase();
+        var monsterType = "";
+
+        if (monster.type.type) {
+            if (typeof monster.type.type != "string") {
+                if (monster.type.type.choose)
+                    monsterType = monster.type.type.choose.join(", ").toLowerCase();
+            }else{
+                monsterType = monster.type.type.toLowerCase();
+            }
+        }
+
+        if (monsterName.includes(term) || monsterSource.includes(term) || monsterType.includes(term)) {
+            results.push(monster);
+        }
+    });
+
+    return results;
+}
 
 /**
  * Creates and displays a monster stat block window using MythicForge
@@ -155,41 +167,11 @@ $.when( $.ready ).then(function() {
  * @returns {void} - Does not return a value
  * @async - Contains asynchronous operation via Promise
  */
-async function createMonsterStatBlock(monster,source){
-    await getMonsterByName(monster,source).then(function(theMonster){
+function createMonsterStatBlock(monster,source){
+    getMonsterByName(monster,source).then(function(theMonster){
         var monsterStatBlock = new MythicForgeWindow();
-        monsterStatBlock.createWindow(theMonster.name, "");
+        monsterStatBlock.createWindow(theMonster.name+"&nbsp;<sup>"+theMonster.source+"</sup>", "");
         monsterStatBlock.monsterStatBlock(theMonster.name,theMonster.source);
-    });
-}
-
-/**
- * Filters the AllMonsters array based on SRD (System Reference Document) status.
- * If SRDonly is true, this function removes any monsters that are either:
- * 1. Explicitly marked as non-SRD (monster.srd === false)
- * 2. Don't have an SRD property defined
- *
- * @global
- * @function correctMonsterDetails
- * @requires jQuery
- * @requires AllMonsters - Global array containing monster objects
- * @requires SRDonly - Global boolean indicating whether to filter for SRD-only content
- */
-function correctMonsterDetails(){
-    $.each(AllMonsters, function(monsterIndex, monster){
-        if (monster){
-            if (SRDonly)
-                if (typeof monster.srd != "undefined"){
-                    //if srd is true, then the monster is from the srd
-                    if (!monster.srd){
-                        //remove the monster from the list
-                        AllMonsters.splice(monsterIndex, 1);
-                    }
-                }else{
-                    //remove the monster from the list
-                    AllMonsters.splice(monsterIndex, 1);
-                }
-        }
     });
 }
 
@@ -203,23 +185,20 @@ function correctMonsterDetails(){
 function getMonsterByName(name, source) {
     return new Promise((resolve, reject) => {
 
-        //DataLoader.pCacheAndGetHash(UrlUtil.PG_BESTIARY, UrlUtil.URL_TO_HASH_BUILDER[UrlUtil.PG_BESTIARY]({name: "Fire Elemental", source: "XMM"})).then(goblin => {console.log(goblin)})
+        DataLoader.pCacheAndGetHash(UrlUtil.PG_BESTIARY, UrlUtil.URL_TO_HASH_BUILDER[UrlUtil.PG_BESTIARY]({name: name, source: source})).then(theMonster => {
+            if (!theMonster) {
+                reject("Monster not found");
+                return;
+            }
 
-        let theMonster = AllMonsters.find(monster => monster.name.toLowerCase() === name.toLowerCase() && monster.source.toLowerCase() === source.toLowerCase());
+            if (source == "XMM")source = "MM";
 
-        if (!theMonster) {
-            reject("Monster not found");
-            return;
-        }
-
-        //DataLoader.pCacheAndGetHash(UrlUtil.PG_BESTIARY, UrlUtil.URL_TO_HASH_BUILDER[UrlUtil.PG_BESTIARY]({name: "Fire Elemental", source: "XMM"})).then(goblin => {console.log(goblin)})
-
-        DataLoader.pCacheAndGetHash("monsterFluff", UrlUtil.URL_TO_HASH_BUILDER["monsterFluff"]({ name: name, source: source }))
-            .then(fluff => {
-                theMonster.fluff = fluff;
-                resolve(theMonster);
-            })
-            .catch(err => reject(err));
+            DataLoader.pCacheAndGetHash("monsterFluff", UrlUtil.URL_TO_HASH_BUILDER["monsterFluff"]({ name: name, source: source }))
+                .then(fluff => {
+                    theMonster.fluff = fluff;
+                    resolve(theMonster);
+                })
+                .catch(err => reject(err));
+        });
     });
 }
-

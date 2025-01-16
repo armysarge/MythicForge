@@ -117,8 +117,12 @@ body, html {
   z-index:1;
 }
 
-.rollbox,.rollbox-min{
-  display: none;
+.mythicForgeWindow > .windowHeader > sup{
+  font-size: 9px;
+}
+
+body .rollbox,body .rollbox-min,.mythicForgeWindow:has(.rollbox),.rollboxWindow{
+  display: none!important;
 }
 
 .mythicForgeWindow .monsterStatBlock{
@@ -437,6 +441,7 @@ body, html {
 .monsterStatBlockImage img,.fluff-image img{
   max-height: 150px;
   max-width:100%;
+  margin-bottom: 5px;
 }
 
 .bestiaryContent{
@@ -496,7 +501,7 @@ input::placeholder {
 .bestiaryList thead { text-transform: uppercase; }
 .bestiaryList th { white-space: nowrap; font-weight: bold; font-size: 12px;}
 .bestiaryList td {font-size: 12px;font-family: 'Merriweather', serif;}
-.bestiaryList tbody tr:hover { background-color: #f5f5f5; cursor: pointer;}
+.bestiaryList tbody tr:hover { background-color: #ad3922; color:white}
 .bestiaryList tr td:last-child { white-space: nowrap; }
 
 .bestiaryList tbody tr:first-child * {

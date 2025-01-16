@@ -19,11 +19,11 @@ export class EncounterBuilderUiBestiary extends EncounterBuilderUi {
 	}
 
 	initUi () {
-		document.getElementById("stat-tabs").classList.add("best-ecgen__hidden");
-		document.getElementById("float-token").classList.add("best-ecgen__hidden");
-		document.getElementById("wrp-pagecontent").classList.add("best-ecgen__hidden");
+		//document.getElementById("stat-tabs").classList.add("best-ecgen__hidden");
+		//document.getElementById("float-token").classList.add("best-ecgen__hidden");
+		//document.getElementById("wrp-pagecontent").classList.add("best-ecgen__hidden");
 
-		$(`#btn-encounterbuild`).click(() => Hist.setSubhash(this.constructor._HASH_KEY, true));
+//$(`#btn-encounterbuild`).click(() => Hist.setSubhash(this.constructor._HASH_KEY, true));
 	}
 
 	render () {
@@ -98,7 +98,7 @@ export class EncounterBuilderUiBestiary extends EncounterBuilderUi {
 				${$btnCopyAsText}
 				${$btnReset}
 			</div>
-	
+
 			<div class="ve-flex">
 				${$btnBackToStatblocks}
 			</div>

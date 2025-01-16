@@ -462,8 +462,8 @@ class SublistManager {
 	}
 
 	async _pHandleJsonDownload () {
-		const entities = (await this.getPinnedEntities()).map(ent => MiscUtil.copyFast(ent));
-		entities.forEach(ent => DataUtil.cleanJson(ent));
+		const entities = await this.getPinnedEntities();
+		entities.forEach(ent => DataUtil.cleanJson(MiscUtil.copyFast(ent)));
 		DataUtil.userDownload(`${this._getDownloadName()}-data`, entities);
 	}
 
@@ -1764,7 +1764,7 @@ class ListPage {
 		});
 
 		const wrpBtns = document.getElementById("tabs-right");
-		wrpBtns.appendChild(this._btnsTabs[ident]);
+		//wrpBtns.appendChild(this._btnsTabs[ident]);
 
 		return $(this._btnsTabs[ident]);
 	}

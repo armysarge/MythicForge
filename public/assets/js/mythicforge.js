@@ -28,11 +28,16 @@ class MythicForgeWindow {
         this.options = options;
         var html = `<div class="mythicForgeWindow" style='display:none'>
             <div class="windowHeader">${this.title}</div>
-            <div class="windowContent">${this.content}</div>
+            <div class="windowContent"></div>
             <div class="windowClose" title="Close this window"><i class='bx bx-x'></i></div>
         </div>`;
         this.el = $(html);
         $("body").append(this.el);
+        if (typeof content === "string"){
+            this.el.find(".windowContent").html(content);
+        }else if (content instanceof HTMLElement){
+            this.el.find(".windowContent").append(content);
+        }
         setTimeout(() => {
             this.centerDivToScreen();
             this.initEvents();
@@ -56,19 +61,22 @@ class MythicForgeWindow {
             var result = "";
             if (entry.type == "list"){
                 result += "<ul>";
-
                 $.each(entry.items, function(i, item) {
-
-                    if (typeof item === "string")
+                    if (typeof item === "string"){
                         result += "<li>"+that.findTagsAndRender(item)+"</li>";
-                    else if (typeof item === "object"){
-                        result += "<li><div class='property-block'>";
-                        if (item.name)
-                            result += "<h4>"+item.name+"</h4>";
-                        result += "<p>"+that.findTagsAndRender(item.entry)+"</p>";
-                        result += "</div></li>";
+                    }else if (typeof item === "object"){
+                        if (item.entry){
+                            result += "<li><div class='property-block'>";
+                            if (item.name)
+                                result += "<h4>"+item.name+"</h4>";
+                            result += "<p>"+that.findTagsAndRender(item.entry)+"</p>";
+                            result += "</div></li>";
+                        }else if (item.entries){
+                            $.each(item.entries, function(i, subEntry) {
+                                result += "<li>"+that.findTagsAndRender(subEntry)+"</li>";
+                            });
+                        }
                     }
-
                 });
 
                 result += "</ul>";
@@ -132,6 +140,17 @@ class MythicForgeWindow {
                 if (obj.speed)
                 return Parser.getSpeedString(obj);
                 break;
+            case "initiative":
+                if (obj.dex)
+                return Renderer.monster.getInitiativePart(obj);
+                break;
+            case "resistances":
+                if (obj.resist){
+                    var theResistances = $("<div>"+Parser.getFullImmRes(obj.resist,{isTitleCase:true})+"</div>");
+                    that.replace5etoolsLinks(theResistances);
+                    return theResistances.html();
+                }
+                break;
             case "immunities":
                 if (obj.immune){
                     var theImmunities = $("<div>"+Renderer.monster.getImmunitiesCombinedPart(obj)+"</div>");
@@ -158,6 +177,7 @@ class MythicForgeWindow {
             case "traits":
                 var html = "";
                 var theTraits = Renderer.monster.getOrderedTraits(obj, theRenderer);
+                if(theTraits)
                 if (theTraits.length > 0){
                     var allTraits = "";
 
@@ -294,97 +314,102 @@ class MythicForgeWindow {
      * @returns {string} HTML string containing formatted inline content
      */
     async inlineContentHtml(data,type){
-        var that = this;
-        var html = "";
-        console.log(data);
-        var Fluffobj = "";
-        if (data.hasFluffImages)
-            Fluffobj = await Renderer.condition.pGetFluff(data);
+        if (data){
+            var that = this;
+            var html = "";
+            console.log(data,type);
+            var Fluffobj = "";
+            if (typeof data.hasFluffImages != "undefined")
+                if (data.hasFluffImages)
+                    Fluffobj = await Renderer.condition.pGetFluff(data);
 
-        html = `<div class='inlineContent'>${data.hasFluffImages?`<center><div class="fluff-image"><img src="/assets/images/5etools/${Fluffobj.images[0].href.path}"></div></center>`:""}`;
+            html = `<div class='inlineContent'>${data.hasFluffImages?`<center><div class="fluff-image"><img src="/assets/images/5etools/${Fluffobj.images[0].href.path}"></div></center>`:""}`;
 
-        switch(type.split(".")[0]){
-            case "conditionsdiseases":
-                var Entries = "";
-                $(data.entries).each(function(i,entry){
-                    if (entry.type == "list"){
-                        Entries += "<ul><li>"+that.findTagsAndRender(entry.items.join("</li><li>"))+"</li></ul>";
-                    }else if(entry.type == "table"){
-                        Entries += "<table class='MythicForgeTable'><thead><tr>";
-                        $(entry.colLabels).each(function(i,col){
-                            Entries += "<th>"+col+"</th>";
-                        });
-                        Entries += "</tr></thead><tbody>";
-                        $(entry.rows).each(function(i,row){
-                            Entries += "<tr>";
-                            $(row).each(function(i,cell){
-                                Entries += "<td>"+cell+"</td>";
+            switch(type.split(".")[0]){
+                case "conditionsdiseases":
+                    var Entries = "";
+                    $(data.entries).each(function(i,entry){
+                        if (entry.type == "list"){
+                            Entries += "<ul><li>"+that.findTagsAndRender(entry.items.join("</li><li>"))+"</li></ul>";
+                        }else if(entry.type == "table"){
+                            Entries += "<table class='MythicForgeTable'><thead><tr>";
+                            $(entry.colLabels).each(function(i,col){
+                                Entries += "<th>"+col+"</th>";
                             });
-                            Entries += "</tr>";
-                        });
-                        Entries += "</tbody></table>";
-                        Entries += "</table>";
-                    }else{
-                        Entries += "<p>"+that.findTagsAndRender(entry)+"</p>";
-                    }
-                });
+                            Entries += "</tr></thead><tbody>";
+                            $(entry.rows).each(function(i,row){
+                                Entries += "<tr>";
+                                $(row).each(function(i,cell){
+                                    Entries += "<td>"+cell+"</td>";
+                                });
+                                Entries += "</tr>";
+                            });
+                            Entries += "</tbody></table>";
+                            Entries += "</table>";
+                        }else{
+                            Entries += "<p>"+that.findTagsAndRender(entry)+"</p>";
+                        }
+                    });
 
-                html += `${Entries}`;
-                break;
-            case "skill":
-                html += `${typeof data.ability !="undefined"?`
-                Ability: ${Parser.ATB_ABV_TO_FULL[data.ability]}
-                </br>
-                <svg height="5" width="100%" class="tapered-rule">
-                    <polyline points="0,0 400,2.5 0,5"></polyline>
-                </svg>
-                `:""}
-                <p>${data.entries.join("</p><p>")}</p>`;
-                break;
-            case "sense":
-            case "quickreference":
-
-                $.each (data.entries, function(i,entry){
-                    if (typeof entry === "string"){
-                        html += `<p>${entry}</p>`;
-                    }else if (typeof entry === "object"){
-                        html += `<div class="property-block"><h4>${entry.name}</h4><p>${entry.entries.join("</p><p>")}</p></div>`;
-                    }
-                });
-
-                break;
-            case "items":
-
-                const [ptDamage, ptProperties] = Renderer.item.getRenderedDamageAndProperties(data);
-                const ptMastery = Renderer.item.getRenderedMastery(data);
-
-                const theCostandWeight = [
-                    ptDamage,
-                    ptProperties,
-                    ptMastery,
-                ]
-                    .filter(Boolean)
-                    .map(pt => `<div class="ve-text-wrap-balance ve-text-right">${pt.uppercaseFirst()}</div>`)
-                    .join("");
-
-                var ItemType = $(`<div>${Renderer.item.getTypeRarityAndAttunementText(data).join("")}</div>`);
-                that.replace5etoolsLinks(ItemType)
-                var ItemDesc = $(`<div>${Renderer.item.hasEntries(data) ? Renderer.item.getRenderedEntries(data, {isCompact: true}) : ""}</div>`);
-                that.replace5etoolsLinks(ItemDesc)
-                html += `${ItemType.html()}</br>
-                    ${[Parser.itemValueToFullMultiCurrency(data), Parser.itemWeightToFull(data)].filter(Boolean).join(", ").uppercaseFirst()}</br>
-                    ${theCostandWeight}
+                    html += `${Entries}`;
+                    break;
+                case "skill":
+                    html += `${typeof data.ability !="undefined"?`
+                    Ability: ${Parser.ATB_ABV_TO_FULL[data.ability]}
+                    </br>
                     <svg height="5" width="100%" class="tapered-rule">
                         <polyline points="0,0 400,2.5 0,5"></polyline>
                     </svg>
-                    ${ItemDesc.html()}`
-                break;
+                    `:""}
+                    <p>${data.entries.join("</p><p>")}</p>`;
+                    break;
+                case "sense":
+                case "quickreference":
+                case "variantrules":
+                    $.each (data.entries, function(i,entry){
+                        if (typeof entry === "string"){
+                            html += `<p>${entry}</p>`;
+                        }else if (typeof entry === "object"){
+                            html += `<div class="property-block"><h4>${entry.name}</h4><p>${entry.entries.join("</p><p>")}</p></div>`;
+                        }
+                    });
+
+                    break;
+                case "items":
+
+                    const [ptDamage, ptProperties] = Renderer.item.getRenderedDamageAndProperties(data);
+                    const ptMastery = Renderer.item.getRenderedMastery(data);
+
+                    const theCostandWeight = [
+                        ptDamage,
+                        ptProperties,
+                        ptMastery,
+                    ]
+                        .filter(Boolean)
+                        .map(pt => `<div class="ve-text-wrap-balance ve-text-right">${pt.uppercaseFirst()}</div>`)
+                        .join("");
+
+                    var ItemType = $(`<div>${Renderer.item.getTypeRarityAndAttunementText(data).join("")}</div>`);
+                    that.replace5etoolsLinks(ItemType)
+                    var ItemDesc = $(`<div>${Renderer.item.hasEntries(data) ? Renderer.item.getRenderedEntries(data, {isCompact: true}) : ""}</div>`);
+                    that.replace5etoolsLinks(ItemDesc)
+                    html += `${ItemType.html()}</br>
+                        ${[Parser.itemValueToFullMultiCurrency(data), Parser.itemWeightToFull(data)].filter(Boolean).join(", ").uppercaseFirst()}</br>
+                        ${theCostandWeight}
+                        <svg height="5" width="100%" class="tapered-rule">
+                            <polyline points="0,0 400,2.5 0,5"></polyline>
+                        </svg>
+                        ${ItemDesc.html()}`
+                    break;
+            }
+
+            html += "</div>";
+
+            return that.findTagsAndRender(html);
+            //return (!SRDonly)?that.findTagsAndRender(html):(data.srd)?that.findTagsAndRender(html):"";
+        }else{
+            return "";
         }
-
-        html += "</div>";
-
-        return that.findTagsAndRender(html);
-        //return (!SRDonly)?that.findTagsAndRender(html):(data.srd)?that.findTagsAndRender(html):"";
     }
 
     /**
@@ -433,18 +458,18 @@ class MythicForgeWindow {
                 var monsterSaves = that.dataParser(monster,"saves");
                 var monsterHabitat = that.dataParser(monster,"habitat");
                 var monsterPicture = (monster.fluff)?(monster.fluff.images)?(monster.fluff.images[0].href.path) ? `<div class="monsterStatBlockImage"><img src="/assets/images/5etools/${monster.fluff.images[0].href.path}"></div>` : "":"":"";
+                if (monsterPicture == "" && (monster.hasToken || typeof monster.token != "undefined"))
+                    monsterPicture = `<div class="monsterStatBlockImage"><img src="/assets/images/5etools/${Renderer.monster.getTokenUrl(monster).replace("img/","/")}"></div>`;
                 var monsterSkills = that.dataParser(monster,"skills");
                 var monsterSenses = that.dataParser(monster,"senses");
                 var monsterImmunities = that.dataParser(monster,"immunities");
-
-                //TODO - add Resistances, Initiative, use Token (if available) if fluff image is not available
+                var monsterResistances = that.dataParser(monster,"resistances");
 
                 var html = `
                 <div class="monsterStatBlock">
                     <div class="section-left">
                         ${monsterPicture}
                         <div class="creature-heading">
-                            <!--<h1>${monster.name}</h1>-->
                             <h2>${that.dataParser(monster,"alignment")}</h2>
                         </div> <!-- creature heading -->
                         <svg height="5" width="100%" class="tapered-rule">
@@ -462,6 +487,10 @@ class MythicForgeWindow {
                             <div class="property-line last">
                                 <h4>Speed</h4>
                                 <p>${that.dataParser(monster,"speed")}</p>
+                            </div> <!-- property line -->
+                            <div class="property-line last">
+                                <h4>Initiative</h4>
+                                <p>${that.dataParser(monster,"initiative")}</p>
                             </div> <!-- property line -->
                             <svg height="5" width="100%" class="tapered-rule">
                                 <polyline points="0,0 400,2.5 0,5"></polyline>
@@ -506,6 +535,12 @@ class MythicForgeWindow {
                             <div class="property-line">
                                 <h4>Skills</h4>
                                 <p>${monsterSkills}</p>
+                            </div> <!-- property line -->` : ""}
+
+                            ${monsterResistances != "-" ? `
+                            <div class="property-line">
+                                <h4>Resistances</h4>
+                                <p>${monsterResistances}</p>
                             </div> <!-- property line -->` : ""}
 
                             ${monsterImmunities != "-" ? `
