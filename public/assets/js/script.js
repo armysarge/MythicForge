@@ -85,7 +85,7 @@ $.when( $.ready ).then(function() {
                     <td>${monster.name}</td>
                     <td>${monsterAlignment}</td>
                     <td>${monsterCR}</td>
-                    <td>${monster.source?monster.source:"-"}</td>
+                    <td title='${monster.source?Parser.sourceJsonToFull(monster.source):"N/A"}'>${monster.source?monster.source:"-"}</td>
                 </tr>`;
                 bestiaryWindow.el.find(".bestiaryList tbody").append(tr);
             });
@@ -129,7 +129,7 @@ $.when( $.ready ).then(function() {
                                 <td>${monster.name}</td>
                                 <td>${monsterAlignment}</td>
                                 <td>${monsterCR}</td>
-                                <td>${monster.source?monster.source:"-"}</td>
+                                <td title='${monster.source?Parser.sourceJsonToFull(monster.source):"N/A"}'>${monster.source?monster.source:"-"}</td>
                             </tr>`;
                             tbody.append(tr);
                         }
@@ -155,8 +155,8 @@ $.when( $.ready ).then(function() {
  * @returns {void} - Does not return a value
  * @async - Contains asynchronous operation via Promise
  */
-function createMonsterStatBlock(monster,source){
-    getMonsterByName(monster,source).then(function(theMonster){
+async function createMonsterStatBlock(monster,source){
+    await getMonsterByName(monster,source).then(function(theMonster){
         var monsterStatBlock = new MythicForgeWindow();
         monsterStatBlock.createWindow(theMonster.name, "");
         monsterStatBlock.monsterStatBlock(theMonster.name,theMonster.source);
@@ -202,12 +202,17 @@ function correctMonsterDetails(){
  */
 function getMonsterByName(name, source) {
     return new Promise((resolve, reject) => {
+
+        //DataLoader.pCacheAndGetHash(UrlUtil.PG_BESTIARY, UrlUtil.URL_TO_HASH_BUILDER[UrlUtil.PG_BESTIARY]({name: "Fire Elemental", source: "XMM"})).then(goblin => {console.log(goblin)})
+
         let theMonster = AllMonsters.find(monster => monster.name.toLowerCase() === name.toLowerCase() && monster.source.toLowerCase() === source.toLowerCase());
 
         if (!theMonster) {
             reject("Monster not found");
             return;
         }
+
+        //DataLoader.pCacheAndGetHash(UrlUtil.PG_BESTIARY, UrlUtil.URL_TO_HASH_BUILDER[UrlUtil.PG_BESTIARY]({name: "Fire Elemental", source: "XMM"})).then(goblin => {console.log(goblin)})
 
         DataLoader.pCacheAndGetHash("monsterFluff", UrlUtil.URL_TO_HASH_BUILDER["monsterFluff"]({ name: name, source: source }))
             .then(fluff => {

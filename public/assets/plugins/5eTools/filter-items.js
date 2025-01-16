@@ -47,9 +47,9 @@ class PageFilterEquipment extends PageFilterBase {
 		this._typeFilter = new Filter({
 			header: "Type",
 			deselFn: (it) => PageFilterItems._DEFAULT_HIDDEN_TYPES.has(it),
-			displayFn: StrUtil.toTitleCase,
+			displayFn: StrUtil.toTitleCase.bind(StrUtil),
 		});
-		this._propertyFilter = new Filter({header: "Property", displayFn: StrUtil.toTitleCase});
+		this._propertyFilter = new Filter({header: "Property", displayFn: StrUtil.toTitleCase.bind(StrUtil)});
 		this._categoryFilter = new Filter({
 			header: "Category",
 			items: ["Basic", "Generic Variant", "Specific Variant", "Other"],
@@ -81,7 +81,7 @@ class PageFilterEquipment extends PageFilterBase {
 			isMiscFilter: true,
 			deselFn: PageFilterBase.defaultMiscellaneousDeselFn.bind(PageFilterBase),
 		});
-		this._poisonTypeFilter = new Filter({header: "Poison Type", items: ["ingested", "injury", "inhaled", "contact"], displayFn: StrUtil.toTitleCase});
+		this._poisonTypeFilter = new Filter({header: "Poison Type", items: ["ingested", "injury", "inhaled", "contact"], displayFn: StrUtil.toTitleCase.bind(StrUtil)});
 		this._masteryFilter = new Filter({header: "Mastery", displayFn: this.constructor._getMasteryDisplay.bind(this)});
 	}
 
@@ -95,11 +95,6 @@ class PageFilterEquipment extends PageFilterBase {
 	static _mutateForFilters_mutFilterValue (item) {
 		if (item.value || item.valueMult) {
 			item._l_value = Parser.itemValueToFullMultiCurrency(item, {isShortForm: true}).replace(/ +/g, "\u00A0");
-			return;
-		}
-
-		if (item._valueFromRarity) {
-			item._l_value = Parser.itemValueToFullMultiCurrency({value: item._valueFromRarity, currencyConversion: item.currencyConversion}, {isShortForm: true}).replace(/ +/g, "\u00A0");
 			return;
 		}
 
@@ -294,7 +289,7 @@ class PageFilterItems extends PageFilterEquipment {
 	constructor (opts) {
 		super(opts);
 
-		this._tierFilter = new Filter({header: "Tier", items: ["none", "minor", "major"], itemSortFn: null, displayFn: StrUtil.toTitleCase});
+		this._tierFilter = new Filter({header: "Tier", items: ["none", "minor", "major"], itemSortFn: null, displayFn: StrUtil.toTitleCase.bind(StrUtil)});
 		this._attachedSpellsFilter = new SearchableFilter({header: "Attached Spells", displayFn: (it) => it.split("|")[0].toTitleCase(), itemSortFn: SortUtil.ascSortLower});
 		this._lootTableFilter = new Filter({
 			header: "Found On",
@@ -308,7 +303,7 @@ class PageFilterItems extends PageFilterEquipment {
 			header: "Rarity",
 			items: [...Parser.ITEM_RARITIES],
 			itemSortFn: null,
-			displayFn: StrUtil.toTitleCase,
+			displayFn: StrUtil.toTitleCase.bind(StrUtil),
 		});
 		this._attunementFilter = new Filter({header: "Attunement", items: [...PageFilterItems._FILTER_BASE_ITEMS_ATTUNEMENT], itemSortFn: PageFilterItems._sortAttunementFilter});
 		this._bonusFilter = new Filter({
