@@ -439,6 +439,34 @@ class MythicForgeWindow {
     }
 
     /**
+     * Retrieves a monster by its name and source, including its fluff data.
+     * @param {string} name - The name of the monster to search for
+     * @param {string} source - The source book/material the monster is from
+     * @returns {Promise<Object>} A promise that resolves with the monster object including fluff data, or rejects with an error message
+     * @throws {string} "Monster not found" if the monster cannot be found in AllMonsters
+     */
+    getMonsterByName(name, source) {
+        return new Promise((resolve, reject) => {
+
+            DataLoader.pCacheAndGetHash(UrlUtil.PG_BESTIARY, UrlUtil.URL_TO_HASH_BUILDER[UrlUtil.PG_BESTIARY]({name: name, source: source})).then(theMonster => {
+                if (!theMonster) {
+                    reject("Monster not found");
+                    return;
+                }
+
+                if (source == "XMM")source = "MM";
+
+                DataLoader.pCacheAndGetHash("monsterFluff", UrlUtil.URL_TO_HASH_BUILDER["monsterFluff"]({ name: name, source: source }))
+                    .then(fluff => {
+                        theMonster.fluff = fluff;
+                        resolve(theMonster);
+                    })
+                    .catch(err => reject(err));
+            });
+        });
+    }
+
+    /**
      * Creates and displays a monster stat block in the UI.
      * @param {string} name - The name of the monster to display
      * @param {string} source - The source/book where the monster data comes from
@@ -450,10 +478,11 @@ class MythicForgeWindow {
      */
     monsterStatBlock(name,source){
         var that = this;
-        getMonsterByName(name,source).then(function(monster){
+        that.getMonsterByName(name,source).then(function(monster){
             if(monster){
-                console.log(monster);
                 that.monster = monster;
+
+                that.createWindow(monster.name+"&nbsp;<sup>"+monster.source+"</sup>", "");
 
                 var monsterSaves = that.dataParser(monster,"saves");
                 var monsterHabitat = that.dataParser(monster,"habitat");

@@ -1,3 +1,5 @@
+import DiceBox from "/assets/plugins/dice-box/dist/dice-box.es.min.js";
+
 /**
  * @file script.js
  * @fileoverview The main script file for Mythic Forge application, handling monster data management,
@@ -25,7 +27,7 @@
  * createMonsterStatBlock('Goblin', 'MM');
  */
 var AllMonsters = [];
-SRDonly = false;
+var SRDonly = false;
 
 // Document ready function
 $.when( $.ready ).then(function() {
@@ -121,8 +123,27 @@ $.when( $.ready ).then(function() {
     RollboxWindow.createWindow('Dice Roller', $(".rollbox")[0]);
     RollboxWindow.el.addClass("rollboxWindow");
     RollboxWindow.el.show();
+
+    let diceBox = new DiceBox(".rollboxWindow", {
+        assetPath: "assets/",
+        theme: "default",
+        themeColor: "#FE3E03FF",
+        offscreen: true,
+        scale: 6
+    });
+
+    console.log(diceBox);
 });
 
+/**
+ * Searches through all monsters based on a search term and returns matching results
+ * @param {string} term - The search term to look for in monster properties
+ * @param {string} where - Currently unused parameter indicating search location
+ * @returns {Array} Array of monster objects that match the search criteria
+ * @description Searches monster names, sources and types for matches to the search term.
+ * If SRDonly flag is true, only returns monsters from the SRD (System Reference Document).
+ * The search is case-insensitive and uses partial matching.
+ */
 function SearchAll(term, where) {
     var results = [];
 
@@ -168,37 +189,6 @@ function SearchAll(term, where) {
  * @async - Contains asynchronous operation via Promise
  */
 function createMonsterStatBlock(monster,source){
-    getMonsterByName(monster,source).then(function(theMonster){
-        var monsterStatBlock = new MythicForgeWindow();
-        monsterStatBlock.createWindow(theMonster.name+"&nbsp;<sup>"+theMonster.source+"</sup>", "");
-        monsterStatBlock.monsterStatBlock(theMonster.name,theMonster.source);
-    });
-}
-
-/**
- * Retrieves a monster by its name and source, including its fluff data.
- * @param {string} name - The name of the monster to search for
- * @param {string} source - The source book/material the monster is from
- * @returns {Promise<Object>} A promise that resolves with the monster object including fluff data, or rejects with an error message
- * @throws {string} "Monster not found" if the monster cannot be found in AllMonsters
- */
-function getMonsterByName(name, source) {
-    return new Promise((resolve, reject) => {
-
-        DataLoader.pCacheAndGetHash(UrlUtil.PG_BESTIARY, UrlUtil.URL_TO_HASH_BUILDER[UrlUtil.PG_BESTIARY]({name: name, source: source})).then(theMonster => {
-            if (!theMonster) {
-                reject("Monster not found");
-                return;
-            }
-
-            if (source == "XMM")source = "MM";
-
-            DataLoader.pCacheAndGetHash("monsterFluff", UrlUtil.URL_TO_HASH_BUILDER["monsterFluff"]({ name: name, source: source }))
-                .then(fluff => {
-                    theMonster.fluff = fluff;
-                    resolve(theMonster);
-                })
-                .catch(err => reject(err));
-        });
-    });
+    var monsterStatBlock = new MythicForgeWindow();
+    monsterStatBlock.monsterStatBlock(theMonster.name,theMonster.source);
 }
