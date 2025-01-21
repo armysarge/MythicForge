@@ -317,7 +317,7 @@ class MythicForgeWindow {
         if (data){
             var that = this;
             var html = "";
-            console.log(data,type);
+
             var Fluffobj = "";
             if (typeof data.hasFluffImages != "undefined")
                 if (data.hasFluffImages)

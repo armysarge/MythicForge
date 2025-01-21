@@ -190,5 +190,5 @@ function SearchAll(term, where) {
  */
 function createMonsterStatBlock(monster,source){
     var monsterStatBlock = new MythicForgeWindow();
-    monsterStatBlock.monsterStatBlock(theMonster.name,theMonster.source);
+    monsterStatBlock.monsterStatBlock(monster,source);
 }
