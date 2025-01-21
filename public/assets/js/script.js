@@ -28,6 +28,49 @@ import DiceBox from "/assets/plugins/dice-box/dist/dice-box.es.min.js";
  */
 var AllMonsters = [];
 var SRDonly = false;
+let diceBox, RollboxWindow;
+
+//Override the dice roller to use the dice box
+Renderer.dice.bindOnclickListener = function(ele) {
+    ele.addEventListener("click", (evt) => {
+        let eleDice = null;
+        if (evt.target.hasAttribute("data-packed-dice")) {
+            eleDice = evt.target;
+        } else if (evt.target.parentElement && evt.target.parentElement.hasAttribute("data-packed-dice")) {
+            eleDice = evt.target.parentElement;
+        }
+
+        if (!eleDice) return;
+
+        evt.preventDefault();
+        evt.stopImmediatePropagation();
+
+        const packed = JSON.parse(eleDice.getAttribute("data-packed-dice"));
+
+        if(packed.rollable === false) return;
+        console.log(packed);
+        const toRoll = packed.toRoll.replace(/\+0/g, "").replace(/-0/g, "");
+        const displayText = packed.subType;
+
+        RollboxWindow.show();
+
+        //TODO: Support for advantage/disadvantage rolls
+        //TODO: Show text in the roll box
+
+        diceBox.onRollComplete = (rollResult)=>{
+            console.log(displayText,rollResult)
+        };
+
+        diceBox.roll(toRoll).then((result) => {
+
+        });
+    });
+}
+
+RollboxWindow = new MythicForgeWindow();
+RollboxWindow.createWindow('Roll Box', "");
+RollboxWindow.el.addClass("rollboxWindow notInitialized");
+RollboxWindow.el.show();
 
 // Document ready function
 $.when( $.ready ).then(function() {
@@ -119,17 +162,16 @@ $.when( $.ready ).then(function() {
         }
     });
 
-    const RollboxWindow = new MythicForgeWindow();
-    RollboxWindow.createWindow('Dice Roller', $(".rollbox")[0]);
-    RollboxWindow.el.addClass("rollboxWindow");
-    RollboxWindow.el.show();
-
-    let diceBox = new DiceBox(".rollboxWindow", {
-        assetPath: "assets/",
-        theme: "default",
+    diceBox = new DiceBox(".rollboxWindow .windowContent", {
+        assetPath: "/assets/",
+        theme: "wooden",
         themeColor: "#FE3E03FF",
-        offscreen: true,
-        scale: 6
+        scale: 20
+    });
+
+    diceBox.init().then(() => {
+        RollboxWindow.el.hide();
+        RollboxWindow.el.removeClass("notInitialized");
     });
 
     console.log(diceBox);

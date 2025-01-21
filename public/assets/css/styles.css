@@ -117,12 +117,23 @@ body, html {
   z-index:1;
 }
 
+.rollboxWindow .windowContent{
+  min-width: 400px;
+  max-width: 400px;
+}
+
+.rollboxWindow.notInitialized{
+  top:-1000px!important;
+  left:-1000px!important;
+  visibility: hidden!important;
+}
+
 .mythicForgeWindow > .windowHeader > sup{
   font-size: 9px;
 }
 
-body .rollbox,body .rollbox-min,.mythicForgeWindow:has(.rollbox),.rollboxWindow{
-  display: none!important;
+body .rollbox,body .rollbox-min{
+  display: none;
 }
 
 .mythicForgeWindow .monsterStatBlock{

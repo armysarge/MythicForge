@@ -743,6 +743,14 @@ class MythicForgeWindow {
         }
     }
 
+    /**
+     * Shows the Mythic Forge window element.
+     */
+    show(){
+        this.mythicForgeWindowIndex();
+        this.el.fadeIn();
+    }
+
     betterExplainProperty(property){
         //use AI to explain a property
     }
