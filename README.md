@@ -156,7 +156,7 @@ This project is licensed under the AGPL License - see the [LICENSE](LICENSE) fil
 - The data was taken from [5eTools](https://5e.tools/).
 All data is owned by Wizards of the Coast.
 The data is licensed under the Open Gaming License.
-- 3d-dice for the dice rolling animation and logic[3d-dice](https://github.com/3d-dice)
+- 3d-dice for the dice rolling animation and logic [3d-dice](https://github.com/3d-dice)
 - BoxIcons for the icons used in the project [BoxIcons](https://boxicons.com/)
 - Jquery for the JavaScript library [Jquery](https://jquery.com/)
 - Bootstrap for the CSS framework [Bootstrap](https://getbootstrap.com/)
