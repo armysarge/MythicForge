@@ -27,7 +27,7 @@ import DiceBox from "/assets/plugins/dice-box/dist/dice-box.es.min.js";
  * createMonsterStatBlock('Goblin', 'MM');
  */
 var AllMonsters = [];
-var SRDonly = false;
+var SRDonly = true;
 let diceBox, RollboxWindow;
 
 //Override the dice roller to use the dice box
