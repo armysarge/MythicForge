@@ -50,7 +50,27 @@ Renderer.dice.bindOnclickListener = function(ele) {
         if(packed.rollable === false) return;
         console.log(packed);
         const toRoll = packed.toRoll.replace(/\+0/g, "").replace(/-0/g, "");
-        const displayText = packed.subType;
+        const rollType = packed.subType;
+        var diceTheme = "wooden";
+
+        switch(rollType){
+            case "damage":
+                //if SHIFT click, roll critical
+                if (evt.shiftKey) {
+                    toRoll = "2" + toRoll;
+                }else if (evt.ctrlKey) {
+                    toRoll = "0" + toRoll;
+                }
+                break;
+            case "d20":
+                //if SHIFT click, roll with advantage
+                if (evt.shiftKey) {
+                    toRoll = "2d20kh1" + toRoll;
+                }else if (evt.ctrlKey) {
+                    toRoll = "2d20kl1" + toRoll;
+                }
+                break;
+        }
 
         RollboxWindow.show();
 
@@ -58,7 +78,7 @@ Renderer.dice.bindOnclickListener = function(ele) {
         //TODO: Show text in the roll box
 
         diceBox.onRollComplete = (rollResult)=>{
-            console.log(displayText,rollResult)
+            console.log(rollType,rollResult)
         };
 
         diceBox.roll(toRoll).then((result) => {
@@ -164,9 +184,11 @@ $.when( $.ready ).then(function() {
 
     diceBox = new DiceBox(".rollboxWindow .windowContent", {
         assetPath: "/assets/",
-        theme: "wooden",
+        theme: "smooth",
         themeColor: "#FE3E03FF",
-        scale: 20
+        scale: 14,
+        gravity: 1.7,
+        mass: 1.7,
     });
 
     diceBox.init().then(() => {
