@@ -377,7 +377,7 @@ body .rollbox,body .rollbox-min{
   margin-bottom: 0.6em;
 }
 
-.bestiaryWindow{
+.bestiaryWindow,.spellsWindow,.itemsWindow{
   position: absolute;
   width:800px;
   height:500px;
@@ -455,14 +455,14 @@ body .rollbox,body .rollbox-min{
   margin-bottom: 5px;
 }
 
-.bestiaryContent{
+.bestiaryContent,.spellsContent,.itemsContent{
   width:100%;
   height:calc(100% - 10px);
   overflow: hidden;
   overflow-y: auto;
 }
 
-.searchBestiary{
+.searchBestiary,.searchSpells,.searchItems{
   display: block;
   width: 100%;
   margin: 20px 0 10px;
@@ -475,8 +475,10 @@ body .rollbox,body .rollbox-min{
   border-bottom: 1px solid #7a1f0d;
 }
 
-.searchBestiary:active,
-.searchBestiary:focus{
+.searchBestiary:active,.searchSpells:active,
+.searchBestiary:focus,.searchSpells:focus,
+.searchItems:active,
+.searchItems:focus{
   background: transparent !important;
   -webkit-appearance: none;
   box-shadow: none;
@@ -485,7 +487,13 @@ body .rollbox,body .rollbox-min{
 /* Override autocomplete styles */
 .searchBestiary:-webkit-autofill,
 .searchBestiary:-webkit-autofill:hover,
-.searchBestiary:-webkit-autofill:focus {
+.searchBestiary:-webkit-autofill:focus,
+.searchSpells:-webkit-autofill,
+.searchSpells:-webkit-autofill:hover,
+.searchSpells:-webkit-autofill:focus,
+.searchItems:-webkit-autofill,
+.searchItems:-webkit-autofill:hover,
+.searchItems:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0px 1000px transparent inset;
     -webkit-text-fill-color: #000000;
     transition: background-color 5000s ease-in-out 0s;
@@ -495,7 +503,7 @@ input::placeholder {
   color: #000000;
 }
 
-.bestiaryList{
+.bestiaryList,.spellsList,.itemsList{
   position: relative;
   width: 100%;
   color: #000000;
@@ -503,21 +511,37 @@ input::placeholder {
   border-collapse: collapse;
 }
 
-.bestiaryList th,.bestiaryList td {
+.bestiaryList th,.bestiaryList td,
+.spellsList th,.spellsList td,
+.itemsList th,.itemsList td{
   padding: 0.1em 1.5em;
   font-weight: normal;
   border: 1px solid #974;
 }
 
-.bestiaryList thead { text-transform: uppercase; }
-.bestiaryList th { white-space: nowrap; font-weight: bold; font-size: 12px;}
-.bestiaryList td {font-size: 12px;font-family: 'Merriweather', serif;}
-.bestiaryList tbody tr:hover { background-color: #ad3922; color:white}
-.bestiaryList tr td:last-child { white-space: nowrap; }
+.bestiaryList thead,
+.spellsList thead,
+.itemsList thead{ text-transform: uppercase; }
 
-.bestiaryList tbody tr:first-child * {
-  border-top: 0; /* fixes that border */
-}
+.bestiaryList th,
+.spellsList th,
+.itemsList th{ white-space: nowrap; font-weight: bold; font-size: 12px;}
+
+.bestiaryList td,
+.spellsList td,
+.itemsList td{font-size: 12px;font-family: 'Merriweather', serif;}
+
+.bestiaryList tbody tr:hover,
+.spellsList tbody tr:hover,
+.itemsList tbody tr:hover{ background-color: #ad3922; color:white}
+
+.bestiaryList tr td:last-child,
+.spellsList tr td:last-child,
+.itemsList tr td:last-child{ white-space: nowrap; }
+
+.bestiaryList tbody tr:first-child *
+.spellsList tbody tr:first-child *,
+.itemsList tbody tr:first-child *{ border-top: 0; }
 
 @media screen and (max-width: 675px){
 	.monsterStatBlock.wide{

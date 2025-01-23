@@ -466,6 +466,46 @@ class MythicForgeWindow {
         });
     }
 
+    getSpellByName(name, source) {
+        return new Promise((resolve, reject) => {
+            DataLoader.pCacheAndGetHash(UrlUtil.PG_SPELLS, UrlUtil.URL_TO_HASH_BUILDER[UrlUtil.PG_SPELLS]({name: name, source: source})).then(theSpell => {
+                if (!theSpell) {
+                    reject("Spell not found");
+                    return;
+                }
+
+                if (source == "XMM")source = "MM";
+
+                DataLoader.pCacheAndGetHash("spellFluff", UrlUtil.URL_TO_HASH_BUILDER["spellFluff"]({ name: name, source: source }))
+                    .then(fluff => {
+                        theSpell.fluff = fluff;
+                        resolve(theSpell);
+                    })
+                    .catch(err => reject(err));
+            });
+        });
+    }
+
+    getItemByName(name, source) {
+        return new Promise((resolve, reject) => {
+            DataLoader.pCacheAndGetHash(UrlUtil.PG_ITEMS, UrlUtil.URL_TO_HASH_BUILDER[UrlUtil.PG_ITEMS]({name: name, source: source})).then(theItem => {
+                if (!theItem) {
+                    reject("Item not found");
+                    return;
+                }
+
+                if (source == "XMM")source = "MM";
+
+                DataLoader.pCacheAndGetHash("itemFluff", UrlUtil.URL_TO_HASH_BUILDER["itemFluff"]({ name: name, source: source }))
+                    .then(fluff => {
+                        theItem.fluff = fluff;
+                        resolve(theItem);
+                    })
+                    .catch(err => reject(err));
+            });
+        });
+    }
+
     /**
      * Creates and displays a monster stat block in the UI.
      * @param {string} name - The name of the monster to display
@@ -476,7 +516,7 @@ class MythicForgeWindow {
      * formatting conventions and includes an optional monster image if available in the data. Once generated, the stat block
      * is inserted into the DOM and displayed with a fade animation.
      */
-    monsterStatBlock(name,source){
+    monsterStatsHTML(name,source){
         var that = this;
         that.getMonsterByName(name,source).then(function(monster){
             if(monster){
@@ -618,6 +658,30 @@ class MythicForgeWindow {
             }
         });
 
+    }
+
+    /**
+     * Creates and displays a spell stat block in the UI.
+     * @param {string} name - The name of the spell to display
+     * @param {string} source - The source/book where the spell data comes from
+     * @returns {void}
+     * @description This method fetches spell data based on name and source, then generates and displays an HTML stat block
+     * containing the spell's statistics, casting information, and other game-relevant information. The stat block follows D&D 5E
+     * formatting conventions and includes an optional spell image if available in the data. Once generated, the stat block
+     * is inserted into the DOM and displayed with a fade animation.
+     */
+    spellStatsHTML(name,source){
+        var that = this;
+        that.getSpellByName(name,source).then(function(spell){
+            console.log(spell);
+        });
+    }
+
+    itemStatsHTML(name,source){
+        var that = this;
+        that.getItemByName(name,source).then(function(item){
+            console.log(item);
+        });
     }
 
     /**
