@@ -160,7 +160,7 @@ $.when( $.ready ).then(function() {
                     var results = SearchAll(search, "item");
                     $.each(results, function(i, item){
                         if (i > 100) return;
-                        var itemType = Renderer.item.getItemTypeName(item.type);
+                        var itemType = (typeof item.type != "undefined")?Renderer.item.getItemTypeName(item.type):"-";
                         var itemRarity = item.rarity.toLowerCase();
                         var tr = `<tr class='itemItem' data-name='${item.name}' data-source='${item.source}'>
 
