@@ -117,9 +117,9 @@ For offline AI functionality:
 
 ## 📋 Roadmap
 
-- [x] Include D&D 5E database (Thanks to [5eTools](https://5e.tools/))
+- [x] Include 5E tools (Thanks to [5eTools](https://5e.tools/))
 - [x] Basic UI/UX Design
-- [ ] Database integration & search functionality (In Progress)
+- [ ] Digital Reference (In Progress)
 - [ ] Dice roller (In Progress)
 - [ ] DM tools (encounter generator,  Initiative tracker, etc.)
 - [ ] Character builder
