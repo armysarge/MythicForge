@@ -82,6 +82,7 @@ Renderer.dice.bindOnclickListener = function(ele) {
 
         //TODO: Support for advantage/disadvantage rolls
         //TODO: Show text in the roll box
+        //TODO: Spell Cast ad different levels, require a prompt for the level, see Fireball
 
         diceBox.onRollComplete = (rollResult)=>{
             console.log(rollType,rollResult)
@@ -162,7 +163,7 @@ $.when( $.ready ).then(function() {
                         if (i > 100) return;
                         var itemType = (typeof item.type != "undefined")?Renderer.item.getItemTypeName(item.type):"-";
                         var itemRarity = item.rarity.toLowerCase();
-                        var tr = `<tr class='itemItem' data-name='${item.name}' data-source='${item.source}'>
+                        var tr = `<tr class='itemItem' data-name="${item.name}" data-source="${item.source}">
 
                             <td>${item.name}</td>
                             <td>${itemType}</td>
@@ -175,7 +176,7 @@ $.when( $.ready ).then(function() {
                             $.each(item.reprintedAs, function(r, reprinted){
                                 var reprintedName = reprinted.split("|")[0];
                                 var reprintedSource = reprinted.split("|")[1];
-                                var tr = `<tr class='itemItem' data-name='${reprintedName}' data-source='${reprintedSource}'>
+                                var tr = `<tr class='itemItem' data-name="${reprintedName}" data-source="${reprintedSource}">
                                     <td>${reprintedName}</td>
                                     <td>${itemType}</td>
                                     <td>${itemRarity}</td>
@@ -245,7 +246,7 @@ $.when( $.ready ).then(function() {
                         if (i > 100) return;
                         var spellLevel = spell.level;
                         var spellSchool = Parser.spSchoolAndSubschoolsAbvsToFull(spell.school);
-                        var tr = `<tr class='spellItem' data-name='${spell.name}' data-source='${spell.source}'>
+                        var tr = `<tr class="spellItem" data-name="${spell.name}" data-source="${spell.source}">
                             <td>${spell.name}</td>
                             <td>${spellLevel}</td>
                             <td>${spellSchool}</td>
@@ -257,7 +258,7 @@ $.when( $.ready ).then(function() {
                             $.each(spell.reprintedAs, function(r, reprinted){
                                 var reprintedName = reprinted.split("|")[0];
                                 var reprintedSource = reprinted.split("|")[1];
-                                var tr = `<tr class='spellItem' data-name='${reprintedName}' data-source='${reprintedSource}'>
+                                var tr = `<tr class="spellItem" data-name="${reprintedName}" data-source="${reprintedSource}">
                                     <td>${reprintedName}</td>
                                     <td>${spellLevel}</td>
                                     <td>${spellSchool}</td>
@@ -328,7 +329,7 @@ $.when( $.ready ).then(function() {
                         var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
                         var monsterCR = (monster.cr)?monster.cr:"-";
                         if (typeof monsterCR == "object") monsterCR = monsterCR.cr;
-                        var tr = `<tr class='bestiaryItem' data-name='${monster.name}' data-source='${monster.source}'>
+                        var tr = `<tr class='bestiaryItem' data-name="${monster.name}" data-source="${monster.source}">
                             <td>${monster.name}</td>
                             <td>${monsterAlignment}</td>
                             <td>${monsterCR}</td>
@@ -340,7 +341,7 @@ $.when( $.ready ).then(function() {
                             $.each(monster.reprintedAs, function(r, reprinted){
                                 var reprintedName = reprinted.split("|")[0];
                                 var reprintedSource = reprinted.split("|")[1];
-                                var tr = `<tr class='bestiaryItem' data-name='${reprintedName}' data-source='${reprintedSource}'>
+                                var tr = `<tr class='bestiaryItem' data-name="${reprintedName}" data-source="${reprintedSource}">
                                     <td>${reprintedName}</td>
                                     <td>${monsterAlignment}</td>
                                     <td>${monsterCR}</td>

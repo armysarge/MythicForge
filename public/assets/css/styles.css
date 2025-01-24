@@ -136,7 +136,7 @@ body .rollbox,body .rollbox-min{
   display: none;
 }
 
-.mythicForgeWindow .monsterStatBlock{
+.mythicForgeWindow .StatBlock{
   max-height: 500px;
   overflow: hidden;
   overflow-y: auto;
@@ -373,6 +373,10 @@ body .rollbox,body .rollbox-min{
   overflow-y: auto;
 }
 
+.mythicForgeWindow > div.windowContent .inlineContent h4{
+  font-size: 18px;
+}
+
 .mythicForgeWindow > div.windowContent .inlineContent p{
   margin-bottom: 0.6em;
 }
@@ -385,7 +389,11 @@ body .rollbox,body .rollbox-min{
   display: none;
 }
 
-.monsterStatBlock {
+.spellWindow i{
+  font-size: 12px;
+}
+
+.StatBlock {
   text-align: left;
   display: inline-flex;
   vertical-align: top;
@@ -399,33 +407,46 @@ body .rollbox,body .rollbox-min{
   cursor: pointer;
 }
 
-.monsterStatBlock > div{
+.StatBlock > div{
   width: 350px;
   margin-right:5px;
   height: 100%;
 }
 
-.monsterStatBlock.wide{
+.StatBlock .section-right > p{
+  font-size: 12px;
+}
+
+.spellWindow .StatBlock .section-left,
+.itemWindow .StatBlock .section-left{
+  width: 150px;
+}
+
+.itemWindow .StatBlock .section-right{
+  width: 150px;
+}
+
+.StatBlock.wide > div{
   width: 46.5%;
   min-width: 560px;
   text-align: center;
 }
 
-.monsterStatBlock .section-left{
+.StatBlock .section-left{
   position: sticky;
   top: 0; /* Sticks to the top when scrolling */
 }
 
-.monsterStatBlock.wide .section-left,
-.monsterStatBlock.wide .section-right{
+.StatBlock.wide .section-left,
+.StatBlock.wide .section-right{
   display: inline-block;
   vertical-align: top;
   text-align: left;
 }
-.monsterStatBlock.wide .section-left{
+.StatBlock.wide .section-left{
   margin-right: 1.5%;
 }
-.monsterStatBlock.wide .section-right{
+.StatBlock.wide .section-right{
   margin-left: 1.5%;
 }
 *::-webkit-scrollbar {
@@ -441,7 +462,7 @@ body .rollbox,body .rollbox-min{
 *::-webkit-scrollbar-thumb:hover {
   background-color: #7a1f0d9d;
 }
-.monsterStatBlockImage{
+.StatBlockImage{
   text-align: center;
   margin: 0;
   width:100%;
@@ -449,7 +470,7 @@ body .rollbox,body .rollbox-min{
   flex-shrink: 1;
   order: 0;
 }
-.monsterStatBlockImage img,.fluff-image img{
+.StatBlockImage img,.fluff-image img{
   max-height: 150px;
   max-width:100%;
   margin-bottom: 5px;
@@ -545,18 +566,18 @@ input::placeholder {
 .itemsList tbody tr:first-child *{ border-top: 0; }
 
 @media screen and (max-width: 675px){
-	.monsterStatBlock.wide{
+	.StatBlock.wide{
 		min-width: 280px;
 	}
-	.monsterStatBlock.wide .section-left,
-	.monsterStatBlock.wide .section-right{
+	.StatBlock.wide .section-left,
+	.StatBlock.wide .section-right{
 	  display: block;
 	  width: 100%;
 	}
-	.monsterStatBlock.wide .section-left{
+	.StatBlock.wide .section-left{
 	  margin: 0;
 	}
-	.monsterStatBlock.wide .section-right{
+	.StatBlock.wide .section-right{
 		margin: 0;
 	}
 }
@@ -698,32 +719,32 @@ input::placeholder {
 	.orange-border{
 		display: none;
 	}
-	.monsterStatBlock,
-	.monsterStatBlock.wide,
-	.monsterStatBlock.wide .section-left,
-	.monsterStatBlock.wide .section-right,
+	.StatBlock,
+	.StatBlock.wide,
+	.StatBlock.wide .section-left,
+	.StatBlock.wide .section-right,
 	.property-line,
 	.property-block{
 		width: 100%;
 		display: block;
 	}
-	.monsterStatBlock.wide .section-left{
+	.StatBlock.wide .section-left{
 	  margin: 0;
 	}
-	.monsterStatBlock.wide .section-right{
+	.StatBlock.wide .section-right{
 	  margin: 0;
 	}
-	.monsterStatBlock{
+	.StatBlock{
 		width: 40%;
 		display: inline-block;
 		vertical-align: top;
 	}
-	.monsterStatBlock.wide{
+	.StatBlock.wide{
 		page-break-after: always;
 	}
 }
 @media screen and (max-width: 575px){
-	.monsterStatBlock{
+	.StatBlock{
 		margin: 20px 0;
 	}
 }
