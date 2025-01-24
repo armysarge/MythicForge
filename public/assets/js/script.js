@@ -33,7 +33,7 @@ import DiceBox from "/assets/plugins/dice-box/dist/dice-box.es.min.js";
 var AllMonsters = [];
 var AllSpells = [];
 var AllItems = [];
-var SRDonly = true;
+var SRDonly = false;
 let diceBox, RollboxWindow;
 
 //Override the dice roller to use the dice box

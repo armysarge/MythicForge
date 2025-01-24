@@ -672,6 +672,7 @@ class MythicForgeWindow {
      * is inserted into the DOM and displayed with a fade animation.
      */
     spellStatsHTML(name,source){
+        //TODO: Check Acid splash for missing items
         var that = this;
         that.getSpellByName(name,source).then(function(spell){
             console.log(spell);
