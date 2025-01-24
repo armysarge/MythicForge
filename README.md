@@ -122,10 +122,10 @@ For offline AI functionality:
 - [ ] Digital Reference (In Progress)
 - [ ] Dice roller (In Progress)
 - [ ] DM tools (encounter generator,  Initiative tracker, etc.)
-- [ ] Character builder
-- [ ] Campaign manager
 - [ ] AI Integration (OpenAI, Google Gemini)
 - [ ] AI Integration (Local AI Model, requires extra setup)
+- [ ] Character builder
+- [ ] Campaign manager
 - [ ] AI-powered DM tools
 - [ ] AI-powered character builder
 - [ ] AI-powered campaign tools
