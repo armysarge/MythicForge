@@ -672,7 +672,6 @@ class MythicForgeWindow {
      * is inserted into the DOM and displayed with a fade animation.
      */
     spellStatsHTML(name,source){
-        //TODO: Check Acid splash for missing items
         var that = this;
         that.getSpellByName(name,source).then(function(spell){
             console.log(spell);
@@ -703,6 +702,10 @@ class MythicForgeWindow {
                         EntriesHigherLevel += that.parseSubData(subEntry);
                     });
                 }
+
+                var spellRaces = "";
+                if(spell.races)
+                    spellRaces = spell.races.map(c => (c.baseName)?c.baseName:c.name).join(", ");
 
                 var spellClasses = "";
                 var spellSubClasses = "";
@@ -765,6 +768,12 @@ class MythicForgeWindow {
                         <svg height="5" width="100%" class="tapered-rule">
                             <polyline points="0,0 400,2.5 0,5"></polyline>
                         </svg>
+                        ${spellRaces != "" ? `
+                        <div class="property-line">
+                            <h4>Species:</h4>
+                            <p>${spellRaces}</p>
+                        </div> <!-- property line -->
+                        ` : ""}
                         ${spellClasses != "" ? `
                         <div class="property-line">
                             <h4>Classes:</h4>

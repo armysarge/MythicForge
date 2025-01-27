@@ -120,6 +120,8 @@ body, html {
 .rollboxWindow .windowContent{
   min-width: 400px;
   max-width: 400px;
+  max-height: 400px;
+  min-height: 400px;
 }
 
 .rollboxWindow.notInitialized{
@@ -147,6 +149,11 @@ body .rollbox,body .rollbox-min{
   flex-basis: auto;
   align-self: auto;
   order: 1;
+}
+
+.dice-box-canvas{
+  height:100%;
+  width:100%;
 }
 
 .mythicForgeWindow.landscape {
@@ -411,6 +418,27 @@ body .rollbox,body .rollbox-min{
   width: 350px;
   margin-right:5px;
   height: 100%;
+}
+
+.dicePopupWindow{
+  min-width: unset;
+}
+
+.dicePopup{
+  width:100px;
+}
+
+.dicePopup .diceOption{
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 5px;
+  color: #7a1f0d;
+}
+
+.dicePopup .diceOption:hover{
+  background: #7a1f0d;
+  color: white;
 }
 
 .StatBlock .section-right > p{

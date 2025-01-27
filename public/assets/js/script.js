@@ -39,6 +39,7 @@ let diceBox, RollboxWindow;
 //Override the dice roller to use the dice box
 Renderer.dice.bindOnclickListener = function(ele) {
     ele.addEventListener("click", (evt) => {
+
         let eleDice = null;
         if (evt.target.hasAttribute("data-packed-dice")) {
             eleDice = evt.target;
@@ -55,42 +56,66 @@ Renderer.dice.bindOnclickListener = function(ele) {
 
         if(packed.rollable === false) return;
         console.log(packed);
+
         const toRoll = packed.toRoll.replace(/\+0/g, "").replace(/-0/g, "");
         const rollType = packed.subType;
-        var diceTheme = "wooden";
 
-        switch(rollType){
-            case "damage":
-                //if SHIFT click, roll critical
-                if (evt.shiftKey) {
-                    toRoll = "2" + toRoll;
-                }else if (evt.ctrlKey) {
-                    toRoll = "0" + toRoll;
-                }
-                break;
-            case "d20":
-                //if SHIFT click, roll with advantage
-                if (evt.shiftKey) {
-                    toRoll = "2d20kh1" + toRoll;
-                }else if (evt.ctrlKey) {
-                    toRoll = "2d20kl1" + toRoll;
-                }
-                break;
+        if (packed.prompt){
+            var dicePopupHMTL = `<center><div class="dicePopup">`;
+            console.log(packed.prompt.options);
+
+            //loop each object in the options object
+            Object.keys(packed.prompt.options).forEach((key, i2) => {
+                var value = packed.prompt.options[key];
+                console.log(key, value);
+                if (value != '')
+                    dicePopupHMTL += `<button class="diceOption" title='${packed.toRoll} + ${value}' data-packed-dice='{"type":"${packed.type}","rollable":${packed.rollable},"toRoll":"${packed.toRoll} + ${value}","displayText":"${value}","subType":"${packed.subType}"}'>Level ${key}</button>`;
+            });
+
+            dicePopupHMTL += `</div></center>`;
+            var dicePopup = new MythicForgeWindow();
+            dicePopup.createWindow(packed.prompt.entry, dicePopupHMTL);
+            dicePopup.el.addClass("dicePopupWindow");
+            dicePopup.el.fadeIn();
+        }else{
+            switch(rollType){
+                case "damage":
+                    //if SHIFT click, roll critical
+                    if (evt.shiftKey) {
+                        toRoll = "2" + toRoll;
+                    }else if (evt.ctrlKey) {
+                        toRoll = "0" + toRoll;
+                    }
+                    break;
+                case "d20":
+                    //if SHIFT click, roll with advantage
+                    if (evt.shiftKey) {
+                        toRoll = "2d20kh1" + toRoll;
+                    }else if (evt.ctrlKey) {
+                        toRoll = "2d20kl1" + toRoll;
+                    }
+                    break;
+            }
+
+            RollboxWindow.show();
+
+            //TODO: Support for advantage/disadvantage rolls
+            //TODO: Show text in the roll box
+
+            diceBox.onRollComplete = (rollResult)=>{
+                console.log(rollType,rollResult)
+            };
+
+            diceBox.roll(toRoll).then((result) => {
+
+            });
+
+            if ($(eleDice).hasClass("diceOption"))
+                $(eleDice).parents(".dicePopupWindow").fadeOut(function(){
+                    $(this).remove();
+                });
+
         }
-
-        RollboxWindow.show();
-
-        //TODO: Support for advantage/disadvantage rolls
-        //TODO: Show text in the roll box
-        //TODO: Spell Cast ad different levels, require a prompt for the level, see Fireball
-
-        diceBox.onRollComplete = (rollResult)=>{
-            console.log(rollType,rollResult)
-        };
-
-        diceBox.roll(toRoll).then((result) => {
-
-        });
     });
 }
 
@@ -368,7 +393,7 @@ $.when( $.ready ).then(function() {
         assetPath: "/assets/",
         theme: "smooth",
         themeColor: "#FE3E03FF",
-        scale: 14,
+        scale: 12,
         gravity: 1.7,
         mass: 1.7,
     });
