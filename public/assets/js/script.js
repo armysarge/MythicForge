@@ -99,6 +99,8 @@ Renderer.dice.bindOnclickListener = function(ele) {
 
             RollboxWindow.show();
 
+            //TODO: use dice roller for rolls
+            //TODO: Support for critical rolls
             //TODO: Support for advantage/disadvantage rolls
             //TODO: Show text in the roll box
 
