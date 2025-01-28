@@ -540,6 +540,7 @@ function createItemStatBlock(item,source){
 }
 
 Object.assign(globalThis, {
+    WinManager,
     createMonsterStatBlock,
     createSpellStatBlock,
     SearchAll

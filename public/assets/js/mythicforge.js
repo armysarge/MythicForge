@@ -1,4 +1,6 @@
 class MythicForgeWindowManager {
+    static #instance;
+
     constructor() {
         this.windows = [];
     }
@@ -18,7 +20,7 @@ class MythicForgeWindow {
         this.title = "";
         this.content = "";
         this.options = {};
-        this.winManager = theWinManager;
+        this.manager = theWinManager;
         theWinManager.addWindow(this);
     }
 
@@ -329,9 +331,9 @@ class MythicForgeWindow {
      * @returns {Promise<void>} - A promise that resolves when the content window is created and displayed
      */
     static async openInlineContent(type,source,hash){
-        var that = this;
+
         DataLoader.pCacheAndGet(type,source,hash).then(function(data){
-            var inlineContent = new MythicForgeWindow(that.winManager);
+            var inlineContent = new MythicForgeWindow(WinManager);
             inlineContent.inlineContentHtml(data,type).then(function(theContent){
                 if (theContent != ""){
                     if (type.split(".")[0] == "spells"){
