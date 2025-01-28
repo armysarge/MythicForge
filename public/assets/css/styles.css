@@ -325,6 +325,7 @@ body .rollbox,body .rollbox-min{
   text-align: center;
   padding: 2px;
   border: 1px solid #5a5656;
+  font-size: 12px;
 }
 
 .MythicForgeTable td{
@@ -332,6 +333,7 @@ body .rollbox,body .rollbox-min{
   text-align: center;
   padding: 2px;
   border: 1px solid #5a5656;
+  font-size: 11px;
 }
 
 /* Bottom Corners - Using pseudo elements of child div */
@@ -690,12 +692,18 @@ input::placeholder {
 }
 .property-block h4,
 .property-block p,
+.property-block ul li,
 .actions > p,
 .actions > ul li{
   font-size: 12px;
   display: inline;
   margin: 0;
 }
+
+.property-block ul{
+  padding: 0px;
+}
+
 .actions > p{
   display: block;
 }
