@@ -2,7 +2,7 @@ package-lock.json
 MythicForge.db
 server.min.js
 backup_*
-dist
+*.dev.js
 node_modules
 public/data
 public/images/5eTools

@@ -1,4 +1,5 @@
 import DiceBox from "/assets/plugins/dice-box/dist/dice-box.es.min.js";
+import DiceParser from "/assets/plugins/dice-roller-parser/dist/dice-box.es.min.js";
 
 /**
  * @file script.js
@@ -126,6 +127,9 @@ RollboxWindow = new MythicForgeWindow(WinManager);
 RollboxWindow.createWindow('Roll Box', "");
 RollboxWindow.el.addClass("rollboxWindow notInitialized");
 RollboxWindow.el.show();
+
+const DP = new DiceParser()
+console.log(DP)
 
 // Document ready function
 $.when( $.ready ).then(function() {
@@ -397,8 +401,8 @@ $.when( $.ready ).then(function() {
         theme: "smooth",
         themeColor: "#FE3E03FF",
         scale: 12,
-        gravity: 1.7,
-        mass: 1.7,
+        gravity: 1.8,
+        mass: 1.8,
     });
 
     diceBox.init().then(() => {
