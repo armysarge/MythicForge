@@ -1,5 +1,4 @@
 import DiceBox from "/assets/plugins/dice-box/dist/dice-box.es.min.js";
-import DiceParser from "/assets/plugins/dice-roller-parser/dist/dice-box.es.min.js";
 
 /**
  * @file script.js
@@ -128,11 +127,8 @@ RollboxWindow.createWindow('Roll Box', "");
 RollboxWindow.el.addClass("rollboxWindow notInitialized");
 RollboxWindow.el.show();
 
-const DP = new DiceParser()
-console.log(DP)
-
 // Document ready function
-$.when( $.ready ).then(function() {
+$(document).ready(function() {
 
     //Load all monster data from 5etools
     DataLoader.pCacheAndGetAllSite(UrlUtil.PG_BESTIARY,1).then(function(data){
