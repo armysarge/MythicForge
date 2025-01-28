@@ -123,10 +123,7 @@ body, html {
 }
 
 .rollboxWindow .rollWindow{
-  min-width: 400px;
-  max-width: 400px;
-  max-height: 400px;
-  min-height: 400px;
+
 }
 
 .rollboxWindow.notInitialized{
