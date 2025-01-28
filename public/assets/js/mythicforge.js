@@ -872,7 +872,11 @@ class MythicForgeWindow {
         });
 
         that.el.on("click tap", ".windowClose", function(evt) {
-            that.destroy();
+            if($(this).parents(".rollboxWindow").length > 0){
+                $(this).parent().css("display", "none");
+            }else{
+                that.destroy();
+            }
         });
 
         that.el.draggable({containment: "parent",onStart: function() {
