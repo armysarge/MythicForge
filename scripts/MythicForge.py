@@ -3,6 +3,34 @@ import json,time,sqlite3,sys
 from flask import Flask, jsonify, request, g
 from pathlib import Path
 from typing import List, Dict
+from dotenv import load_dotenv
+
+####################################################################################
+############################# CHECK ENVIRONMENT VARIABLES ##########################
+####################################################################################
+
+# Load .env from parent directory
+env_path = Path(__file__).parent.parent / '.env'
+load_dotenv(env_path)
+
+# Get environment variables with validation
+AI_PROVIDER = os.getenv('AI_PROVIDER')
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+# Validate required environment variables
+if AI_PROVIDER not in ['openai', 'gemini', 'local']:
+    raise ValueError("AI_PROVIDER must be 'openai', 'gemini', or 'local'")
+
+if AI_PROVIDER == 'openai' and not OPENAI_API_KEY:
+    raise ValueError("OPENAI_API_KEY is required when AI_PROVIDER is 'openai'")
+
+if AI_PROVIDER == 'gemini' and not GEMINI_API_KEY:
+    raise ValueError("GEMINI_API_KEY is required when AI_PROVIDER is 'gemini'")
+
+####################################################################################
+############################# MYTHIC FORGE CLASS ###################################
+####################################################################################
 
 class MythicForge:
     def __init__(self, app):
@@ -50,31 +78,36 @@ def init():
 @app.route('/story', methods=['POST'])
 def create_story():
     #get post json data of a monster, use Google gemini AI to create a story and return it
+    if AI_PROVIDER == 'gemini':
+        #do a post request to the gemini AI
+        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
+        params = {
+            "key" : GEMINI_API_KEY
+        }
+        headers = {
+            "Content-Type": "application/json"
+        }
 
-    #do a post request to the gemini AI
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
-    params = {
-        "key" : ""
-    }
-    headers = {
-        "Content-Type": "application/json"
-    }
-
-    payload = {
-        "system_instruction": {
-        "parts":
-        {
-            "text": "You are a story teller and you are telling a fantasy story about a monster backstory. You will receive json data about the monster, use it to tell a interesting short summarized back story about it with a name."}},
-            "contents": [
+        payload = {
+            "system_instruction": {
+            "parts":
             {
-                "parts": [
-                    {
-                        "text": json.dumps(request.json).replace('\n', '')
-                    }
-                ]
-            }
-        ]
-    }
+                "text": "You are a story teller and you are telling a fantasy story about a monster backstory. You will receive json data about the monster, use it to tell a interesting short summarized back story about it with a name."}},
+                "contents": [
+                {
+                    "parts": [
+                        {
+                            "text": json.dumps(request.json).replace('\n', '')
+                        }
+                    ]
+                }
+            ]
+        }
+    elif AI_PROVIDER == 'openai':
+        # Add OpenAI implementation here
+        pass
+    else:
+        return jsonify({"error": "Invalid AI provider configuration"})
 
     response = requests.post(url, params=params, headers=headers, json=payload)
     print(response.json())
