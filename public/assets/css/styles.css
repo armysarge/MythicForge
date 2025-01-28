@@ -28,7 +28,7 @@ body, html {
   background-color: rgba(218, 165, 32, 0.7);
 }
 
-.fantasy-button {
+.fantasy-button,.adv-roller--clear {
   font-family: 'cinzel decorative', serif;
   transition: all 0.3s ease;
   z-index: 1;
@@ -41,22 +41,27 @@ body, html {
   color:black;
   line-height: 0px;
   height:30px;
+  background-color: transparent;
   border-image: url('/assets/images/ui/rect_button_border.webp') 50 50 50 50 ;
+}
+
+.adv-roller--clear{
+  height: 35px;
 }
 
 .fantasy-button.fixed-width {
   width: 150px;
 }
 
-.fantasy-button:hover{
+.fantasy-button:hover,.adv-roller--clear:hover{
   transform: scale(1.05);
 }
 
-.fantasy-button > .border-img:active{
+.fantasy-button > .border-img:active,.adv-roller--clear > .border-img:active{
   border: none;
 }
 
-.fantasy-button > div:last-child {
+.fantasy-button > div:last-child,.adv-roller--clear > div:last-child {
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -72,7 +77,7 @@ body, html {
   z-index: 3;
 }
 
-.fantasy-button:hover > div:last-child {
+.fantasy-button:hover > div:last-child,.adv-roller--clear:hover > div:last-child{
   background-color: rgb(146, 21, 21);
 }
 
@@ -513,7 +518,7 @@ body .rollbox,body .rollbox-min{
   overflow-y: auto;
 }
 
-.searchBestiary,.searchSpells,.searchItems{
+.searchBestiary,.searchSpells,.searchItems,.adv-roller--notation{
   display: block;
   width: 100%;
   margin: 20px 0 10px;
@@ -528,6 +533,7 @@ body .rollbox,body .rollbox-min{
 
 .searchBestiary:active,.searchSpells:active,
 .searchBestiary:focus,.searchSpells:focus,
+.adv-roller--notation:active,.adv-roller--notation:focus,
 .searchItems:active,
 .searchItems:focus{
   background: transparent !important;
@@ -542,6 +548,9 @@ body .rollbox,body .rollbox-min{
 .searchSpells:-webkit-autofill,
 .searchSpells:-webkit-autofill:hover,
 .searchSpells:-webkit-autofill:focus,
+.adv-roller--notation:-webkit-autofill,
+.adv-roller--notation:-webkit-autofill:hover,
+.adv-roller--notation:-webkit-autofill:focus,
 .searchItems:-webkit-autofill,
 .searchItems:-webkit-autofill:hover,
 .searchItems:-webkit-autofill:focus {

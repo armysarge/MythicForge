@@ -106,15 +106,9 @@ Renderer.dice.bindOnclickListener = function(ele) {
             //TODO: Support for advantage/disadvantage rolls
             //TODO: Show text in the roll box
 
-            diceBox.onRollComplete = (rollResult)=>{
-                console.log(rollType,rollResult)
-            };
+            $(".adv-roller--notation").val(toRoll);
 
-            $("#roller").val(toRoll);
-
-            /*diceBox.roll(toRoll).then((result) => {
-
-            });*/
+            Roller.onSubmit(Roller.DRP.parseNotation(toRoll));
 
             if ($(eleDice).hasClass("diceOption"))
                 $(eleDice).parents(".dicePopupWindow").fadeOut(function(){
@@ -126,20 +120,21 @@ Renderer.dice.bindOnclickListener = function(ele) {
 }
 
 RollboxWindow = new MythicForgeWindow(WinManager);
-RollboxWindow.createWindow('Roll Box', "<div class='rollWindow'></div><input type='text' id='roller' class='mythicForgeInput' placeholder='2d20kh1' autocomplete='off' />");
-
+RollboxWindow.createWindow('Roll Box', "<div class='rollWindow'></div><center></center>");
 RollboxWindow.el.addClass("rollboxWindow notInitialized");
+const Roller = new AdvancedRoller({
+    target: '.rollboxWindow .windowContent center',
+    onSubmit: (notation) => {
+        diceBox.onRollComplete = (rollResult)=>{
+            console.log(rollResult)
+        };
+        diceBox.roll(notation);
+    }
+});
 RollboxWindow.el.show();
 
 // Document ready function
 $(document).ready(function() {
-
-    const Roller = new AdvancedRoller({
-        target: '#roller',
-        onSubmit: (notation) => {
-            diceBox.roll(notation);
-        }
-    });
 
     //Load all monster data from 5etools
     DataLoader.pCacheAndGetAllSite(UrlUtil.PG_BESTIARY,1).then(function(data){
