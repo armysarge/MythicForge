@@ -1,4 +1,4 @@
-import DiceBox from "/assets/plugins/dice-box/dist/dice-box.es.min.js";
+import DiceBox from "/assets/plugins/dice-box/dist/dice-box.es.js";
 import AdvancedRoller from "/assets/plugins/dice-ui/src/advancedRoller/advancedRoller.js";
 
 /**
@@ -147,7 +147,7 @@ $(document).ready(function() {
     });
 
     //Load all items data from 5etools
-    DataLoader.pCacheAndGetAllSite(UrlUtil.PG_ITEMS,1).then(function(data){
+    DataLoader.pCacheAndGetAllSite(UrlUtil.PG_ITEMS).then(function(data){
         AllItems = data;
     });
 

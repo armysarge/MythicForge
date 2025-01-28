@@ -11,15 +11,21 @@ from dotenv import load_dotenv
 
 # Load .env from parent directory
 env_path = Path(__file__).parent.parent / '.env'
+
+# Create .env file if it doesn't exist
+if not env_path.exists():
+    with open(env_path, 'w') as f:
+        f.write('AI_PROVIDER=none\n')
+
 load_dotenv(env_path)
 
 # Get environment variables with validation
-AI_PROVIDER = os.getenv('AI_PROVIDER')
+AI_PROVIDER = os.getenv('AI_PROVIDER', 'none')  # Set default to 'none'
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 # Validate required environment variables
-if AI_PROVIDER not in ['openai', 'gemini', 'local']:
+if AI_PROVIDER not in ['openai', 'gemini', 'local', 'none']:
     raise ValueError("AI_PROVIDER must be 'openai', 'gemini', or 'local'")
 
 if AI_PROVIDER == 'openai' and not OPENAI_API_KEY:

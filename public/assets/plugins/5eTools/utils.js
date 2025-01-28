@@ -6013,6 +6013,7 @@ globalThis.DataUtil = {
 		 */
 		static unpackUid (uid, opts) {
 			opts = opts || {};
+			if (typeof uid == "object") uid = uid.uid;
 			if (opts.isLower) uid = uid.toLowerCase();
 			let [abbreviation, source] = uid.split("|").map(it => it.trim());
 			source ||= opts.isLower ? Parser.SRC_PHB.toLowerCase() : Parser.SRC_PHB;
@@ -6045,6 +6046,7 @@ globalThis.DataUtil = {
 		 */
 		static unpackUid (uid, opts) {
 			opts = opts || {};
+			if (typeof uid == "object") uid = uid.uid;
 			if (opts.isLower) uid = uid.toLowerCase();
 			let [abbreviation, source] = uid.split("|").map(it => it.trim());
 			source ||= opts.isLower ? Parser.SRC_PHB.toLowerCase() : Parser.SRC_PHB;

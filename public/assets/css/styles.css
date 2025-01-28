@@ -706,6 +706,10 @@ input::placeholder {
   margin: 0;
 }
 
+.StatBlock .section-right > ul li{
+  font-size: 12px;
+}
+
 .property-block ul{
   padding: 0px;
 }
