@@ -10,6 +10,7 @@ const fsPromises = require('fs').promises;
 const fsExtra = require('fs-extra')
 const https = require('https');
 const StreamZip = require('node-stream-zip');
+const AdmZip = require('adm-zip');
 const { rimraf } = require('rimraf');
 
 const DEBUG_MODE = process.env.DEBUG_MODE === 'true' || false;
@@ -61,7 +62,24 @@ const extractLargeZip = async (zipPath, outputPath) => {
     }
 };
 
+const downloadLargeFile = async (url, destination) => {
+    const writer = fs.createWriteStream(destination);
+    const response = await axios({
+        url,
+        method: 'GET',
+        responseType: 'stream'
+    });
+    
+    response.data.pipe(writer);
+
+    return new Promise((resolve, reject) => {
+        writer.on('finish', resolve);
+        writer.on('error', reject);
+    });
+};
+
 const downloadDataFrom5eTools = async () => {
+    const zipFilePath = '5etools.zip';
     const dataPath = 'public/data';
     const sourcePath = '5etools/5etools-src-main/data';
 
@@ -92,8 +110,11 @@ const downloadDataFrom5eTools = async () => {
             });
 
             // Cleanup
-            await fsPromises.unlink('5etools.zip');
-            await cleanupDirectory('5etools');
+            // Cleanup with retry mechanism
+            await cleanupFiles([
+                zipFilePath,
+                '5etools'
+            ]);
             console.log('5eTools data downloaded');
         } catch (error) {
             console.error('Error downloading data:', error);
@@ -102,32 +123,33 @@ const downloadDataFrom5eTools = async () => {
     }
 };
 
-const downloadAndSaveZip = async (url, zipFilePath, maxRetries = 3) => {
-    for (let i = 0; i < maxRetries; i++) {
+
+const cleanupFiles = async (paths) => {
+    for (const path of paths) {
         try {
-            const response = await axios({
-                url,
-                method: 'GET',
-                responseType: 'arraybuffer'
-            });
-            await fsPromises.writeFile(zipFilePath, response.data);
-            return;
+            if (await fs.existsSync(path)) {
+                if (fs.lstatSync(path).isDirectory()) {
+                    await cleanupDirectory(path);
+                } else {
+                    await unlinkWithRetry(path);
+                }
+            }
         } catch (error) {
-            if (i === maxRetries - 1) throw error;
-            console.log(`Retrying download (${i + 1}/${maxRetries})...`);
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            console.warn(`Warning: Could not cleanup ${path}:`, error.message);
         }
     }
 };
 
-const extractAndRename = async (zipFilePath, imagePath) => {
-    try {
-        await fsPromises.mkdir('public/assets/images', { recursive: true });
-        await StreamZip(zipFilePath, 'public/assets/images');
-        await fsPromises.rename('public/assets/images/5etools-img-main', imagePath);
-    } catch (error) {
-        console.error('Error extracting ZIP file:', error);
-        throw error;
+const unlinkWithRetry = async (filePath, maxRetries = 3) => {
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            await fsPromises.access(filePath, fs.constants.W_OK);
+            await fsPromises.unlink(filePath);
+            return;
+        } catch (error) {
+            if (i === maxRetries - 1) throw error;
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
     }
 };
 
@@ -139,16 +161,16 @@ const downloadImagesFrom5eTools = async () => {
     if (!fs.existsSync(imagePath)) {
         console.log('Downloading 5eTools images, Please wait, this can take a long while...');
         try {
-            if (fs.existsSync(zipFilePath)) {
-                await extractAndRename(zipFilePath, imagePath);
-            } else {
-                await downloadAndSaveZip(zipUrl, zipFilePath);
-                await extractAndRename(zipFilePath, imagePath);
-                await fsPromises.unlink(zipFilePath);
-            }
-            console.log('5eTools images downloaded');
+            await downloadLargeFile(zipUrl, zipFilePath);
+            await extractLargeZip(zipFilePath, 'public/assets/images');
+            await fsPromises.rename('public/assets/images/5etools-img-main', imagePath);
+            await fsPromises.unlink(zipFilePath).catch(() => {});
+            console.log('5eTools images downloaded successfully');
         } catch (error) {
-            console.error('Error downloading images:', error);
+            console.error('Error downloading images:', error.message);
+            // Cleanup on error
+            await fsPromises.rm('public/assets/images/5etools-img-main', { recursive: true, force: true }).catch(() => {});
+            await fsPromises.unlink(zipFilePath).catch(() => {});
             throw error;
         }
     }
