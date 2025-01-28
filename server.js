@@ -69,7 +69,7 @@ const downloadLargeFile = async (url, destination) => {
         method: 'GET',
         responseType: 'stream'
     });
-    
+
     response.data.pipe(writer);
 
     return new Promise((resolve, reject) => {
@@ -122,7 +122,6 @@ const downloadDataFrom5eTools = async () => {
         }
     }
 };
-
 
 const cleanupFiles = async (paths) => {
     for (const path of paths) {

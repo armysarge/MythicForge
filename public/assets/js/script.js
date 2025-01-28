@@ -24,7 +24,7 @@ import DiceBox from "/assets/plugins/dice-box/dist/dice-box.es.min.js";
  *
  * @example
  * // Create a new window
- * const window = new MythicForgeWindow();
+ * const window = new MythicForgeWindow(WinManager);
  * window.createWindow('Title', 'Content');
  *
  * // Display monster stat block
@@ -35,6 +35,7 @@ var AllSpells = [];
 var AllItems = [];
 var SRDonly = false;
 let diceBox, RollboxWindow;
+var WinManager = new MythicForgeWindowManager();
 
 //Override the dice roller to use the dice box
 Renderer.dice.bindOnclickListener = function(ele) {
@@ -73,7 +74,7 @@ Renderer.dice.bindOnclickListener = function(ele) {
             });
 
             dicePopupHMTL += `</div></center>`;
-            var dicePopup = new MythicForgeWindow();
+            var dicePopup = new MythicForgeWindow(WinManager);
             dicePopup.createWindow(packed.prompt.entry, dicePopupHMTL);
             dicePopup.el.addClass("dicePopupWindow");
             dicePopup.el.fadeIn();
@@ -121,7 +122,7 @@ Renderer.dice.bindOnclickListener = function(ele) {
     });
 }
 
-RollboxWindow = new MythicForgeWindow();
+RollboxWindow = new MythicForgeWindow(WinManager);
 RollboxWindow.createWindow('Roll Box', "");
 RollboxWindow.el.addClass("rollboxWindow notInitialized");
 RollboxWindow.el.show();
@@ -147,7 +148,7 @@ $.when( $.ready ).then(function() {
     //Open and close the items window
     $(".showItems").on("click tap", function(evt) {
         if ($(".itemsWindow").length == 0) {
-            var itemsWindow = new MythicForgeWindow();
+            var itemsWindow = new MythicForgeWindow(WinManager);
             itemsWindow.createWindow("Items", `
                 <div class="itemsContent">
                 <input type="search" id="lst_search" class="mythicForgeInput searchItems" placeholder="Search here">
@@ -230,7 +231,7 @@ $.when( $.ready ).then(function() {
     // Open and close the spells window
     $(".showSpells").on("click tap", function(evt) {
         if ($(".spellsWindow").length == 0) {
-            var spellsWindow = new MythicForgeWindow();
+            var spellsWindow = new MythicForgeWindow(WinManager);
             spellsWindow.createWindow("Spells", `
                 <div class="spellsContent">
                 <input type="search" id="lst_search" class="mythicForgeInput searchSpells" placeholder="Search here">
@@ -312,7 +313,7 @@ $.when( $.ready ).then(function() {
     // Open and close the bestiary window
     $(".showBestiary").on("click tap", function(evt) {
         if ($(".bestiaryWindow").length == 0) {
-            var bestiaryWindow = new MythicForgeWindow();
+            var bestiaryWindow = new MythicForgeWindow(WinManager);
             bestiaryWindow.createWindow("Bestiary", `
                 <div class="bestiaryContent">
                 <input type="search" id="lst_search" class="mythicForgeInput searchBestiary" placeholder="Search here">
@@ -510,7 +511,7 @@ function SearchAll(term, where) {
  * @async - Contains asynchronous operation via Promise
  */
 function createMonsterStatBlock(monster,source){
-    var monsterStatBlock = new MythicForgeWindow();
+    var monsterStatBlock = new MythicForgeWindow(WinManager);
     monsterStatBlock.monsterStatsHTML(monster,source);
 }
 
@@ -522,7 +523,7 @@ function createMonsterStatBlock(monster,source){
  * @async - Contains asynchronous operation via Promise
  */
 function createSpellStatBlock(spell,source){
-    var spellStatBlock = new MythicForgeWindow();
+    var spellStatBlock = new MythicForgeWindow(WinManager);
     spellStatBlock.spellStatsHTML(spell,source);
 }
 
@@ -534,7 +535,7 @@ function createSpellStatBlock(spell,source){
  * @async - Contains asynchronous operation via Promise
  */
 function createItemStatBlock(item,source){
-    var itemStatBlock = new MythicForgeWindow();
+    var itemStatBlock = new MythicForgeWindow(WinManager);
     itemStatBlock.itemStatsHTML(item,source);
 }
 
