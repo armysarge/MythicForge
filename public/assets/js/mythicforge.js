@@ -962,7 +962,7 @@ class MythicForgeWindow {
         if (this.monster){
 
                 const response = await fetch('/story', {
-                    method: 'POST',
+                    method: 'POST', 
                     headers: {
                         'Content-Type': 'application/json'
                     },

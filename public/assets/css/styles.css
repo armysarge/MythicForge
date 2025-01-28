@@ -117,7 +117,7 @@ body, html {
   z-index:1;
 }
 
-.rollboxWindow .windowContent{
+.rollboxWindow .rollWindow{
   min-width: 400px;
   max-width: 400px;
   max-height: 400px;

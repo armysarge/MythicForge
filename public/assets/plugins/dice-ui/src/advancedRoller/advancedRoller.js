@@ -1,3 +1,4 @@
+import DiceParser from "/assets/plugins/dice-parser-interface/src/ParserInterface.js";
 
 const noop = () => {}
 

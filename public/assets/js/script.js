@@ -1,4 +1,5 @@
 import DiceBox from "/assets/plugins/dice-box/dist/dice-box.es.min.js";
+import AdvancedRoller from "/assets/plugins/dice-ui/src/advancedRoller/advancedRoller.js";
 
 /**
  * @file script.js
@@ -109,9 +110,11 @@ Renderer.dice.bindOnclickListener = function(ele) {
                 console.log(rollType,rollResult)
             };
 
-            diceBox.roll(toRoll).then((result) => {
+            $("#roller").val(toRoll);
 
-            });
+            /*diceBox.roll(toRoll).then((result) => {
+
+            });*/
 
             if ($(eleDice).hasClass("diceOption"))
                 $(eleDice).parents(".dicePopupWindow").fadeOut(function(){
@@ -123,12 +126,20 @@ Renderer.dice.bindOnclickListener = function(ele) {
 }
 
 RollboxWindow = new MythicForgeWindow(WinManager);
-RollboxWindow.createWindow('Roll Box', "");
+RollboxWindow.createWindow('Roll Box', "<div class='rollWindow'></div><input type='text' id='roller' class='mythicForgeInput' placeholder='2d20kh1' autocomplete='off' />");
+
 RollboxWindow.el.addClass("rollboxWindow notInitialized");
 RollboxWindow.el.show();
 
 // Document ready function
 $(document).ready(function() {
+
+    const Roller = new AdvancedRoller({
+        target: '#roller',
+        onSubmit: (notation) => {
+            diceBox.roll(notation);
+        }
+    });
 
     //Load all monster data from 5etools
     DataLoader.pCacheAndGetAllSite(UrlUtil.PG_BESTIARY,1).then(function(data){
@@ -392,7 +403,7 @@ $(document).ready(function() {
         }
     });
 
-    diceBox = new DiceBox(".rollboxWindow .windowContent", {
+    diceBox = new DiceBox(".rollboxWindow .windowContent .rollWindow", {
         assetPath: "/assets/",
         theme: "smooth",
         themeColor: "#FE3E03FF",

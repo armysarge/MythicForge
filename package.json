@@ -19,6 +19,7 @@
   "license": "AGPL-3.0-only",
   "description": "🏰 A powerful D&D 5E campaign management and character creation tool powered by AI. MythicForge combines traditional tabletop gaming with advanced AI capabilities to enhance your roleplaying experience. 🧙‍♂️",
   "dependencies": {
+    "@3d-dice/dice-parser-interface": "^0.2.1",
     "@3d-dice/dice-ui": "^0.5.2",
     "@babylonjs/core": "^7.44.0",
     "@babylonjs/loaders": "^7.44.0",
