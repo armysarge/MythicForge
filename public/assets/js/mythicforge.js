@@ -10,8 +10,9 @@ class MythicForgeWindowManager {
     }
 
     removeWindow(window) {
-        window.destroy();
         this.windows = this.windows.filter(w => w !== window);
+        window.manager = null;
+        window.destroy();
     }
 }
 class MythicForgeWindow {
@@ -29,8 +30,11 @@ class MythicForgeWindow {
      * @method destroy
      */
     destroy() {
-        if(this.el)
+        if(this.el){
+            if(this.manager)
+                this.manager.removeWindow(this);
             this.el.remove();
+        }
     }
 
     /**
@@ -868,7 +872,7 @@ class MythicForgeWindow {
         });
 
         that.el.on("click tap", ".windowClose", function(evt) {
-            $(this).parent().css("display", "none");
+            that.destroy();
         });
 
         that.el.draggable({containment: "parent",onStart: function() {
