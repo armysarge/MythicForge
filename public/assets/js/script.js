@@ -1,5 +1,6 @@
 import DiceBox from "/assets/plugins/dice-box/dist/dice-box.es.js";
 import AdvancedRoller from "/assets/plugins/dice-ui/src/advancedRoller/advancedRoller.js";
+import DisplayResults  from "/assets/plugins/dice-ui/src/DisplayResults/DisplayResults.js";
 
 /**
  * @file script.js
@@ -60,7 +61,7 @@ Renderer.dice.bindOnclickListener = function(ele) {
         console.log(packed);
 
         const toRoll = packed.toRoll.replace(/\+0/g, "").replace(/-0/g, "");
-        const rollType = packed.subType;
+        const rollType = (packed.subType) ? packed.subType : "";
 
         if (packed.prompt){
             var dicePopupHMTL = `<center><div class="dicePopup">`;
@@ -104,8 +105,10 @@ Renderer.dice.bindOnclickListener = function(ele) {
 
             //TODO: Support for critical rolls
             //TODO: Support for advantage/disadvantage rolls
-
+            diceBox.clear();
+            $(".diceResult").hide();
             $(".adv-roller--notation").val(toRoll);
+            $(".adv-roller--notation").data("subType",rollType);
             console.log(toRoll);
             diceBox.onRollComplete = (rollResult)=>{
                 console.log("roll results callback",rollResult)
@@ -115,6 +118,8 @@ Renderer.dice.bindOnclickListener = function(ele) {
 
             if ($(eleDice).hasClass("diceOption"))
                 $(eleDice).parents(".dicePopupWindow").fadeOut(function(){
+                    diceBox.clear();
+                    $(".diceResult").hide();
                     $(this).remove();
                 });
 
@@ -123,7 +128,7 @@ Renderer.dice.bindOnclickListener = function(ele) {
 }
 
 RollboxWindow = new MythicForgeWindow(WinManager);
-RollboxWindow.createWindow('Roll Box', "<div class='rollWindow'></div><center></center>");
+RollboxWindow.createWindow('Roll Box', "<div class='rollWindow'></div><div class='diceResult'></div><center></center>");
 RollboxWindow.el.addClass("rollboxWindow notInitialized");
 const Roller = new AdvancedRoller({
     target: '.rollboxWindow .windowContent center',
@@ -132,12 +137,34 @@ const Roller = new AdvancedRoller({
     },
     onResults: (results) => {
         console.log("Results",results);
+        if(typeof results.result == "undefined") results.result = results.value;
+        var resultsString = "";
+        if (typeof results.rolls == "undefined"){
+            resultsString = results.dice[0].rolls.map(roll => roll.value).join(", ") + " = " + results.result;
+        }else{
+            if (results.rolls.length > 1){
+                resultsString = results.rolls.map(roll => roll.value).join(", ") + " = " + results.result;
+            }else{
+                resultsString = results.result;
+            }
+        }
+        if ($(".adv-roller--notation").data("subType") != "" && $(".adv-roller--notation").data("subType") != "d20")
+            resultsString += ` (${$(".adv-roller--notation").data("subType")})`;
+        $(".diceResult").html(resultsString);
+        $(".diceResult").fadeIn();
+        //displayRollResults.showResults(results);
     },
     onReroll: (rolls) => {
         rolls.forEach(roll => diceBox.add(roll))
+    },
+    onClear: () => {
+        diceBox.clear();
+        $(".diceResult").hide();
     }
 });
 RollboxWindow.el.show();
+
+//var displayRollResults = new DisplayResults('.rollboxWindow .windowContent .adv-roller');
 
 diceBox = new DiceBox(".rollboxWindow .windowContent .rollWindow", {
     assetPath: "/assets/",
@@ -146,25 +173,13 @@ diceBox = new DiceBox(".rollboxWindow .windowContent .rollWindow", {
     scale: 9,
     gravity: 1.8,
     mass: 1.8,
+    offscreen: !0
 });
 
 diceBox.init().then(() => {
     RollboxWindow.el.hide();
     RollboxWindow.el.removeClass("notInitialized");
 });
-
-function handleRollResults(e) {
-    const n = Roller.DRP.handleRerolls(e);
-    if (n.length)
-        return this.onReroll(n),
-        n;
-    const o = Roller.DRP.parsedNotation ? Roller.DRP.parseFinalResults(e) : e
-      , a = new CustomEvent("resultsAvailable",{
-        detail: o
-    });
-    console.log(o);
-    return o
-}
 
 // Document ready function
 $(document).ready(function() {
