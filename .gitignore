@@ -9,6 +9,8 @@ public/images/5eTools
 5etools-img-main.zip
 5eTools
 /dist
+venv
+venv/*
 
 # Logs
 *.log
