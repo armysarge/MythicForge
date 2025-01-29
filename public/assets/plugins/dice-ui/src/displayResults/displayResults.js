@@ -1,7 +1,6 @@
-import './displayResults.css'
-import cancelIcon from './icons/cancel.svg'
-import checkIcon from './icons/checkmark.svg'
-import minusIcon from './icons/minus.svg'
+var cancelIcon = "/assets/plugins/dice-ui/src/displayResults/icons/cancel.svg";
+var checkIcon = "/assets/plugins/dice-ui/src/displayResults/icons/checkmark.svg";
+var minusIcon = "/assets/plugins/dice-ui/src/displayResults/icons/minus.svg";
 
 class DisplayResults {
 	constructor(selector) {
@@ -42,7 +41,7 @@ class DisplayResults {
 		let total = 0
 		if(data.hasOwnProperty('value')) {
 			total = data.value
-		} else { 
+		} else {
 			total = rolls.reduce((val,roll) => val + roll.value,0)
 			let modifier = data.reduce((val,roll) => val + roll.modifier,0)
 			total += modifier
@@ -52,7 +51,7 @@ class DisplayResults {
 
 		if(typeof total === 'string'){
 			const counter = {}
-			
+
 			// count up values
 			function logValue(value) {
 				if(value && typeof value === 'string'){
@@ -159,7 +158,6 @@ class DisplayResults {
 		currentElem.classList.remove('hidden')
 		currentElem.classList.remove('hideEffect')
 		this.even = !this.even
-
 	}
 	clear(elem){
 		const currentElem = elem || this[`resultsElem${this.even ? 1 : 2}`]

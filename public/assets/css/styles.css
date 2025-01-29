@@ -123,7 +123,12 @@ body, html {
 }
 
 .rollboxWindow .rollWindow{
+  height:300px;
+  width:300px
+}
 
+.rollboxWindow .diceResult+center{
+  margin-top:-24px;
 }
 
 .rollboxWindow.notInitialized{
@@ -628,6 +633,14 @@ input::placeholder {
 }
 .orange-border.bottom{
   margin: 15px -10px -20px;
+}
+.displayResults .results{
+  font-size:16px;
+}
+.diceResult{
+  width:100%;
+  text-align: center;
+  font-weight: bold;
 }
 .tapered-rule{
   display: block;

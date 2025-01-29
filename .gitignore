@@ -10,7 +10,10 @@ public/images/5eTools
 5eTools
 /dist
 venv
+<<<<<<< HEAD
 venv/*
+=======
+>>>>>>> 74b58c8e623ddfe4ec1013dde0ff55c09e39464b
 
 # Logs
 *.log

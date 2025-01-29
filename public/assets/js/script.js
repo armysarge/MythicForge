@@ -1,5 +1,6 @@
 import DiceBox from "/assets/plugins/dice-box/dist/dice-box.es.js";
 import AdvancedRoller from "/assets/plugins/dice-ui/src/advancedRoller/advancedRoller.js";
+import DisplayResults  from "/assets/plugins/dice-ui/src/DisplayResults/DisplayResults.js";
 
 /**
  * @file script.js
@@ -34,7 +35,7 @@ import AdvancedRoller from "/assets/plugins/dice-ui/src/advancedRoller/advancedR
 var AllMonsters = [];
 var AllSpells = [];
 var AllItems = [];
-var SRDonly = false;
+var SRDonly = true;
 let diceBox, RollboxWindow;
 var WinManager = new MythicForgeWindowManager();
 
@@ -60,7 +61,7 @@ Renderer.dice.bindOnclickListener = function(ele) {
         console.log(packed);
 
         const toRoll = packed.toRoll.replace(/\+0/g, "").replace(/-0/g, "");
-        const rollType = packed.subType;
+        const rollType = (packed.subType) ? packed.subType : "";
 
         if (packed.prompt){
             var dicePopupHMTL = `<center><div class="dicePopup">`;
@@ -80,6 +81,7 @@ Renderer.dice.bindOnclickListener = function(ele) {
             dicePopup.el.addClass("dicePopupWindow");
             dicePopup.el.fadeIn();
         }else{
+
             switch(rollType){
                 case "damage":
                     //if SHIFT click, roll critical
@@ -101,17 +103,23 @@ Renderer.dice.bindOnclickListener = function(ele) {
 
             RollboxWindow.show();
 
-            //TODO: use dice roller for rolls
             //TODO: Support for critical rolls
             //TODO: Support for advantage/disadvantage rolls
-            //TODO: Show text in the roll box
-
+            diceBox.clear();
+            $(".diceResult").hide();
             $(".adv-roller--notation").val(toRoll);
-
+            $(".adv-roller--notation").data("subType",rollType);
+            console.log(toRoll);
+            diceBox.onRollComplete = (rollResult)=>{
+                console.log("roll results callback",rollResult)
+                Roller.handleResults(rollResult);
+            };
             Roller.onSubmit(Roller.DRP.parseNotation(toRoll));
 
             if ($(eleDice).hasClass("diceOption"))
                 $(eleDice).parents(".dicePopupWindow").fadeOut(function(){
+                    diceBox.clear();
+                    $(".diceResult").hide();
                     $(this).remove();
                 });
 
@@ -120,18 +128,58 @@ Renderer.dice.bindOnclickListener = function(ele) {
 }
 
 RollboxWindow = new MythicForgeWindow(WinManager);
-RollboxWindow.createWindow('Roll Box', "<div class='rollWindow'></div><center></center>");
+RollboxWindow.createWindow('Roll Box', "<div class='rollWindow'></div><div class='diceResult'></div><center></center>");
 RollboxWindow.el.addClass("rollboxWindow notInitialized");
 const Roller = new AdvancedRoller({
     target: '.rollboxWindow .windowContent center',
     onSubmit: (notation) => {
-        diceBox.onRollComplete = (rollResult)=>{
-            console.log(rollResult)
-        };
         diceBox.roll(notation);
+    },
+    onResults: (results) => {
+        console.log("Results",results);
+        if(typeof results.result == "undefined") results.result = results.value;
+        var resultsString = "";
+        if (typeof results.rolls == "undefined"){
+            resultsString = results.dice[0].rolls.map(roll => roll.value).join(", ") + " = " + results.result;
+        }else{
+            if (results.rolls.length > 1){
+                resultsString = results.rolls.map(roll => roll.value).join(", ") + " = " + results.result;
+            }else{
+                resultsString = results.result;
+            }
+        }
+        if ($(".adv-roller--notation").data("subType") != "" && $(".adv-roller--notation").data("subType") != "d20")
+            resultsString += ` (${$(".adv-roller--notation").data("subType")})`;
+        $(".diceResult").html(resultsString);
+        $(".diceResult").fadeIn();
+        //displayRollResults.showResults(results);
+    },
+    onReroll: (rolls) => {
+        rolls.forEach(roll => diceBox.add(roll))
+    },
+    onClear: () => {
+        diceBox.clear();
+        $(".diceResult").hide();
     }
 });
 RollboxWindow.el.show();
+
+//var displayRollResults = new DisplayResults('.rollboxWindow .windowContent .adv-roller');
+
+diceBox = new DiceBox(".rollboxWindow .windowContent .rollWindow", {
+    assetPath: "/assets/",
+    theme: "smooth",
+    themeColor: "#FE3E03FF",
+    scale: 9,
+    gravity: 1.8,
+    mass: 1.8,
+    offscreen: !0
+});
+
+diceBox.init().then(() => {
+    RollboxWindow.el.hide();
+    RollboxWindow.el.removeClass("notInitialized");
+});
 
 // Document ready function
 $(document).ready(function() {
@@ -398,20 +446,6 @@ $(document).ready(function() {
         }
     });
 
-    diceBox = new DiceBox(".rollboxWindow .windowContent .rollWindow", {
-        assetPath: "/assets/",
-        theme: "smooth",
-        themeColor: "#FE3E03FF",
-        scale: 12,
-        gravity: 1.8,
-        mass: 1.8,
-    });
-
-    diceBox.init().then(() => {
-        RollboxWindow.el.hide();
-        RollboxWindow.el.removeClass("notInitialized");
-    });
-
     console.log(diceBox);
 });
 
@@ -546,6 +580,8 @@ function createItemStatBlock(item,source){
 }
 
 Object.assign(globalThis, {
+    diceBox,
+    Roller,
     WinManager,
     createMonsterStatBlock,
     createSpellStatBlock,
