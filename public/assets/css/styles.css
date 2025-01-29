@@ -123,7 +123,12 @@ body, html {
 }
 
 .rollboxWindow .rollWindow{
+  height:300px;
+  width:300px
+}
 
+.rollboxWindow .rollWindow+center{
+  margin-top:-20px;
 }
 
 .rollboxWindow.notInitialized{

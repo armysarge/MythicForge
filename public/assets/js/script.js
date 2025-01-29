@@ -80,6 +80,7 @@ Renderer.dice.bindOnclickListener = function(ele) {
             dicePopup.el.addClass("dicePopupWindow");
             dicePopup.el.fadeIn();
         }else{
+
             switch(rollType){
                 case "damage":
                     //if SHIFT click, roll critical
@@ -101,13 +102,15 @@ Renderer.dice.bindOnclickListener = function(ele) {
 
             RollboxWindow.show();
 
-            //TODO: use dice roller for rolls
             //TODO: Support for critical rolls
             //TODO: Support for advantage/disadvantage rolls
-            //TODO: Show text in the roll box
 
             $(".adv-roller--notation").val(toRoll);
-
+            console.log(toRoll);
+            diceBox.onRollComplete = (rollResult)=>{
+                console.log("roll results callback",rollResult)
+                Roller.handleResults(rollResult);
+            };
             Roller.onSubmit(Roller.DRP.parseNotation(toRoll));
 
             if ($(eleDice).hasClass("diceOption"))
@@ -125,13 +128,43 @@ RollboxWindow.el.addClass("rollboxWindow notInitialized");
 const Roller = new AdvancedRoller({
     target: '.rollboxWindow .windowContent center',
     onSubmit: (notation) => {
-        diceBox.onRollComplete = (rollResult)=>{
-            console.log(rollResult)
-        };
         diceBox.roll(notation);
+    },
+    onResults: (results) => {
+        console.log("Results",results);
+    },
+    onReroll: (rolls) => {
+        rolls.forEach(roll => diceBox.add(roll))
     }
 });
 RollboxWindow.el.show();
+
+diceBox = new DiceBox(".rollboxWindow .windowContent .rollWindow", {
+    assetPath: "/assets/",
+    theme: "smooth",
+    themeColor: "#FE3E03FF",
+    scale: 9,
+    gravity: 1.8,
+    mass: 1.8,
+});
+
+diceBox.init().then(() => {
+    RollboxWindow.el.hide();
+    RollboxWindow.el.removeClass("notInitialized");
+});
+
+function handleRollResults(e) {
+    const n = Roller.DRP.handleRerolls(e);
+    if (n.length)
+        return this.onReroll(n),
+        n;
+    const o = Roller.DRP.parsedNotation ? Roller.DRP.parseFinalResults(e) : e
+      , a = new CustomEvent("resultsAvailable",{
+        detail: o
+    });
+    console.log(o);
+    return o
+}
 
 // Document ready function
 $(document).ready(function() {
@@ -398,20 +431,6 @@ $(document).ready(function() {
         }
     });
 
-    diceBox = new DiceBox(".rollboxWindow .windowContent .rollWindow", {
-        assetPath: "/assets/",
-        theme: "smooth",
-        themeColor: "#FE3E03FF",
-        scale: 12,
-        gravity: 1.8,
-        mass: 1.8,
-    });
-
-    diceBox.init().then(() => {
-        RollboxWindow.el.hide();
-        RollboxWindow.el.removeClass("notInitialized");
-    });
-
     console.log(diceBox);
 });
 
@@ -546,6 +565,8 @@ function createItemStatBlock(item,source){
 }
 
 Object.assign(globalThis, {
+    diceBox,
+    Roller,
     WinManager,
     createMonsterStatBlock,
     createSpellStatBlock,
