@@ -1,549 +1,588 @@
-body, html {
-  height: 100%;
-  margin: 0;
-  font-family: 'Merriweather', serif;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-image: url('/assets/images/main-bg.webp');
+body,
+html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Merriweather', serif;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url('/assets/images/main-bg.webp');
 }
 
 .logo img {
-  max-width: 100%;
-  transition: all 0.3s ease;
+    max-width: 100%;
+    transition: all 0.3s ease;
 }
 
 .logo {
-  font-family: 'Cinzel Decorative', cursive;
-  color: goldenrod;
-  text-shadow: 3px 3px 2px rgba(0,0,0,0.7);
-  font-size: 3rem;
-  z-index: 10;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
+    font-family: 'Cinzel Decorative', cursive;
+    color: goldenrod;
+    text-shadow: 3px 3px 2px rgba(0, 0, 0, 0.7);
+    font-size: 3rem;
+    z-index: 10;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }
 
 .fantasy-menu {
-  background-color: rgba(218, 165, 32, 0.7);
+    background-color: rgba(218, 165, 32, 0.7);
 }
 
-.fantasy-button,.adv-roller--clear {
-  font-family: 'cinzel decorative', serif;
-  transition: all 0.3s ease;
-  z-index: 1;
-  font-weight: bold;
-  font-size: 16px;
-  padding-left:14px;
-  padding-right:14px;
-  position: relative;
-  border-width: 10px;
-  color:black;
-  line-height: 0px;
-  height:30px;
-  background-color: transparent;
-  border-image: url('/assets/images/ui/rect_button_border.webp') 50 50 50 50 ;
+.fantasy-button,
+.adv-roller--clear {
+    font-family: 'cinzel decorative', serif;
+    transition: all 0.3s ease;
+    z-index: 1;
+    font-weight: bold;
+    font-size: 16px;
+    padding-left: 14px;
+    padding-right: 14px;
+    position: relative;
+    border-width: 10px;
+    color: black;
+    line-height: 0px;
+    height: 30px;
+    background-color: transparent;
+    border-image: url('/assets/images/ui/rect_button_border.webp') 50 50 50 50;
 }
 
-.adv-roller--clear{
-  height: 35px;
+.adv-roller--clear {
+    height: 35px;
 }
 
 .fantasy-button.fixed-width {
-  width: 150px;
+    width: 150px;
 }
 
-.fantasy-button:hover,.adv-roller--clear:hover{
-  transform: scale(1.05);
+.fantasy-button:hover,
+.adv-roller--clear:hover {
+    transform: scale(1.05);
 }
 
-.fantasy-button > .border-img:active,.adv-roller--clear > .border-img:active{
-  border: none;
+.fantasy-button>.border-img:active,
+.adv-roller--clear>.border-img:active {
+    border: none;
 }
 
-.fantasy-button > div:last-child,.adv-roller--clear > div:last-child {
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  background-color:  rgb(172, 32, 32);
-  color: black;
-  font-weight: bold;
-  font-family: 'Cinzel Decorative', serif;
-  transform: scale(1.05);
-  height: 40px;
-  position: relative;
-  top:-5px;
-  line-height: 40px;
-  z-index: 3;
+.fantasy-button>div:last-child,
+.adv-roller--clear>div:last-child {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    background-color: rgb(172, 32, 32);
+    color: black;
+    font-weight: bold;
+    font-family: 'Cinzel Decorative', serif;
+    transform: scale(1.05);
+    height: 40px;
+    position: relative;
+    top: -5px;
+    line-height: 40px;
+    z-index: 3;
 }
 
-.fantasy-button:hover > div:last-child,.adv-roller--clear:hover > div:last-child{
-  background-color: rgb(146, 21, 21);
+.fantasy-button:hover>div:last-child,
+.adv-roller--clear:hover>div:last-child {
+    background-color: rgb(146, 21, 21);
 }
 
 .mythicForgeWindow {
-  position: absolute;
-  background: transparent;
-  font-family: 'Cinzel Decorative', serif;
-  border-style: solid;
-  border-width: 16px;
-  background: url(../images/ui/window-bg-portrait.webp) center no-repeat;
-  background-size: 100% 100%;
-  background-origin: border-box;
-  border-image: url('../images/ui/window-border.webp') 35 35 35 35;
-  z-index: 10;
-  box-shadow: 0px 0px 10px 6px rgba(0, 0, 0, 0.5);
-  border-radius: 8px;
-  min-width: 250px;
-  max-height:calc(100% - 40px);
+    position: absolute;
+    background: transparent;
+    font-family: 'Cinzel Decorative', serif;
+    border-style: solid;
+    border-width: 16px;
+    background: url(../images/ui/window-bg-portrait.webp) center no-repeat;
+    background-size: 100% 100%;
+    background-origin: border-box;
+    border-image: url('../images/ui/window-border.webp') 35 35 35 35;
+    z-index: 10;
+    box-shadow: 0px 0px 10px 6px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    min-width: 250px;
+    max-height: calc(100% - 40px);
 }
 
-.mythicForgeWindow > .windowHeader{
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
-  position: absolute;
-  width: 100%;
-  max-width: 320px;
-  background-color:transparent;
-  background: url(../images/ui/window-header.webp);
-  color: #af9c68;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  height: 50px;
-  left:50%;
-  top:-35px;
-  padding-top: 12px;
-  font-size: 14px;
-  transform: translateX(-50%);
-  z-index:1;
+.mythicForgeWindow>.windowHeader {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    max-width: 320px;
+    background-color: transparent;
+    background: url(../images/ui/window-header.webp);
+    color: #af9c68;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: 50px;
+    left: 50%;
+    top: -35px;
+    padding-top: 12px;
+    font-size: 14px;
+    transform: translateX(-50%);
+    z-index: 1;
 }
 
-.rollboxWindow .rollWindow{
-  height:300px;
-  width:300px
+.rollboxWindow .rollWindow {
+    height: 300px;
+    width: 300px
 }
 
-.rollboxWindow .diceResult+center{
-  margin-top:-24px;
+.rollboxWindow .diceResult+center {
+    margin-top: -24px;
 }
 
-.rollboxWindow.notInitialized{
-  top:-1000px!important;
-  left:-1000px!important;
-  visibility: hidden!important;
+.rollboxWindow.notInitialized {
+    top: -1000px!important;
+    left: -1000px!important;
+    visibility: hidden!important;
 }
 
-.mythicForgeWindow > .windowHeader > sup{
-  font-size: 9px;
+.mythicForgeWindow>.windowHeader>sup {
+    font-size: 9px;
 }
 
-body .rollbox,body .rollbox-min{
-  display: none;
+body .rollbox,
+body .rollbox-min {
+    display: none;
 }
 
-.mythicForgeWindow .StatBlock{
-  max-height: 500px;
-  overflow: hidden;
-  overflow-y: auto;
-  margin-top:5px;
-  font-family: 'Merriweather', serif;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: auto;
-  align-self: auto;
-  order: 1;
+.mythicForgeWindow .StatBlock {
+    max-height: 500px;
+    overflow: hidden;
+    overflow-y: auto;
+    margin-top: 5px;
+    font-family: 'Merriweather', serif;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
+    align-self: auto;
+    order: 1;
 }
 
-.dice-box-canvas{
-  height:100%;
-  width:100%;
+.dice-box-canvas {
+    height: 100%;
+    width: 100%;
 }
 
 .mythicForgeWindow.landscape {
-  background: url(../images/ui/window-bg-landscape.webp) center no-repeat;
+    background: url(../images/ui/window-bg-landscape.webp) center no-repeat;
 }
 
-.mythicForgeWindow > .windowClose{
-  position: absolute;
-  top: -13px;
-  right: -15px;
-  width: 20px;
-  height: 20px;
-  background: url('../images/ui/icon-button-bg.webp') center no-repeat;
-  background-size: 100%;
-  cursor: pointer;
-  z-index: 2;
-  transition: all 0.3s ease;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
+.mythicForgeWindow>.windowClose {
+    position: absolute;
+    top: -13px;
+    right: -15px;
+    width: 20px;
+    height: 20px;
+    background: url('../images/ui/icon-button-bg.webp') center no-repeat;
+    background-size: 100%;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.3s ease;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }
 
-.mythicForgeWindow > .windowClose:hover{
-  transform: scale(1.1);
+.mythicForgeWindow>.windowClose:hover {
+    transform: scale(1.1);
 }
 
-.mythicForgeWindow > .windowClose >i{
-  font-size: 20px;
-  color: rgb(227 18 18);
-  width:100%;
-  height:100%;
+.mythicForgeWindow>.windowClose>i {
+    font-size: 20px;
+    color: rgb(227 18 18);
+    width: 100%;
+    height: 100%;
 }
 
-.mythicForgeWindow > .windowClose >i:before{
-  /*center*/
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
+.mythicForgeWindow>.windowClose>i:before {
+    /*center*/
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .loading-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  transition: all 0.8s ease;
-  z-index: 1;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    transition: all 0.8s ease;
+    z-index: 1;
 }
 
 .loading-container.loaded {
-  top: 20px;
-  transform: translate(-50%, 0);
+    top: 20px;
+    transform: translate(-50%, 0);
 }
 
 .loading-bar {
-  width: 100%;
-  height: 4px;
-  background: #2a2a2a;
-  margin-top: 20px;
-  border-radius: 4px;
-  overflow: hidden;
-  transition: opacity 0.5s ease;
+    width: 100%;
+    height: 4px;
+    background: #2a2a2a;
+    margin-top: 20px;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: opacity 0.5s ease;
 }
 
 .loading-progress {
-  width: 0%;
-  height: 100%;
-  background: hsl(27, 90%, 52%);
-  transition: width 0.5s ease;
+    width: 0%;
+    height: 100%;
+    background: hsl(27, 90%, 52%);
+    transition: width 0.5s ease;
 }
 
 .loading-container.loaded .loading-bar {
-  opacity: 0;
+    opacity: 0;
 }
 
-.loading-container .logo img{
-  width: 500px;
-  transition: all 0.8s ease;
+.loading-container .logo img {
+    width: 500px;
+    transition: all 0.8s ease;
 }
 
-.loading-container.loaded .logo img{
-  width:300px;
+.loading-container.loaded .logo img {
+    width: 300px;
 }
 
 .menu-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 240px;
-  opacity: 0;
-  transition: opacity 0.8s ease;
-  display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 240px;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    display: none;
 }
 
 .menu-container.visible {
-  opacity: 1;
-  display: block;
+    opacity: 1;
+    display: block;
 }
+
 
 /* Corners */
+
 .mythicForgeWindow::before,
 .mythicForgeWindow::after {
-  content: '';
-  position: absolute;
-  width: 32px;
-  height: 32px;
+    content: '';
+    position: absolute;
+    width: 32px;
+    height: 32px;
 }
+
 
 /* Top Left Corner */
+
 .mythicForgeWindow::before {
-  top: -20px;
-  left: -22px;
-  width: 50px;
-  height: 50px;
-  background: url('../images/ui/window-border-top-left.webp') center no-repeat;
-  background-size: 100%;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
+    top: -20px;
+    left: -22px;
+    width: 50px;
+    height: 50px;
+    background: url('../images/ui/window-border-top-left.webp') center no-repeat;
+    background-size: 100%;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }
+
 
 /* Top Right Corner */
+
 .mythicForgeWindow::after {
-  top: -20px;
-  right: -22px;
-  width: 50px;
-  height: 50px;
-  background: url('../images/ui/window-border-top-right.webp') center no-repeat;
-  background-size: 100%;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
+    top: -20px;
+    right: -22px;
+    width: 50px;
+    height: 50px;
+    background: url('../images/ui/window-border-top-right.webp') center no-repeat;
+    background-size: 100%;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }
 
-.mythicForgeWindow:has(.windowHeader) > div.windowContent{
-  padding-top: 20px;
-}
-.mythicForgeWindow:has(.windowHeader) > div.windowContent::before,.mythicForgeWindow:has(.windowHeader) > div.windowContent::after {
-  bottom: -18px;
+.mythicForgeWindow:has(.windowHeader)>div.windowContent {
+    padding-top: 20px;
 }
 
-.mythicForgeWindow > div.windowContent{
-  position: relative;
-  z-index: 1;
-  width:100%;
-  height:100%;
-  top:0px;
-  left:0px;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  display: flex;
-  flex-direction: column;
+.mythicForgeWindow:has(.windowHeader)>div.windowContent::before,
+.mythicForgeWindow:has(.windowHeader)>div.windowContent::after {
+    bottom: -18px;
 }
 
-.MythicForgeTable{
-  width: 100%;
-  margin-bottom: 10px;
-  border-radius: 4px;
+.mythicForgeWindow>div.windowContent {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    display: flex;
+    flex-direction: column;
 }
 
-.MythicForgeTable th{
-  background-color: #922610;
-  color: #000000;
-  font-weight: bold;
-  text-align: center;
-  padding: 2px;
-  border: 1px solid #5a5656;
-  font-size: 12px;
+.MythicForgeTable {
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 4px;
 }
 
-.MythicForgeTable td{
-  color: #000000;
-  text-align: center;
-  padding: 2px;
-  border: 1px solid #5a5656;
-  font-size: 11px;
+.MythicForgeTable th {
+    background-color: #922610;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    padding: 2px;
+    border: 1px solid #5a5656;
+    font-size: 12px;
 }
+
+.MythicForgeTable td {
+    color: #000000;
+    text-align: center;
+    padding: 2px;
+    border: 1px solid #5a5656;
+    font-size: 11px;
+}
+
 
 /* Bottom Corners - Using pseudo elements of child div */
-.mythicForgeWindow > div.windowContent::before {
-  content: '';
-  position: absolute;
-  display: block;
-  bottom: -20px;
-  left: -22px;
-  width: 50px;
-  height: 50px;
-  background: url('../images/ui/window-border-bottom-left.webp') center no-repeat;
-  background-size: 100%;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
+
+.mythicForgeWindow>div.windowContent::before {
+    content: '';
+    position: absolute;
+    display: block;
+    bottom: -20px;
+    left: -22px;
+    width: 50px;
+    height: 50px;
+    background: url('../images/ui/window-border-bottom-left.webp') center no-repeat;
+    background-size: 100%;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }
 
-.mythicForgeWindow > div.windowContent::after {
-  content: '';
-  position: absolute;
-  display: block;
-  bottom: -20px;
-  right: -22px;
-  width: 50px;
-  height: 50px;
-  background: url('../images/ui/window-border-bottom-right.webp') center no-repeat;
-  background-size: 100%;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
+.mythicForgeWindow>div.windowContent::after {
+    content: '';
+    position: absolute;
+    display: block;
+    bottom: -20px;
+    right: -22px;
+    width: 50px;
+    height: 50px;
+    background: url('../images/ui/window-border-bottom-right.webp') center no-repeat;
+    background-size: 100%;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }
 
-.mythicForgeWindow > div.windowContent:has(.inlineContent){
-  max-height: 400px;
+.mythicForgeWindow>div.windowContent:has(.inlineContent) {
+    max-height: 400px;
 }
 
-.mythicForgeWindow > div.windowContent .inlineContent{
-  padding:20px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  width:400px;
-  max-width:100%;
-  font-family: 'Merriweather', serif;
-  font-size:12px;
-  overflow-y: auto;
+.mythicForgeWindow>div.windowContent .inlineContent {
+    padding: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 400px;
+    max-width: 100%;
+    font-family: 'Merriweather', serif;
+    font-size: 12px;
+    overflow-y: auto;
 }
 
-.mythicForgeWindow > div.windowContent .inlineContent h4{
-  font-size: 18px;
+.mythicForgeWindow>div.windowContent .inlineContent h4 {
+    font-size: 18px;
 }
 
-.mythicForgeWindow > div.windowContent .inlineContent p{
-  margin-bottom: 0.6em;
+.mythicForgeWindow>div.windowContent .inlineContent p {
+    margin-bottom: 0.6em;
 }
 
-.bestiaryWindow,.spellsWindow,.itemsWindow{
-  position: absolute;
-  width:800px;
-  height:500px;
-  max-width: 100%;
-  display: none;
+.bestiaryWindow,
+.spellsWindow,
+.itemsWindow {
+    position: absolute;
+    width: 800px;
+    height: 500px;
+    max-width: 100%;
+    display: none;
 }
 
-.spellWindow i{
-  font-size: 12px;
+.spellWindow i {
+    font-size: 12px;
 }
 
 .StatBlock {
-  text-align: left;
-  display: inline-flex;
-  vertical-align: top;
-  min-width:280px;
-  padding: 5px 10px 20px;
+    text-align: left;
+    display: inline-flex;
+    vertical-align: top;
+    min-width: 280px;
+    padding: 5px 10px 20px;
 }
 
-.hoverLink,.roller.render-roller{
-  color: #c90c0c;
-  text-decoration: none;
-  cursor: pointer;
+.hoverLink,
+.roller.render-roller {
+    color: #c90c0c;
+    text-decoration: none;
+    cursor: pointer;
 }
 
-.StatBlock > div{
-  width: 350px;
-  margin-right:5px;
-  height: 100%;
+.StatBlock>div {
+    width: 350px;
+    margin-right: 5px;
+    height: 100%;
 }
 
-.dicePopupWindow{
-  min-width: unset;
+.dicePopupWindow {
+    min-width: unset;
 }
 
-.dicePopup{
-  width:100px;
+.dicePopup {
+    width: 100px;
 }
 
-.dicePopup .diceOption{
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  border-radius: 5px;
-  color: #7a1f0d;
+.dicePopup .diceOption {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 5px;
+    color: #7a1f0d;
 }
 
-.dicePopup .diceOption:hover{
-  background: #7a1f0d;
-  color: white;
+.dicePopup .diceOption:hover {
+    background: #7a1f0d;
+    color: white;
 }
 
-.StatBlock .section-right > p{
-  font-size: 12px;
+.StatBlock .section-right>p {
+    font-size: 12px;
 }
 
 .spellWindow .StatBlock .section-left,
-.itemWindow .StatBlock .section-left{
-  width: 150px;
+.itemWindow .StatBlock .section-left {
+    width: 150px;
 }
 
-.itemWindow .StatBlock .section-right{
-  width: 150px;
+.itemWindow .StatBlock .section-right {
+    width: 150px;
 }
 
-.StatBlock.wide > div{
-  width: 46.5%;
-  min-width: 560px;
-  text-align: center;
+.StatBlock.wide>div {
+    width: 46.5%;
+    min-width: 560px;
+    text-align: center;
 }
 
-.StatBlock .section-left{
-  position: sticky;
-  top: 0; /* Sticks to the top when scrolling */
+.StatBlock .section-left {
+    position: sticky;
+    top: 0;
+    /* Sticks to the top when scrolling */
 }
 
 .StatBlock.wide .section-left,
-.StatBlock.wide .section-right{
-  display: inline-block;
-  vertical-align: top;
-  text-align: left;
+.StatBlock.wide .section-right {
+    display: inline-block;
+    vertical-align: top;
+    text-align: left;
 }
-.StatBlock.wide .section-left{
-  margin-right: 1.5%;
+
+.StatBlock.wide .section-left {
+    margin-right: 1.5%;
 }
-.StatBlock.wide .section-right{
-  margin-left: 1.5%;
+
+.StatBlock.wide .section-right {
+    margin-left: 1.5%;
 }
+
 *::-webkit-scrollbar {
-  width: 4px;
+    width: 4px;
 }
+
 *::-webkit-scrollbar-thumb {
-  background-color: #7a1f0d9d;
-  border-radius: 10px;
+    background-color: #7a1f0d9d;
+    border-radius: 10px;
 }
+
 *::-webkit-scrollbar-track {
-  background-color: transparent;
+    background-color: transparent;
 }
+
 *::-webkit-scrollbar-thumb:hover {
-  background-color: #7a1f0d9d;
-}
-.StatBlockImage{
-  text-align: center;
-  margin: 0;
-  width:100%;
-  flex-grow: 0;
-  flex-shrink: 1;
-  order: 0;
-}
-.StatBlockImage img,.fluff-image img{
-  max-height: 150px;
-  max-width:100%;
-  margin-bottom: 5px;
+    background-color: #7a1f0d9d;
 }
 
-.bestiaryContent,.spellsContent,.itemsContent{
-  width:100%;
-  height:calc(100% - 10px);
-  overflow: hidden;
-  overflow-y: auto;
+.StatBlockImage {
+    text-align: center;
+    margin: 0;
+    width: 100%;
+    flex-grow: 0;
+    flex-shrink: 1;
+    order: 0;
 }
 
-.searchBestiary,.searchSpells,.searchItems,.adv-roller--notation{
-  display: block;
-  width: 100%;
-  margin: 20px 0 10px;
-  padding: 8px;
-  background: transparent;
-  color: #000000;
-  font-size: 14px;
-  line-height: 1.2em;
-  border: none;
-  border-bottom: 1px solid #7a1f0d;
+.StatBlockImage img,
+.fluff-image img {
+    max-height: 150px;
+    max-width: 100%;
+    margin-bottom: 5px;
 }
 
-.searchBestiary:active,.searchSpells:active,
-.searchBestiary:focus,.searchSpells:focus,
-.adv-roller--notation:active,.adv-roller--notation:focus,
+.bestiaryContent,
+.spellsContent,
+.itemsContent {
+    width: 100%;
+    height: calc(100% - 10px);
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.searchBestiary,
+.searchSpells,
+.searchItems,
+.adv-roller--notation {
+    display: block;
+    width: 100%;
+    margin: 20px 0 10px;
+    padding: 8px;
+    background: transparent;
+    color: #000000;
+    font-size: 14px;
+    line-height: 1.2em;
+    border: none;
+    border-bottom: 1px solid #7a1f0d;
+}
+
+.searchBestiary:active,
+.searchSpells:active,
+.searchBestiary:focus,
+.searchSpells:focus,
+.adv-roller--notation:active,
+.adv-roller--notation:focus,
 .searchItems:active,
-.searchItems:focus{
-  background: transparent !important;
-  -webkit-appearance: none;
-  box-shadow: none;
+.searchItems:focus {
+    background: transparent !important;
+    -webkit-appearance: none;
+    box-shadow: none;
 }
+
 
 /* Override autocomplete styles */
+
 .searchBestiary:-webkit-autofill,
 .searchBestiary:-webkit-autofill:hover,
 .searchBestiary:-webkit-autofill:focus,
@@ -563,256 +602,301 @@ body .rollbox,body .rollbox-min{
 }
 
 input::placeholder {
-  color: #000000;
+    color: #000000;
 }
 
-.bestiaryList,.spellsList,.itemsList{
-  position: relative;
-  width: 100%;
-  color: #000000;
-  text-align: left;
-  border-collapse: collapse;
+.bestiaryList,
+.spellsList,
+.itemsList {
+    position: relative;
+    width: 100%;
+    color: #000000;
+    text-align: left;
+    border-collapse: collapse;
 }
 
-.bestiaryList th,.bestiaryList td,
-.spellsList th,.spellsList td,
-.itemsList th,.itemsList td{
-  padding: 0.1em 1.5em;
-  font-weight: normal;
-  border: 1px solid #974;
+.bestiaryList th,
+.bestiaryList td,
+.spellsList th,
+.spellsList td,
+.itemsList th,
+.itemsList td {
+    padding: 0.1em 1.5em;
+    font-weight: normal;
+    border: 1px solid #974;
 }
 
 .bestiaryList thead,
 .spellsList thead,
-.itemsList thead{ text-transform: uppercase; }
+.itemsList thead {
+    text-transform: uppercase;
+}
 
 .bestiaryList th,
 .spellsList th,
-.itemsList th{ white-space: nowrap; font-weight: bold; font-size: 12px;}
+.itemsList th {
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 12px;
+}
 
 .bestiaryList td,
 .spellsList td,
-.itemsList td{font-size: 12px;font-family: 'Merriweather', serif;}
+.itemsList td {
+    font-size: 12px;
+    font-family: 'Merriweather', serif;
+}
 
 .bestiaryList tbody tr:hover,
 .spellsList tbody tr:hover,
-.itemsList tbody tr:hover{ background-color: #ad3922; color:white}
+.itemsList tbody tr:hover {
+    background-color: #ad3922;
+    color: white
+}
 
 .bestiaryList tr td:last-child,
 .spellsList tr td:last-child,
-.itemsList tr td:last-child{ white-space: nowrap; }
+.itemsList tr td:last-child {
+    white-space: nowrap;
+}
 
-.bestiaryList tbody tr:first-child *
-.spellsList tbody tr:first-child *,
-.itemsList tbody tr:first-child *{ border-top: 0; }
+.bestiaryList tbody tr:first-child * .spellsList tbody tr:first-child *,
+.itemsList tbody tr:first-child * {
+    border-top: 0;
+}
 
-@media screen and (max-width: 675px){
-	.StatBlock.wide{
-		min-width: 280px;
-	}
-	.StatBlock.wide .section-left,
-	.StatBlock.wide .section-right{
-	  display: block;
-	  width: 100%;
-	}
-	.StatBlock.wide .section-left{
-	  margin: 0;
-	}
-	.StatBlock.wide .section-right{
-		margin: 0;
-	}
+@media screen and (max-width: 675px) {
+    .StatBlock.wide {
+        min-width: 280px;
+    }
+    .StatBlock.wide .section-left,
+    .StatBlock.wide .section-right {
+        display: block;
+        width: 100%;
+    }
+    .StatBlock.wide .section-left {
+        margin: 0;
+    }
+    .StatBlock.wide .section-right {
+        margin: 0;
+    }
 }
-.orange-border{
-  display: block;
-  background: #E69A28;
-  border: 1px solid #000;
-  height: 5px;
-  padding: 0 10px 0;
-  margin: -10px -10px 0;
-  box-sizing: initial;
+
+.orange-border {
+    display: block;
+    background: #E69A28;
+    border: 1px solid #000;
+    height: 5px;
+    padding: 0 10px 0;
+    margin: -10px -10px 0;
+    box-sizing: initial;
 }
-.orange-border.bottom{
-  margin: 15px -10px -20px;
+
+.orange-border.bottom {
+    margin: 15px -10px -20px;
 }
-.displayResults .results{
-  font-size:16px;
+
+.displayResults .results {
+    font-size: 16px;
 }
-.diceResult{
-  width:100%;
-  text-align: center;
-  font-weight: bold;
+
+.diceResult {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    max-width: 300px;
 }
-.tapered-rule{
-  display: block;
-  width: 100%;
-  height: 5px;
-  border: none;
-  color: #922610;
-  fill: #922610;
-  stroke: #922610;
-  margin: 5px 0 5px;
+
+.tapered-rule {
+    display: block;
+    width: 100%;
+    height: 5px;
+    border: none;
+    color: #922610;
+    fill: #922610;
+    stroke: #922610;
+    margin: 5px 0 5px;
 }
-.creature-heading h1{
-  font-family: 'Libre Baskerville', 'Lora', 'Calisto MT', 'Bookman Old Style', Bookman, 'Goudy Old Style', Garamond, 'Hoefler Text', 'Bitstream Charter', Georgia, serif;
-  color: #922610;
-  font-size: 23px;
-  line-height: 1.2em;
-  margin: 10px 0 0;
-  letter-spacing: 1px;
-  font-variant: small-caps;
-  font-weight: bold;
+
+.creature-heading h1 {
+    font-family: 'Libre Baskerville', 'Lora', 'Calisto MT', 'Bookman Old Style', Bookman, 'Goudy Old Style', Garamond, 'Hoefler Text', 'Bitstream Charter', Georgia, serif;
+    color: #922610;
+    font-size: 23px;
+    line-height: 1.2em;
+    margin: 10px 0 0;
+    letter-spacing: 1px;
+    font-variant: small-caps;
+    font-weight: bold;
 }
-.creature-heading h2{
-  font-weight: normal;
-  font-style: italic;
-  font-size: 12px;
-  line-height: 1em;
-  margin: 0;
+
+.creature-heading h2 {
+    font-weight: normal;
+    font-style: italic;
+    font-size: 12px;
+    line-height: 1em;
+    margin: 0;
 }
+
 .property-line h4,
-.property-line p{
-  display: inline;
-  margin: 0;
-  color: #922610;
-  font-size: 12px;
-  line-height: 1.2em;
+.property-line p {
+    display: inline;
+    margin: 0;
+    color: #922610;
+    font-size: 12px;
+    line-height: 1.2em;
 }
-.property-line h4{
-  color: #7A200D;
-  font-weight: bold;
+
+.property-line h4 {
+    color: #7A200D;
+    font-weight: bold;
 }
-.property-line{
-  text-indent: -1em;
-  padding-left: 1.1em;
-  line-height: 0.8em;
+
+.property-line {
+    text-indent: -1em;
+    padding-left: 1.1em;
+    line-height: 0.8em;
 }
-.abilities{
-  text-align: center;
-  color: #922610;
+
+.abilities {
+    text-align: center;
+    color: #922610;
 }
-.abilities > div{
-  display: inline-block;
-  vertical-align: middle;
-  width: 15.5%;
-  min-width: 40px;
-  font-size: 12px;
-  line-height: 1em;
+
+.abilities>div {
+    display: inline-block;
+    vertical-align: middle;
+    width: 15.5%;
+    min-width: 40px;
+    font-size: 12px;
+    line-height: 1em;
 }
-.abilities h4{
-  margin: 0px 0 2px;
-  font-size: 12px;
-  line-height: 1.2em;
-  text-transform: uppercase;
-  color: #7A200D;
+
+.abilities h4 {
+    margin: 0px 0 2px;
+    font-size: 12px;
+    line-height: 1.2em;
+    text-transform: uppercase;
+    color: #7A200D;
 }
-.abilities p{
-  margin: 0;
-  line-height: 1em;
+
+.abilities p {
+    margin: 0;
+    line-height: 1em;
 }
+
 .property-block h4,
 .property-block p,
 .property-block ul li,
-.actions > p,
-.actions > ul li{
-  font-size: 12px;
-  display: inline;
-  margin: 0;
+.actions>p,
+.actions>ul li {
+    font-size: 12px;
+    display: inline;
+    margin: 0;
 }
 
-.StatBlock .section-right > ul li{
-  font-size: 12px;
+.StatBlock .section-right>ul li {
+    font-size: 12px;
 }
 
-.property-block ul{
-  padding: 0px;
+.property-block ul {
+    padding: 0px;
 }
 
-.actions > p{
-  display: block;
+.actions>p {
+    display: block;
 }
-.actions > ul li{
-  display: list-item;
+
+.actions>ul li {
+    display: list-item;
 }
-.property-block h4,.actions h4{
-  font-style: italic;
-  font-weight: bold;
+
+.property-block h4,
+.actions h4 {
+    font-style: italic;
+    font-weight: bold;
 }
-.property-block{
-  padding: 5px 2px 0;
-  line-height: 1em;
+
+.property-block {
+    padding: 5px 2px 0;
+    line-height: 1em;
 }
+
 .actions h3,
-.actions > h4{
-  border-bottom: 1px solid #7A200D;
-  color: #7A200D;
-  font-size: 18px;
-  font-variant: small-caps;
-  font-weight: normal;
-  letter-spacing: 1px;
-  margin: 10px 0 0;
-  padding: 0 0 5px;
-  text-indent: 5px;
-}
-.actions > h4{
-  font-size: 16px;
-  border: none;
-  margin-left: -4px;
+.actions>h4 {
+    border-bottom: 1px solid #7A200D;
+    color: #7A200D;
+    font-size: 18px;
+    font-variant: small-caps;
+    font-weight: normal;
+    letter-spacing: 1px;
+    margin: 10px 0 0;
+    padding: 0 0 5px;
+    text-indent: 5px;
 }
 
-.actions{
-  margin: 0 0 20px;
-}
-.actions:last-child{
-  margin: 0;
-}
-
-.actions > ul li .property-block, .inlineContent .property-block{
-  line-height: 1.4em;
+.actions>h4 {
+    font-size: 16px;
+    border: none;
+    margin-left: -4px;
 }
 
-.actions > ul li .property-block h4,.inlineContent .property-block h4{
-  margin-right: 5px;
+.actions {
+    margin: 0 0 20px;
 }
 
-@media print{
-	.orange-border{
-		display: none;
-	}
-	.StatBlock,
-	.StatBlock.wide,
-	.StatBlock.wide .section-left,
-	.StatBlock.wide .section-right,
-	.property-line,
-	.property-block{
-		width: 100%;
-		display: block;
-	}
-	.StatBlock.wide .section-left{
-	  margin: 0;
-	}
-	.StatBlock.wide .section-right{
-	  margin: 0;
-	}
-	.StatBlock{
-		width: 40%;
-		display: inline-block;
-		vertical-align: top;
-	}
-	.StatBlock.wide{
-		page-break-after: always;
-	}
-}
-@media screen and (max-width: 575px){
-	.StatBlock{
-		margin: 20px 0;
-	}
+.actions:last-child {
+    margin: 0;
 }
 
+.actions>ul li .property-block,
+.inlineContent .property-block {
+    line-height: 1.4em;
+}
+
+.actions>ul li .property-block h4,
+.inlineContent .property-block h4 {
+    margin-right: 5px;
+}
+
+@media print {
+    .orange-border {
+        display: none;
+    }
+    .StatBlock,
+    .StatBlock.wide,
+    .StatBlock.wide .section-left,
+    .StatBlock.wide .section-right,
+    .property-line,
+    .property-block {
+        width: 100%;
+        display: block;
+    }
+    .StatBlock.wide .section-left {
+        margin: 0;
+    }
+    .StatBlock.wide .section-right {
+        margin: 0;
+    }
+    .StatBlock {
+        width: 40%;
+        display: inline-block;
+        vertical-align: top;
+    }
+    .StatBlock.wide {
+        page-break-after: always;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    .StatBlock {
+        margin: 20px 0;
+    }
+}
 
 @media (max-width: 768px) {
-  .menu-container {
-      position: static;
-      width: 90%;
-      margin: 0 auto;
-  }
+    .menu-container {
+        position: static;
+        width: 90%;
+        margin: 0 auto;
+    }
 }

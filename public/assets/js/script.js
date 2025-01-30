@@ -1,6 +1,6 @@
 import DiceBox from "/assets/plugins/dice-box/dist/dice-box.es.js";
 import AdvancedRoller from "/assets/plugins/dice-ui/src/advancedRoller/advancedRoller.js";
-import DisplayResults  from "/assets/plugins/dice-ui/src/DisplayResults/DisplayResults.js";
+import DisplayResults from "/assets/plugins/dice-ui/src/DisplayResults/DisplayResults.js";
 
 /**
  * @file script.js
@@ -57,13 +57,13 @@ Renderer.dice.bindOnclickListener = function(ele) {
 
         const packed = JSON.parse(eleDice.getAttribute("data-packed-dice"));
 
-        if(packed.rollable === false) return;
+        if (packed.rollable === false) return;
         console.log(packed);
 
         const toRoll = packed.toRoll.replace(/\+0/g, "").replace(/-0/g, "");
         const rollType = (packed.subType) ? packed.subType : "";
 
-        if (packed.prompt){
+        if (packed.prompt) {
             var dicePopupHMTL = `<center><div class="dicePopup">`;
             console.log(packed.prompt.options);
 
@@ -80,14 +80,14 @@ Renderer.dice.bindOnclickListener = function(ele) {
             dicePopup.createWindow(packed.prompt.entry, dicePopupHMTL);
             dicePopup.el.addClass("dicePopupWindow");
             dicePopup.el.fadeIn();
-        }else{
+        } else {
 
-            switch(rollType){
+            switch (rollType) {
                 case "damage":
                     //if SHIFT click, roll critical
                     if (evt.shiftKey) {
                         toRoll = "2" + toRoll;
-                    }else if (evt.ctrlKey) {
+                    } else if (evt.ctrlKey) {
                         toRoll = "0" + toRoll;
                     }
                     break;
@@ -95,7 +95,7 @@ Renderer.dice.bindOnclickListener = function(ele) {
                     //if SHIFT click, roll with advantage
                     if (evt.shiftKey) {
                         toRoll = "2d20kh1" + toRoll;
-                    }else if (evt.ctrlKey) {
+                    } else if (evt.ctrlKey) {
                         toRoll = "2d20kl1" + toRoll;
                     }
                     break;
@@ -108,18 +108,16 @@ Renderer.dice.bindOnclickListener = function(ele) {
             diceBox.clear();
             $(".diceResult").hide();
             $(".adv-roller--notation").val(toRoll);
-            $(".adv-roller--notation").data("subType",rollType);
+            $(".adv-roller--notation").data("subType", rollType);
             console.log(toRoll);
-            diceBox.onRollComplete = (rollResult)=>{
-                console.log("roll results callback",rollResult)
+            diceBox.onRollComplete = (rollResult) => {
+                console.log("roll results callback", rollResult)
                 Roller.handleResults(rollResult);
             };
             Roller.onSubmit(Roller.DRP.parseNotation(toRoll));
 
             if ($(eleDice).hasClass("diceOption"))
-                $(eleDice).parents(".dicePopupWindow").fadeOut(function(){
-                    diceBox.clear();
-                    $(".diceResult").hide();
+                $(eleDice).parents(".dicePopupWindow").fadeOut(function() {
                     $(this).remove();
                 });
 
@@ -136,15 +134,15 @@ const Roller = new AdvancedRoller({
         diceBox.roll(notation);
     },
     onResults: (results) => {
-        console.log("Results",results);
-        if(typeof results.result == "undefined") results.result = results.value;
+        console.log("Results", results);
+        if (typeof results.result == "undefined") results.result = results.value;
         var resultsString = "";
-        if (typeof results.rolls == "undefined"){
+        if (typeof results.rolls == "undefined") {
             resultsString = results.dice[0].rolls.map(roll => roll.value).join(", ") + " = " + results.result;
-        }else{
-            if (results.rolls.length > 1){
+        } else {
+            if (results.rolls.length > 1) {
                 resultsString = results.rolls.map(roll => roll.value).join(", ") + " = " + results.result;
-            }else{
+            } else {
                 resultsString = results.result;
             }
         }
@@ -185,17 +183,17 @@ diceBox.init().then(() => {
 $(document).ready(function() {
 
     //Load all monster data from 5etools
-    DataLoader.pCacheAndGetAllSite(UrlUtil.PG_BESTIARY,1).then(function(data){
+    DataLoader.pCacheAndGetAllSite(UrlUtil.PG_BESTIARY, 1).then(function(data) {
         AllMonsters = data;
     });
 
     //Load all spell data from 5etools
-    DataLoader.pCacheAndGetAllSite(UrlUtil.PG_SPELLS,1).then(function(data){
+    DataLoader.pCacheAndGetAllSite(UrlUtil.PG_SPELLS, 1).then(function(data) {
         AllSpells = data;
     });
 
     //Load all items data from 5etools
-    DataLoader.pCacheAndGetAllSite(UrlUtil.PG_ITEMS).then(function(data){
+    DataLoader.pCacheAndGetAllSite(UrlUtil.PG_ITEMS).then(function(data) {
         AllItems = data;
     });
 
@@ -226,7 +224,7 @@ $(document).ready(function() {
             $(".itemsWindow").on("click tap", ".itemsList .itemItem", function(evt) {
                 var itemName = $(this).data("name");
                 var itemSource = $(this).data("source");
-                createItemStatBlock(itemName,itemSource);
+                createItemStatBlock(itemName, itemSource);
             });
 
             let searchTimeout;
@@ -241,9 +239,9 @@ $(document).ready(function() {
                     const tbody = $("<tbody></tbody>");
 
                     var results = SearchAll(search, "item");
-                    $.each(results, function(i, item){
+                    $.each(results, function(i, item) {
                         if (i > 100) return;
-                        var itemType = (typeof item.type != "undefined")?Renderer.item.getItemTypeName(item.type):"-";
+                        var itemType = (typeof item.type != "undefined") ? Renderer.item.getItemTypeName(item.type) : "-";
                         var itemRarity = item.rarity.toLowerCase();
                         var tr = `<tr class='itemItem' data-name="${item.name}" data-source="${item.source}">
 
@@ -254,8 +252,8 @@ $(document).ready(function() {
                         </tr>`;
                         tbody.append(tr);
 
-                        if (item.reprintedAs){
-                            $.each(item.reprintedAs, function(r, reprinted){
+                        if (item.reprintedAs) {
+                            $.each(item.reprintedAs, function(r, reprinted) {
                                 var reprintedName = reprinted.split("|")[0];
                                 var reprintedSource = reprinted.split("|")[1];
                                 var tr = `<tr class='itemItem' data-name="${reprintedName}" data-source="${reprintedSource}">
@@ -272,11 +270,11 @@ $(document).ready(function() {
                     itemsList.append(tbody);
                 }, 500);
             });
-        }else{
+        } else {
             if ($(".itemsWindow").css("display") == "block" && $(".itemsWindow").hasClass("focused")) {
                 $(".itemsWindow").css("display", "none");
                 return;
-            }else{
+            } else {
                 $(".itemsWindow").fadeIn();
             }
         }
@@ -309,7 +307,7 @@ $(document).ready(function() {
             $(".spellsWindow").on("click tap", ".spellsList .spellItem", function(evt) {
                 var spellName = $(this).data("name");
                 var spellSource = $(this).data("source");
-                createSpellStatBlock(spellName,spellSource);
+                createSpellStatBlock(spellName, spellSource);
             });
 
             let searchTimeout;
@@ -324,7 +322,7 @@ $(document).ready(function() {
                     const tbody = $("<tbody></tbody>");
 
                     var results = SearchAll(search, "spell");
-                    $.each(results, function(i, spell){
+                    $.each(results, function(i, spell) {
                         if (i > 100) return;
                         var spellLevel = spell.level;
                         var spellSchool = Parser.spSchoolAndSubschoolsAbvsToFull(spell.school);
@@ -336,8 +334,8 @@ $(document).ready(function() {
                         </tr>`;
                         tbody.append(tr);
 
-                        if (spell.reprintedAs){
-                            $.each(spell.reprintedAs, function(r, reprinted){
+                        if (spell.reprintedAs) {
+                            $.each(spell.reprintedAs, function(r, reprinted) {
                                 var reprintedName = reprinted.split("|")[0];
                                 var reprintedSource = reprinted.split("|")[1];
                                 var tr = `<tr class="spellItem" data-name="${reprintedName}" data-source="${reprintedSource}">
@@ -351,14 +349,13 @@ $(document).ready(function() {
                         }
                     });
                     spellsList.append(tbody);
-                }
-                , 500);
+                }, 500);
             });
-        }else{
+        } else {
             if ($(".spellsWindow").css("display") == "block" && $(".spellsWindow").hasClass("focused")) {
                 $(".spellsWindow").css("display", "none");
                 return;
-            }else{
+            } else {
                 $(".spellsWindow").fadeIn();
             }
         }
@@ -391,7 +388,7 @@ $(document).ready(function() {
             $(".bestiaryWindow").on("click tap", ".bestiaryList .bestiaryItem", function(evt) {
                 var monsterName = $(this).data("name");
                 var monsterSource = $(this).data("source");
-                createMonsterStatBlock(monsterName,monsterSource);
+                createMonsterStatBlock(monsterName, monsterSource);
             });
 
             let searchTimeout;
@@ -406,10 +403,10 @@ $(document).ready(function() {
                     const tbody = $("<tbody></tbody>");
 
                     var results = SearchAll(search, "monster");
-                    $.each(results, function(i, monster){
+                    $.each(results, function(i, monster) {
                         if (i > 100) return;
                         var monsterAlignment = Renderer.monster.getTypeAlignmentPart(monster);
-                        var monsterCR = (monster.cr)?monster.cr:"-";
+                        var monsterCR = (monster.cr) ? monster.cr : "-";
                         if (typeof monsterCR == "object") monsterCR = monsterCR.cr;
                         var tr = `<tr class='bestiaryItem' data-name="${monster.name}" data-source="${monster.source}">
                             <td>${monster.name}</td>
@@ -419,8 +416,8 @@ $(document).ready(function() {
                         </tr>`;
                         tbody.append(tr);
 
-                        if (monster.reprintedAs){
-                            $.each(monster.reprintedAs, function(r, reprinted){
+                        if (monster.reprintedAs) {
+                            $.each(monster.reprintedAs, function(r, reprinted) {
                                 var reprintedName = reprinted.split("|")[0];
                                 var reprintedSource = reprinted.split("|")[1];
                                 var tr = `<tr class='bestiaryItem' data-name="${reprintedName}" data-source="${reprintedSource}">
@@ -436,11 +433,11 @@ $(document).ready(function() {
                     bestiaryList.append(tbody);
                 }, 500);
             });
-        }else{
+        } else {
             if ($(".bestiaryWindow").css("display") == "block" && $(".bestiaryWindow").hasClass("focused")) {
                 $(".bestiaryWindow").css("display", "none");
                 return;
-            }else{
+            } else {
                 $(".bestiaryWindow").fadeIn();
             }
         }
@@ -461,17 +458,17 @@ $(document).ready(function() {
 function SearchAll(term, where) {
     var results = [];
 
-    switch(where.toLowerCase()){
+    switch (where.toLowerCase()) {
         case "item":
-            $.each(AllItems, function(itemIndex, item){
+            $.each(AllItems, function(itemIndex, item) {
                 if (SRDonly)
-                    if (typeof item.srd != "undefined"){
+                    if (typeof item.srd != "undefined") {
                         //if srd is true, then the item is from the srd
-                        if (!item.srd){
+                        if (!item.srd) {
                             //remove the item from the list
                             return;
                         }
-                    }else{
+                    } else {
                         //remove the item from the list
                         return;
                     }
@@ -484,15 +481,15 @@ function SearchAll(term, where) {
             });
             break;
         case "monster":
-            $.each(AllMonsters, function(monsterIndex, monster){
+            $.each(AllMonsters, function(monsterIndex, monster) {
                 if (SRDonly)
-                    if (typeof monster.srd != "undefined"){
+                    if (typeof monster.srd != "undefined") {
                         //if srd is true, then the monster is from the srd
-                        if (!monster.srd){
+                        if (!monster.srd) {
                             //remove the monster from the list
                             return;
                         }
-                    }else{
+                    } else {
                         //remove the monster from the list
                         return;
                     }
@@ -505,7 +502,7 @@ function SearchAll(term, where) {
                     if (typeof monster.type.type != "string") {
                         if (monster.type.type.choose)
                             monsterType = monster.type.type.choose.join(", ").toLowerCase();
-                    }else{
+                    } else {
                         monsterType = monster.type.type.toLowerCase();
                     }
                 }
@@ -516,15 +513,15 @@ function SearchAll(term, where) {
             });
             break;
         case "spell":
-            $.each(AllSpells, function(spellIndex, spell){
+            $.each(AllSpells, function(spellIndex, spell) {
                 if (SRDonly)
-                    if (typeof spell.srd != "undefined"){
+                    if (typeof spell.srd != "undefined") {
                         //if srd is true, then the spell is from the srd
-                        if (!spell.srd){
+                        if (!spell.srd) {
                             //remove the spell from the list
                             return;
                         }
-                    }else{
+                    } else {
                         //remove the spell from the list
                         return;
                     }
@@ -550,9 +547,9 @@ function SearchAll(term, where) {
  * @returns {void} - Does not return a value
  * @async - Contains asynchronous operation via Promise
  */
-function createMonsterStatBlock(monster,source){
+function createMonsterStatBlock(monster, source) {
     var monsterStatBlock = new MythicForgeWindow(WinManager);
-    monsterStatBlock.monsterStatsHTML(monster,source);
+    monsterStatBlock.monsterStatsHTML(monster, source);
 }
 
 /**
@@ -562,9 +559,9 @@ function createMonsterStatBlock(monster,source){
  * @returns {void} - Does not return a value
  * @async - Contains asynchronous operation via Promise
  */
-function createSpellStatBlock(spell,source){
+function createSpellStatBlock(spell, source) {
     var spellStatBlock = new MythicForgeWindow(WinManager);
-    spellStatBlock.spellStatsHTML(spell,source);
+    spellStatBlock.spellStatsHTML(spell, source);
 }
 
 /**
@@ -574,9 +571,9 @@ function createSpellStatBlock(spell,source){
  * @returns {void} - Does not return a value
  * @async - Contains asynchronous operation via Promise
  */
-function createItemStatBlock(item,source){
+function createItemStatBlock(item, source) {
     var itemStatBlock = new MythicForgeWindow(WinManager);
-    itemStatBlock.itemStatsHTML(item,source);
+    itemStatBlock.itemStatsHTML(item, source);
 }
 
 Object.assign(globalThis, {
