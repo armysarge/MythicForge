@@ -265,72 +265,7 @@ def main():
     else:
         print("No MythicForge update performed.")
 
-
     print(" ")
-    #Update and regenerate the 5e SQLite database
-    updater = GitHubAutoUpdater(
-        repo_owner="5e-bits",
-        repo_name="5e-database",
-        copy=False,
-        backup = not hasBackedUp
-    )
-
-    print("Checking for 5e database updates...")
-    if updater.check_and_update():
-        print("Update completed successfully...")
-        print("Regenerating 5e database...")
-
-        src_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '5e-database')
-
-        #delete the 5e.db file
-        if os.path.exists( os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + '/5e.db'):
-            os.remove( os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + '/5e.db')
-
-        #create the 5e.db sqlite file
-        conn = sqlite3.connect( os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + '/5e.db')
-        c = conn.cursor()
-
-        for root, dirs, files in os.walk(src_dir):
-            for file in files:
-                if file.endswith('.json') and file.startswith('5e-SRD'):
-                    #print(os.path.join(root, file))
-                    filename = file.split('.')[0]
-                    with open(os.path.join(root, file), 'r') as f:
-                        TableName = filename.replace('5e-SRD-', '').replace('-', '_')
-                        data = json.load(f)
-                        columns = []
-                        columndatatype = []
-
-                        #build columns
-                        for item in data:
-                            for key in item.keys():
-                                if escape_column_name(key) not in columns and key != 'url':
-                                    columns.append(escape_column_name(key))
-                                    columndatatype.append('INTEGER' if isinstance(item[key], int) else 'TEXT')
-
-                        # Create table with escaped column names
-                        column_definitions = [f'{columns[i]} {columndatatype[i]}' for i in range(len(columns))]
-                        create_table_sql = f"CREATE TABLE {TableName} ({', '.join(column_definitions)})"
-                        c.execute(create_table_sql)
-
-                        # Create index for the "index" column if it exists
-                        if '"index"' in columns:
-                            c.execute(f'CREATE INDEX idx_{TableName}_index ON {TableName}("index")')
-
-                        # Insert with escaped column names
-                        for item in data:
-                            placeholders = ','.join(['?' for _ in columns])
-                            escaped_columns = [escape_column_name(col) for col in columns]
-                            insert_sql = f"INSERT INTO {TableName} ({','.join(escaped_columns)}) VALUES ({placeholders})"
-                            values = [convert_value(item.get(col.strip('"'))) for col in columns]
-                            c.execute(insert_sql, values)
-
-        conn.commit()
-        conn.close()
-
-        print("5e database regenerated successfully...")
-
-        shutil.rmtree(src_dir)
 
     if os.path.exists(temp_dir):
         shutil.rmtree(temp_dir)
