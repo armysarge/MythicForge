@@ -245,6 +245,7 @@ $(document).ready(function() {
                     const tbody = $("<tbody></tbody>");
 
                     var results = SearchAll(search, "item");
+                    console.log(results);
                     $.each(results, function(i, item) {
                         if (i > 100) return;
                         var itemType = (typeof item.type != "undefined") ? Renderer.item.getItemTypeName(item.type) : "-";
@@ -257,21 +258,6 @@ $(document).ready(function() {
                             <td title='${item.source?Parser.sourceJsonToFull(item.source):"N/A"}'>${item.source?item.source:"-"}</td>
                         </tr>`;
                         tbody.append(tr);
-
-                        if (item.reprintedAs) {
-                            $.each(item.reprintedAs, function(r, reprinted) {
-                                var reprintedName = reprinted.split("|")[0];
-                                var reprintedSource = reprinted.split("|")[1];
-                                var tr = `<tr class='itemItem' data-name="${reprintedName}" data-source="${reprintedSource}">
-                                    <td>${reprintedName}</td>
-                                    <td>${itemType}</td>
-                                    <td>${itemRarity}</td>
-                                    <td title='${reprintedSource?Parser.sourceJsonToFull(reprintedSource):"N/A"}'>${reprintedSource?reprintedSource:"-"}</td>
-                                </tr>`;
-                                tbody.append(tr);
-                            });
-                        }
-
                     });
                     itemsList.append(tbody);
                 }, 500);
@@ -482,8 +468,10 @@ function SearchAll(term, where) {
                 var itemName = item.name.toLowerCase();
                 var itemSource = item.source.toLowerCase();
 
-                if (itemName.toLowerCase().includes(term) || itemSource.toLowerCase().includes(term))
+                if (itemName.toLowerCase().includes(term) || itemSource.toLowerCase().includes(term)){
+                    console.log(item);
                     results.push(item);
+                }
             });
             break;
         case "monster":

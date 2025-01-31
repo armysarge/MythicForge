@@ -271,7 +271,7 @@ class MythicForgeWindow {
         } else if (entry.type == "table") {
             result += "<table class='MythicForgeTable'><thead><tr>";
             $(entry.colLabels).each(function(i, col) {
-                result += "<th>" + col + "</th>";
+                result += "<th>" + that.findTagsAndRender(col) + "</th>";
             });
             result += "</tr></thead><tbody>";
             $(entry.rows).each(function(i, row) {
@@ -828,7 +828,7 @@ class MythicForgeWindow {
                 var ItemDesc = "";
                 $.each(item.entries, function(i, subEntry) {
                     if (typeof subEntry === "string"){
-                        ItemDesc += `<p>${subEntry}</p>`;
+                        ItemDesc += `<p>${ that.findTagsAndRender(subEntry)}</p>`;
                     }else{
                         ItemDesc += that.parseSubData(subEntry);
                     }
