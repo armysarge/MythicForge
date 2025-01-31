@@ -139,8 +139,10 @@ const Roller = new AdvancedRoller({
         var resultsString = "";
         if (typeof results.rolls == "undefined") {
             $.each(results.dice, function(i, dice) {
-                if (i > 0) resultsString += ", ";
-                resultsString += dice.rolls.map(roll => roll.value).join(", ")
+                if (typeof dice.rolls != "undefined") {
+                    if (i > 0) resultsString += ", ";
+                    resultsString += dice.rolls.map(roll => roll.value).join(", ")
+                }
             });
             resultsString += " = " + results.result;
         } else {
