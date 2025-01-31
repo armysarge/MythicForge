@@ -314,7 +314,7 @@ class MythicForgeWindow {
      */
     replace5etoolsLinks(el) {
         $(el).find("[data-vet-page]").each(function() {
-            $(this).attr("onclick", "MythicForgeWindow.openInlineContent('" + $(this).attr("data-vet-page") + "','" + $(this).attr("data-vet-source") + "','" + $(this).attr("data-vet-hash") + "')");
+            $(this).attr("onclick", "MythicForgeWindow.openInlineContent(\"" + $(this).attr("data-vet-page") + "\",\"" + $(this).attr("data-vet-source") + "\",\"" + $(this).attr("data-vet-hash") + "\")");
             $(this).removeAttr("href", `#`);
             $(this).addClass("hoverLink");
             $(this).removeAttr("onmouseover");
@@ -842,7 +842,7 @@ class MythicForgeWindow {
                     <svg height="5" width="100%" class="tapered-rule">
                         <polyline points="0,0 400,2.5 0,5"></polyline>
                     </svg>
-                    ${ItemDesc.html()}
+                    ${ItemDesc.html().replace("rd__table","MythicForgeTable")}
                     </div>
                 </div>`;
                 that.el.find(".windowContent").html(html);
