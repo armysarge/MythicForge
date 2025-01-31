@@ -35,7 +35,7 @@ import DisplayResults from "/assets/plugins/dice-ui/src/DisplayResults/DisplayRe
 var AllMonsters = [];
 var AllSpells = [];
 var AllItems = [];
-var SRDonly = true;
+var SRDonly = false;
 let diceBox, RollboxWindow;
 var WinManager = new MythicForgeWindowManager();
 

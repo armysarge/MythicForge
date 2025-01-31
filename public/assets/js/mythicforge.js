@@ -821,11 +821,12 @@ class MythicForgeWindow {
                     .filter(Boolean)
                     .map(pt => `${pt.uppercaseFirst()}`)
                     .join("");
-                console.log(Renderer.item.getTypeRarityAndAttunementText(item));
+
                 var ItemType = $(`<div>${Renderer.item.getTypeRarityAndAttunementText(item).filter(Boolean).join(", ")}</div>`);
                 that.replace5etoolsLinks(ItemType)
                 var ItemDesc = $(`<div>${Renderer.item.hasEntries(item) ? Renderer.item.getRenderedEntries(item, {isCompact: true}) : ""}</div>`);
                 that.replace5etoolsLinks(ItemDesc)
+                var ItemValue = [Parser.itemValueToFullMultiCurrency(item), Parser.itemWeightToFull(item)].filter(Boolean).join(", ").uppercaseFirst();
 
                 that.createWindow(item.name+"&nbsp;<sup>"+item.source+"</sup>", "",{class:"itemWindow"});
                 var html = `<div class="StatBlock">
@@ -835,13 +836,13 @@ class MythicForgeWindow {
                     </div>
                     ` : ""}
                     <div class="section-right">
-                    ${ItemType.html()}</br>
-                    ${[Parser.itemValueToFullMultiCurrency(item), Parser.itemWeightToFull(item)].filter(Boolean).join(", ").uppercaseFirst()}</br>
-                    ${theCostandWeight}
+                    ${ItemType.html()}
+                    ${ItemValue != "" ? `</br>${ItemValue}` : ""}
+                    ${theCostandWeight != "" ? `</br>${theCostandWeight}` : ""}
                     <svg height="5" width="100%" class="tapered-rule">
                         <polyline points="0,0 400,2.5 0,5"></polyline>
                     </svg>
-                    <p>${ItemDesc.html()}</p>
+                    ${ItemDesc.html()}
                     </div>
                 </div>`;
                 that.el.find(".windowContent").html(html);
