@@ -824,8 +824,19 @@ class MythicForgeWindow {
 
                 var ItemType = $(`<div>${Renderer.item.getTypeRarityAndAttunementText(item).filter(Boolean).join(", ")}</div>`);
                 that.replace5etoolsLinks(ItemType)
-                var ItemDesc = $(`<div>${Renderer.item.hasEntries(item) ? Renderer.item.getRenderedEntries(item, {isCompact: true}) : ""}</div>`);
+
+                var ItemDesc = "";
+                $.each(item.entries, function(i, subEntry) {
+                    if (typeof subEntry === "string"){
+                        ItemDesc += `<p>${subEntry}</p>`;
+                    }else{
+                        ItemDesc += that.parseSubData(subEntry);
+                    }
+                });
+
+                ItemDesc = $(`<div>${ItemDesc}</div>`);
                 that.replace5etoolsLinks(ItemDesc)
+
                 var ItemValue = [Parser.itemValueToFullMultiCurrency(item), Parser.itemWeightToFull(item)].filter(Boolean).join(", ").uppercaseFirst();
 
                 that.createWindow(item.name+"&nbsp;<sup>"+item.source+"</sup>", "",{class:"itemWindow"});
@@ -842,7 +853,7 @@ class MythicForgeWindow {
                     <svg height="5" width="100%" class="tapered-rule">
                         <polyline points="0,0 400,2.5 0,5"></polyline>
                     </svg>
-                    ${ItemDesc.html().replace("rd__table","MythicForgeTable")}
+                    ${ItemDesc.html()}
                     </div>
                 </div>`;
                 that.el.find(".windowContent").html(html);

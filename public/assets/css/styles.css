@@ -704,7 +704,6 @@ input::placeholder {
     width: 100%;
     text-align: center;
     font-weight: bold;
-    max-width: 350px;
 }
 
 .tapered-rule {
@@ -814,6 +813,10 @@ input::placeholder {
 .actions h4 {
     font-style: italic;
     font-weight: bold;
+}
+
+.itemWindow .property-block {
+    line-height: 1.5em;
 }
 
 .property-block {
