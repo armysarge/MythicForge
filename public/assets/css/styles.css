@@ -479,7 +479,7 @@ body .rollbox-min {
 }
 
 .itemWindow .StatBlock .section-right {
-    width: 150px;
+    font-size: 12px;
 }
 
 .StatBlock.wide>div {

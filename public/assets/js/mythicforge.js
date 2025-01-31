@@ -1,5 +1,4 @@
 class MythicForgeWindowManager {
-    static #instance;
 
     constructor() {
         this.windows = [];
@@ -30,8 +29,8 @@ class MythicForgeWindow {
      * @method destroy
      */
     destroy() {
-        if(this.el){
-            if(this.manager)
+        if (this.el) {
+            if (this.manager)
                 this.manager.removeWindow(this);
             this.el.remove();
         }
@@ -59,9 +58,9 @@ class MythicForgeWindow {
         </div>`;
         this.el = $(html);
         $("body").append(this.el);
-        if (typeof content === "string"){
+        if (typeof content === "string") {
             this.el.find(".windowContent").html(content);
-        }else if (content instanceof HTMLElement){
+        } else if (content instanceof HTMLElement) {
             this.el.find(".windowContent").append(content);
         }
         setTimeout(() => {
@@ -79,94 +78,94 @@ class MythicForgeWindow {
      * @description Handles parsing and formatting of stat block elements, replacing 5etools links
      * with inline content handlers and removing unwanted event handlers.
      */
-    dataParser(obj,type,subType){
+    dataParser(obj, type, subType) {
         var theRenderer = Renderer.get();
         var that = this;
 
-        switch(type){
+        switch (type) {
             case "saves":
                 if (obj.save)
                     return Renderer.monster.getSavesPart(obj);
                 break;
             case "ability":
                 if (obj[subType])
-                return Renderer.utils.getAbilityRoller(obj,subType);
+                    return Renderer.utils.getAbilityRoller(obj, subType);
                 break;
             case "alignment":
-                if(obj.alignment)
+                if (obj.alignment)
                     return Renderer.monster.getTypeAlignmentPart(obj);
                 break;
             case "habitat":
-                if(obj.environment)
+                if (obj.environment)
                     return obj.environment.join(", ");
                 break;
             case "ac":
-                if(obj.ac){
-                    var theAC = $("<div>"+Parser.acToFull(obj.ac)+"</div>");
+                if (obj.ac) {
+                    var theAC = $("<div>" + Parser.acToFull(obj.ac) + "</div>");
                     that.replace5etoolsLinks(theAC);
                     return theAC.html();
                 }
                 break;
             case "hp":
-                if(obj.hp)
-                return Renderer.monster.getRenderedHp(obj.hp,{isPlainText:false});
+                if (obj.hp)
+                    return Renderer.monster.getRenderedHp(obj.hp, { isPlainText: false });
                 break;
             case "speed":
                 if (obj.speed)
-                return Parser.getSpeedString(obj);
+                    return Parser.getSpeedString(obj);
                 break;
             case "initiative":
                 if (obj.dex)
-                return Renderer.monster.getInitiativePart(obj);
+                    return Renderer.monster.getInitiativePart(obj);
                 break;
             case "resistances":
-                if (obj.resist){
-                    var theResistances = $("<div>"+Parser.getFullImmRes(obj.resist,{isTitleCase:true})+"</div>");
+                if (obj.resist) {
+                    var theResistances = $("<div>" + Parser.getFullImmRes(obj.resist, { isTitleCase: true }) + "</div>");
                     that.replace5etoolsLinks(theResistances);
                     return theResistances.html();
                 }
                 break;
             case "immunities":
-                if (obj.immune){
-                    var theImmunities = $("<div>"+Renderer.monster.getImmunitiesCombinedPart(obj)+"</div>");
+                if (obj.immune) {
+                    var theImmunities = $("<div>" + Renderer.monster.getImmunitiesCombinedPart(obj) + "</div>");
                     that.replace5etoolsLinks(theImmunities);
                     return theImmunities.html();
                 }
                 break;
             case "skills":
-                if (obj.skill){
-                    var theSkills = $("<div>"+Renderer.monster.getSkillsString(theRenderer,obj)+"</div>");
+                if (obj.skill) {
+                    var theSkills = $("<div>" + Renderer.monster.getSkillsString(theRenderer, obj) + "</div>");
                     that.replace5etoolsLinks(theSkills);
                     return theSkills.html();
                 }
                 break;
             case "senses":
-                if (obj.sense){
-                    var theSenses = $("<div>"+Renderer.monster.getSensesPart(obj)+"</div>");
+                if (obj.sense) {
+                    var theSenses = $("<div>" + Renderer.monster.getSensesPart(obj) + "</div>");
                     that.replace5etoolsLinks(theSenses);
                     return theSenses.html();
                 }
                 break;
             case "cr":
-                return (obj.cr)?Renderer.monster._getChallengeRatingPart_classic({mon:obj}):"-";
+                return (obj.cr) ? Renderer.monster._getChallengeRatingPart_classic({ mon: obj }) : "-";
             case "traits":
                 var html = "";
                 var theTraits = Renderer.monster.getOrderedTraits(obj, theRenderer);
-                if(theTraits)
-                if (theTraits.length > 0){
-                    var allTraits = "";
+                if (theTraits)
+                    if (theTraits.length > 0) {
+                        var allTraits = "";
 
-                    $.each(theTraits, function(i, it) {
-                        allTraits += `<div class="property-block"><h4>${it.name}. </h4><p>${it.entries.join("</p><p>")}</p></div>`;
-                    });
+                        $.each(theTraits, function(i, it) {
+                            allTraits += `<div class="property-block"><h4>${it.name}. </h4><p>${it.entries.join("</p><p>")}</p></div>`;
+                        });
 
-                    html = that.findTagsAndRender(allTraits);
-                }
+                        html = that.findTagsAndRender(allTraits);
+                    }
 
                 return html;
             case "actions":
                 var html = "";
-                if (obj.action.length > 0){
+                if (obj.action.length > 0) {
 
                     var allActions = "";
 
@@ -185,7 +184,7 @@ class MythicForgeWindow {
                 return html;
             case "legendActions":
                 var html = "";
-                if (obj.legendaryGroup){
+                if (obj.legendaryGroup) {
 
                     var intro = Renderer.monster.getLegendaryActionIntroEntry(obj);
                     var otherActions = DataUtil.monster.getLegendaryGroup(obj);
@@ -199,11 +198,11 @@ class MythicForgeWindow {
                         allLegendActions += `<div class="property-block"><h4>${actionName}. </h4><p>${actionDesc}</p></div>`;
                     });
 
-                    $(otherActions.lairActions).each(function(i,entry){
+                    $(otherActions.lairActions).each(function(i, entry) {
                         allLairActions += that.parseSubData(entry);
                     });
 
-                    $(otherActions.regionalEffects).each(function(i,entry){
+                    $(otherActions.regionalEffects).each(function(i, entry) {
                         allRegEffects += that.parseSubData(entry);
                     });
 
@@ -245,57 +244,56 @@ class MythicForgeWindow {
      * @param {string} [entry.entry] - Content for property block items
      * @returns {string} HTML markup string representing the parsed entry
      */
-    parseSubData(entry){
+    parseSubData(entry) {
         var that = this;
         var result = "";
-        if (entry.type == "list"){
+        if (entry.type == "list") {
             result += "<ul>";
             $.each(entry.items, function(i, item) {
-                if (typeof item === "string"){
-                    result += "<li>"+that.findTagsAndRender(item)+"</li>";
-                }else if (typeof item === "object"){
-                    if (item.entry){
+                if (typeof item === "string") {
+                    result += "<li>" + that.findTagsAndRender(item) + "</li>";
+                } else if (typeof item === "object") {
+                    if (item.entry) {
                         result += "<li><div class='property-block'>";
                         if (item.name)
-                            result += "<h4>"+item.name+"</h4>";
-                        result += "<p>"+that.findTagsAndRender(item.entry)+"</p>";
+                            result += "<h4>" + item.name + "</h4>";
+                        result += "<p>" + that.findTagsAndRender(item.entry) + "</p>";
                         result += "</div></li>";
-                    }else if (item.entries){
+                    } else if (item.entries) {
                         $.each(item.entries, function(i, subEntry) {
-                            result += "<li>"+that.findTagsAndRender(subEntry)+"</li>";
+                            result += "<li>" + that.findTagsAndRender(subEntry) + "</li>";
                         });
                     }
                 }
             });
 
             result += "</ul>";
-        }else if(entry.type == "table"){
+        } else if (entry.type == "table") {
             result += "<table class='MythicForgeTable'><thead><tr>";
-            $(entry.colLabels).each(function(i,col){
-                result += "<th>"+col+"</th>";
+            $(entry.colLabels).each(function(i, col) {
+                result += "<th>" + col + "</th>";
             });
             result += "</tr></thead><tbody>";
-            $(entry.rows).each(function(i,row){
+            $(entry.rows).each(function(i, row) {
                 result += "<tr>";
-                $(row).each(function(i,cell){
-                    result += "<td>"+cell+"</td>";
+                $(row).each(function(i, cell) {
+                    result += "<td>" + cell + "</td>";
                 });
                 result += "</tr>";
             });
             result += "</tbody></table>";
-            result += "</table>";
-        }else if(entry.type == "entries"){
+        } else if (entry.type == "entries") {
             result += "<div class='property-block'>";
             if (typeof entry.name != "undefined")
-                result += "<h4>"+entry.name+". </h4>";
+                result += "<h4>" + entry.name + ". </h4>";
 
             $.each(entry.entries, function(i, subEntry) {
                 result += that.parseSubData(subEntry);
             });
-            result += "</div></li>";
+            result += "</div>";
 
-        }else if (entry!= "") {
-            result += "<p>"+that.findTagsAndRender(entry)+"</p>";
+        } else if (entry != "") {
+            result += "<p>" + that.findTagsAndRender(entry) + "</p>";
         }
         return result;
     }
@@ -316,8 +314,8 @@ class MythicForgeWindow {
      */
     replace5etoolsLinks(el) {
         $(el).find("[data-vet-page]").each(function() {
-            $(this).attr("onclick","MythicForgeWindow.openInlineContent('"+$(this).attr("data-vet-page")+"','"+$(this).attr("data-vet-source")+"','"+$(this).attr("data-vet-hash")+"')");
-            $(this).removeAttr("href",`#`);
+            $(this).attr("onclick", "MythicForgeWindow.openInlineContent('" + $(this).attr("data-vet-page") + "','" + $(this).attr("data-vet-source") + "','" + $(this).attr("data-vet-hash") + "')");
+            $(this).removeAttr("href", `#`);
             $(this).addClass("hoverLink");
             $(this).removeAttr("onmouseover");
             $(this).removeAttr("onmousemove");
@@ -334,20 +332,22 @@ class MythicForgeWindow {
      * @param {string} hash - The hash identifier for the content
      * @returns {Promise<void>} - A promise that resolves when the content window is created and displayed
      */
-    static async openInlineContent(type,source,hash){
+    static async openInlineContent(type, source, hash) {
 
-        DataLoader.pCacheAndGet(type,source,hash).then(function(data){
+        DataLoader.pCacheAndGet(type, source, hash).then(function(data) {
             var inlineContent = new MythicForgeWindow(WinManager);
-            inlineContent.inlineContentHtml(data,type).then(function(theContent){
-                if (theContent != ""){
-                    if (type.split(".")[0] == "spells"){
-                        inlineContent.spellStatsHTML(data.name,source);
-                    }else{
-                    inlineContent.createWindow(data.name, theContent);
-                    inlineContent.el.fadeIn();
-                    inlineContent.centerDivToScreen();
+            inlineContent.inlineContentHtml(data, type).then(function(theContent) {
+                if (theContent != "") {
+                    if (type.split(".")[0] == "spells") {
+                        inlineContent.spellStatsHTML(data.name, source);
+                    } else if (type.split(".")[0] == "items") {
+                        inlineContent.itemStatsHTML(data.name, source);
+                    } else {
+                        inlineContent.createWindow(data.name, theContent);
+                        inlineContent.el.fadeIn();
+                        inlineContent.centerDivToScreen();
                     }
-                }else{
+                } else {
                     inlineContent.destroy();
                 }
             });
@@ -360,8 +360,8 @@ class MythicForgeWindow {
      * @param {string} type - The type string that determines how to render the content
      * @returns {string} HTML string containing formatted inline content
      */
-    async inlineContentHtml(data,type){
-        if (data){
+    async inlineContentHtml(data, type) {
+        if (data) {
             var that = this;
             var html = "";
 
@@ -402,32 +402,6 @@ class MythicForgeWindow {
                         }
                     });
 
-                    break;
-                case "items":
-
-                    const [ptDamage, ptProperties] = Renderer.item.getRenderedDamageAndProperties(data);
-                    const ptMastery = Renderer.item.getRenderedMastery(data);
-
-                    const theCostandWeight = [
-                        ptDamage,
-                        ptProperties,
-                        ptMastery,
-                    ]
-                        .filter(Boolean)
-                        .map(pt => `<div class="ve-text-wrap-balance ve-text-right">${pt.uppercaseFirst()}</div>`)
-                        .join("");
-
-                    var ItemType = $(`<div>${Renderer.item.getTypeRarityAndAttunementText(data).join("")}</div>`);
-                    that.replace5etoolsLinks(ItemType)
-                    var ItemDesc = $(`<div>${Renderer.item.hasEntries(data) ? Renderer.item.getRenderedEntries(data, {isCompact: true}) : ""}</div>`);
-                    that.replace5etoolsLinks(ItemDesc)
-                    html += `${ItemType.html()}</br>
-                        ${[Parser.itemValueToFullMultiCurrency(data), Parser.itemWeightToFull(data)].filter(Boolean).join(", ").uppercaseFirst()}</br>
-                        ${theCostandWeight}
-                        <svg height="5" width="100%" class="tapered-rule">
-                            <polyline points="0,0 400,2.5 0,5"></polyline>
-                        </svg>
-                        ${ItemDesc.html()}`
                     break;
             }
 
@@ -836,12 +810,38 @@ class MythicForgeWindow {
 
                 var itemPicture = (item.fluff)?(item.fluff.images)?(item.fluff.images[0].href.path) ? `<div class="StatBlockImage"><img src="/assets/images/5etools/${item.fluff.images[0].href.path}"></div>` : "":"":"";
 
+                const [ptDamage, ptProperties] = Renderer.item.getRenderedDamageAndProperties(item);
+                const ptMastery = Renderer.item.getRenderedMastery(item);
+
+                const theCostandWeight = [
+                    ptDamage,
+                    ptProperties,
+                    ptMastery,
+                ]
+                    .filter(Boolean)
+                    .map(pt => `${pt.uppercaseFirst()}`)
+                    .join("");
+                console.log(Renderer.item.getTypeRarityAndAttunementText(item));
+                var ItemType = $(`<div>${Renderer.item.getTypeRarityAndAttunementText(item).filter(Boolean).join(", ")}</div>`);
+                that.replace5etoolsLinks(ItemType)
+                var ItemDesc = $(`<div>${Renderer.item.hasEntries(item) ? Renderer.item.getRenderedEntries(item, {isCompact: true}) : ""}</div>`);
+                that.replace5etoolsLinks(ItemDesc)
+
                 that.createWindow(item.name+"&nbsp;<sup>"+item.source+"</sup>", "",{class:"itemWindow"});
                 var html = `<div class="StatBlock">
+                    ${itemPicture != "" ? `
                     <div class="section-left">
                         ${itemPicture}
                     </div>
+                    ` : ""}
                     <div class="section-right">
+                    ${ItemType.html()}</br>
+                    ${[Parser.itemValueToFullMultiCurrency(item), Parser.itemWeightToFull(item)].filter(Boolean).join(", ").uppercaseFirst()}</br>
+                    ${theCostandWeight}
+                    <svg height="5" width="100%" class="tapered-rule">
+                        <polyline points="0,0 400,2.5 0,5"></polyline>
+                    </svg>
+                    <p>${ItemDesc.html()}</p>
                     </div>
                 </div>`;
                 that.el.find(".windowContent").html(html);
@@ -962,7 +962,7 @@ class MythicForgeWindow {
         if (this.monster){
 
                 const response = await fetch('/story', {
-                    method: 'POST', 
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
