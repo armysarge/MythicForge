@@ -149,6 +149,12 @@ html {
     background: url('../images/ui/monsterfluff.webp') center no-repeat;
 }
 
+.viewSpellFluff{
+    left:unset;
+    right:0;
+    background: url('../images/ui/spellfluff.webp') center no-repeat;
+}
+
 .rollboxWindow .rollWindow {
     height: 300px;
     width: 400px
@@ -427,21 +433,34 @@ body .rollbox-min {
 }
 
 .mythicForgeWindow>div.windowContent .inlineContent h4 {
-    font-size: 18px;
+    font-size: 13px;
 }
 
-.mythicForgeWindow>div.windowContent .inlineContent p {
-    margin-bottom: 0.6em;
-}
-
-.mythicForgeWindow>div.windowContent .inlineContent .actions h4 {
+.mythicForgeWindow>div.windowContent .inlineContent h5 {
     font-size: 12px;
 }
 
-.mythicForgeWindow>div.windowContent .inlineContent .actions p {
-    margin-bottom: 0em;
+blockquote{
+    font-size: 12px;
+    font-style: italic;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    color: #7a1f0d;
+    font-family: 'Merriweather', serif;
+    margin-top: 20px;
 }
 
+blockquote+h5{
+    width:100%;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.mythicForgeWindow>div.windowContent .inlineContent p {
+    margin-bottom: 0em;
+}
 
 .bestiaryWindow,
 .spellsWindow,

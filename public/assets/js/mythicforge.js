@@ -302,6 +302,24 @@ class MythicForgeWindow {
             });
 
             result += "</div>";
+        }else if (entry.type == "insetReadaloud") {
+
+            $.each(entry.entries, function(i, subEntry) {
+                result += that.parseSubData(subEntry);
+            });
+
+        }else if (entry.type == "quote") {
+            result += "<blockquote>";
+            var quote = "";
+            $.each(entry.entries, function(i, subEntry) {
+                quote += that.parseSubData(subEntry);
+            });
+            if (quote.indexOf("\"") == -1 && quote.indexOf("“") == -1)
+                quote = "“"+quote+"”";
+            result += quote;
+            result += "</blockquote>";
+            if (typeof entry.by != "undefined")
+                result += "<h5>-" + entry.by + ". </h5>";
         } else if (entry != "") {
             result += "<p>" + that.findTagsAndRender(entry) + "</p>";
         }
@@ -414,12 +432,11 @@ class MythicForgeWindow {
 
                     break;
                 case "monsterFluff":
+                case "spellFluff":
                     console.log(data);
                     $.each (data.fluff.entries, function(i,entry){
                         html += that.parseSubData(entry);
                     });
-                    break;
-                case "spellFluff":
                     break;
             }
 
@@ -446,7 +463,7 @@ class MythicForgeWindow {
         var that = this;
         //find curlybrackets using regex
         var regex = /{@(.*?)}/g;
-        var matches = text.match(regex);
+        var matches = String(text).match(regex);
         if (matches){
             for (var i = 0; i < matches.length; i++){
                 var RenderedTag = $("<div>"+Renderer.get().render(matches[i])+ "</div>");
@@ -556,7 +573,7 @@ class MythicForgeWindow {
 
                 var html = `
                 <div class="StatBlock">
-                    ${typeof monster.fluff != "undefined" ? `<div class="windowIcon viewMonsterFluff" title='View this monster fluff data'></div>` : ""}
+                    ${(monster.fluff)?(typeof monster.fluff.entries != "undefined" ? `<div class="windowIcon viewMonsterFluff" title='View this monster fluff data'></div>` : ""):""}
                     <div class="section-left">
                         ${monsterPicture}
                         <div class="creature-heading">
@@ -752,6 +769,7 @@ class MythicForgeWindow {
 
                 that.createWindow(spell.name+"&nbsp;<sup>"+spell.source+"</sup>", "",{class:"spellWindow"});
                 var html = `<div class="StatBlock">
+                    ${(spell.fluff)?(typeof spell.fluff.entries != "undefined" ? `<div class="windowIcon viewSpellFluff" title='View this spell fluff data'></div>` : ""):""}
                     ${spellPicture != "" ? `
                     <div class="section-left">
                         ${spellPicture}
@@ -826,6 +844,18 @@ class MythicForgeWindow {
                     </div>
                 </div>`;
                 that.el.find(".windowContent").html(html);
+                that.el.find(".viewSpellFluff").on("click tap",function(){
+                    var inlineContent = new MythicForgeWindow(WinManager);
+                    inlineContent.inlineContentHtml(monster, "spellFluff").then(function(theContent) {
+                        if (theContent != "") {
+                            inlineContent.createWindow(spell.name + " (Fluff)", theContent);
+                            inlineContent.el.fadeIn();
+                            inlineContent.centerDivToScreen();
+                        } else {
+                            inlineContent.destroy();
+                        }
+                    });
+                });
                 that.el.fadeIn();
                 that.centerDivToScreen();
             }
