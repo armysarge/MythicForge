@@ -128,6 +128,27 @@ html {
     z-index: 1;
 }
 
+.mythicForgeWindow .windowIcon{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 50px;
+    background-size: 100%;
+    z-index: 2;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mythicForgeWindow .windowIcon:hover{
+    transform: scale(1.1);
+    filter : drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+}
+
+.viewMonsterFluff{
+    background: url('../images/ui/monsterfluff.webp') center no-repeat;
+}
+
 .rollboxWindow .rollWindow {
     height: 300px;
     width: 400px
@@ -412,6 +433,15 @@ body .rollbox-min {
 .mythicForgeWindow>div.windowContent .inlineContent p {
     margin-bottom: 0.6em;
 }
+
+.mythicForgeWindow>div.windowContent .inlineContent .actions h4 {
+    font-size: 12px;
+}
+
+.mythicForgeWindow>div.windowContent .inlineContent .actions p {
+    margin-bottom: 0em;
+}
+
 
 .bestiaryWindow,
 .spellsWindow,
@@ -786,6 +816,8 @@ input::placeholder {
 .property-block h4,
 .property-block p,
 .property-block ul li,
+.sections>p,
+.sections>ul li,
 .actions>p,
 .actions>ul li {
     font-size: 12px;
@@ -801,16 +833,16 @@ input::placeholder {
     padding: 0px;
 }
 
-.actions>p {
+.actions>p,.sections>p  {
     display: block;
 }
 
-.actions>ul li {
+.actions>ul li,.sections>ul li  {
     display: list-item;
 }
 
 .property-block h4,
-.actions h4 {
+.actions h4,.sections h4 {
     font-style: italic;
     font-weight: bold;
 }
@@ -824,6 +856,8 @@ input::placeholder {
     line-height: 1em;
 }
 
+.sections h3,
+.sections>h4,
 .actions h3,
 .actions>h4 {
     border-bottom: 1px solid #7A200D;

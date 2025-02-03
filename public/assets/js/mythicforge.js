@@ -292,6 +292,16 @@ class MythicForgeWindow {
             });
             result += "</div>";
 
+        }else if (entry.type == "section") {
+            result += "<div class='sections'>";
+            if (typeof entry.name != "undefined")
+                result += "<h3>" + entry.name + ". </h3>";
+
+            $.each(entry.entries, function(i, subEntry) {
+                result += that.parseSubData(subEntry);
+            });
+
+            result += "</div>";
         } else if (entry != "") {
             result += "<p>" + that.findTagsAndRender(entry) + "</p>";
         }
@@ -402,6 +412,14 @@ class MythicForgeWindow {
                         }
                     });
 
+                    break;
+                case "monsterFluff":
+                    console.log(data);
+                    $.each (data.fluff.entries, function(i,entry){
+                        html += that.parseSubData(entry);
+                    });
+                    break;
+                case "spellFluff":
                     break;
             }
 
@@ -538,6 +556,7 @@ class MythicForgeWindow {
 
                 var html = `
                 <div class="StatBlock">
+                    ${typeof monster.fluff != "undefined" ? `<div class="windowIcon viewMonsterFluff" title='View this monster fluff data'></div>` : ""}
                     <div class="section-left">
                         ${monsterPicture}
                         <div class="creature-heading">
@@ -654,6 +673,18 @@ class MythicForgeWindow {
                     </div> <!-- section right -->
                 </div>`;
                 that.el.find(".windowContent").html(html);
+                that.el.find(".viewMonsterFluff").on("click tap",function(){
+                    var inlineContent = new MythicForgeWindow(WinManager);
+                    inlineContent.inlineContentHtml(monster, "monsterFluff").then(function(theContent) {
+                        if (theContent != "") {
+                            inlineContent.createWindow(monster.name + " (Fluff)", theContent);
+                            inlineContent.el.fadeIn();
+                            inlineContent.centerDivToScreen();
+                        } else {
+                            inlineContent.destroy();
+                        }
+                    });
+                });
                 that.el.fadeIn();
                 that.centerDivToScreen();
             }
