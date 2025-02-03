@@ -21,7 +21,9 @@ CREATE TABLE IF NOT EXISTS characters (
     speed INTEGER NOT NULL DEFAULT 30,
     alive BOOLEAN NOT NULL DEFAULT 1,
     resurrectable BOOLEAN NOT NULL DEFAULT 1,
-    proficiency_bonus INTEGER NOT NULL DEFAULT 2
+    proficiency_bonus INTEGER NOT NULL DEFAULT 2,
+    story TEXT,
+    notes TEXT,
 );
 
 -- Create table for character stats (strength, dexterity, etc.)
