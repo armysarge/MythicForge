@@ -44,9 +44,9 @@ class MythicForge:
         self.db_path = 'MythicForge.db'
 
         # Initialize database schema
-        #with sqlite3.connect(self.db_path) as conn:
-        #    with open('setup.sql', 'r', encoding='utf-8') as f:
-        #        conn.executescript(f.read())
+        with sqlite3.connect(self.db_path) as conn:
+            with open('setup.sql', 'r', encoding='utf-8') as f:
+                conn.executescript(f.read())
 
     def get_db(self):
         if 'main_db' not in g:

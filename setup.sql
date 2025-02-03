@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS characters (
     resurrectable BOOLEAN NOT NULL DEFAULT 1,
     proficiency_bonus INTEGER NOT NULL DEFAULT 2,
     story TEXT,
-    notes TEXT,
+    notes TEXT
 );
 
 -- Create table for character stats (strength, dexterity, etc.)
