@@ -574,7 +574,7 @@ class MythicForgeWindow {
                 var html = `
                 <div class="StatBlock">
                     ${(monster.fluff)?(typeof monster.fluff.entries != "undefined" ? `<div class="windowIcon viewMonsterFluff" title='View this monster fluff data'></div>` : ""):""}
-                    <div class="windowIcon createMonsterStory" title='Create a random story for this monster'></div>
+                    <div class="windowIcon createMonsterStory ${(monsterPicture == "")?"bottomIcon":""}" title='Create a random story for this monster'></div>
                     <div class="section-left">
                         ${monsterPicture}
                         <div class="creature-heading">

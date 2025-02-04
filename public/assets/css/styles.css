@@ -140,6 +140,11 @@ html {
     transition: all 0.3s ease;
 }
 
+.mythicForgeWindow .windowIcon.bottomIcon{
+    top:unset;
+    bottom:0;
+}
+
 .mythicForgeWindow .windowIcon:hover{
     transform: scale(1.1);
     filter : drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
@@ -753,6 +758,7 @@ input::placeholder {
     line-height: 1.2em;
     height:1.2em;
     overflow: hidden;
+    min-width: 300px;
   }
   .mythicForgeLoader:before {
     content:"Loading...\A⌰oading...\A⌰⍜ading...\A⌰⍜⏃ding...\A⌰⍜⏃⎅ing...\A⌰⍜⏃⎅⟟ng...\A⌰⍜⏃⎅⟟⋏g...\A⌰⍜⏃⎅⟟⋏☌...\A⌰⍜⏃⎅⟟⋏☌⟒..\A⌰⍜⏃⎅⟟⋏☌⟒⏁.\A⌰⍜⏃⎅⟟⋏☌⟒⏁⋔";
