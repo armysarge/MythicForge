@@ -277,7 +277,7 @@ class MythicForgeWindow {
             $(entry.rows).each(function(i, row) {
                 result += "<tr>";
                 $(row).each(function(i, cell) {
-                    result += "<td>" + cell + "</td>";
+                    result += "<td>" + that.findTagsAndRender(cell) + "</td>";
                 });
                 result += "</tr>";
             });
