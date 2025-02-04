@@ -104,7 +104,7 @@ The application will be available at `http://localhost:3000`
 Configure your preferred AI provider in the `.env` file:
 
 ```env
-AI_PROVIDER=openai  # Options: openai, gemini, local
+AI_PROVIDER=openai  # Options: openai, gemini, local, none
 OPENAI_API_KEY=your_key_here
 GEMINI_API_KEY=your_key_here
 ```
