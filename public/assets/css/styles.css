@@ -147,12 +147,20 @@ html {
 
 .viewMonsterFluff{
     background: url('../images/ui/monsterfluff.webp') center no-repeat;
+    background-size: 100%;
+}
+
+.windowIcon.createMonsterStory{
+    top:50px;
+    background: url('../images/ui/spellfluff.webp') center no-repeat;
+    background-size: 100%;
 }
 
 .viewSpellFluff{
     left:unset;
     right:0;
     background: url('../images/ui/spellfluff.webp') center no-repeat;
+    background-size: 100%;
 }
 
 .rollboxWindow .rollWindow {
@@ -179,7 +187,7 @@ body .rollbox-min {
     display: none;
 }
 
-.mythicForgeWindow .StatBlock {
+.mythicForgeWindow .StatBlock,.mythicForgeWindow .storyBlock,.mythicForgeWindow .propertyExplanation{
     max-height: 500px;
     overflow: hidden;
     overflow-y: auto;
@@ -190,6 +198,26 @@ body .rollbox-min {
     flex-basis: auto;
     align-self: auto;
     order: 1;
+}
+
+.mythicForgeWindow .storyBlock,.mythicForgeWindow .propertyExplanation{
+    max-width:400px;
+    font-size: 12px;
+    padding: 10px;
+    padding-top:0px;
+    margin-top:0px;
+}
+
+.mythicForgeWindow .storyBlock h1,.mythicForgeWindow .propertyExplanation h1{
+    font-size: 18px;
+}
+
+.mythicForgeWindow .storyBlock h2,.mythicForgeWindow .propertyExplanation h2{
+    font-size: 16px;
+}
+
+.mythicForgeWindow .storyBlock h3,.mythicForgeWindow .propertyExplanation h3{
+    font-size: 14px;
 }
 
 .dice-box-canvas {
@@ -714,6 +742,29 @@ input::placeholder {
     border-top: 0;
 }
 
+/* HTML: <div class="loader"></div> */
+.mythicForgeLoader {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Cinzel Decorative', serif;
+    white-space: pre;
+    font-size: 20px;
+    line-height: 1.2em;
+    height:1.2em;
+    overflow: hidden;
+  }
+  .mythicForgeLoader:before {
+    content:"Loading...\A⌰oading...\A⌰⍜ading...\A⌰⍜⏃ding...\A⌰⍜⏃⎅ing...\A⌰⍜⏃⎅⟟ng...\A⌰⍜⏃⎅⟟⋏g...\A⌰⍜⏃⎅⟟⋏☌...\A⌰⍜⏃⎅⟟⋏☌⟒..\A⌰⍜⏃⎅⟟⋏☌⟒⏁.\A⌰⍜⏃⎅⟟⋏☌⟒⏁⋔";
+    white-space: pre;
+    display: inline-block;
+    animation: l39 1s infinite steps(11) alternate;
+  }
+
+  @keyframes l39 {
+    100%{transform: translateY(-100%)}
+  }
+
 @media screen and (max-width: 675px) {
     .StatBlock.wide {
         min-width: 280px;
@@ -847,6 +898,15 @@ input::placeholder {
 .StatBlock .section-right>ul li {
     font-size: 12px;
 }
+
+.property-block > h4.actionable {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.property-block > h4.actionable:hover{
+    box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.5);
+}
+
 
 .property-block ul {
     padding: 0px;

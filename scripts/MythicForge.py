@@ -28,11 +28,12 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 if AI_PROVIDER not in ['openai', 'gemini', 'local', 'none']:
     raise ValueError("AI_PROVIDER must be 'openai', 'gemini', or 'local'")
 
+# Set provider to 'none' if API key is missing
 if AI_PROVIDER == 'openai' and not OPENAI_API_KEY:
-    raise ValueError("OPENAI_API_KEY is required when AI_PROVIDER is 'openai'")
+    AI_PROVIDER = 'none'
 
 if AI_PROVIDER == 'gemini' and not GEMINI_API_KEY:
-    raise ValueError("GEMINI_API_KEY is required when AI_PROVIDER is 'gemini'")
+    AI_PROVIDER = 'none'
 
 ####################################################################################
 ############################# MYTHIC FORGE CLASS ###################################
@@ -83,8 +84,11 @@ def init():
 
 @app.route('/story', methods=['POST'])
 def create_story():
+    StringProperty = ""
     #get post json data of a monster, use Google gemini AI to create a story and return it
     if AI_PROVIDER == 'gemini':
+        if not GEMINI_API_KEY:
+            return jsonify({"error": "GEMINI_API_KEY is not set"})
         #do a post request to the gemini AI
         url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
         params = {
@@ -98,7 +102,7 @@ def create_story():
             "system_instruction": {
             "parts":
             {
-                "text": "You are a story teller and you are telling a fantasy story about a monster backstory. You will receive json data about the monster, use it to tell a interesting short summarized back story about it with a name."}},
+                "text": "You are a story teller and you are telling a DND fantasy story about a monster. You will receive json data about the monster, use it to tell a interesting short summarized back story about it. Give it a name, a plot, a setting, and a conflict as needed. Use proper HTML formatting. The story should be around 100-200 words. Use \"<div class='property-line'><h4>Heading</h4><p></p></div>\" to format any properties, <div class='sections'><h3>section name</h3><div class='property-block'><h4>Property name </h4><p></p></div></div> for sections and properties. No ``` or code blocks are needed and no css style tags."}},
                 "contents": [
                 {
                     "parts": [
@@ -109,15 +113,65 @@ def create_story():
                 }
             ]
         }
+        response = requests.post(url, params=params, headers=headers, json=payload)
+
+        for candidate in response.json()["candidates"]:
+            candidate_content = candidate["content"]
+            text_parts = " ".join(part["text"] for part in candidate_content["parts"])
+            StringProperty += f"{text_parts}"
+
     elif AI_PROVIDER == 'openai':
         # Add OpenAI implementation here
         pass
     else:
         return jsonify({"error": "Invalid AI provider configuration"})
 
-    response = requests.post(url, params=params, headers=headers, json=payload)
-    print(response.json())
-    return response.json()
+    return jsonify({"story": StringProperty})
+
+@app.route('/prop', methods=['POST'])
+def explain_prop():
+    #get post json data of a property nad explain it better
+    StringProperty = ""
+    if AI_PROVIDER == 'gemini':
+        if not GEMINI_API_KEY:
+            return jsonify({"error": "GEMINI_API_KEY is not set"})
+        #do a post request to the gemini AI
+        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
+        params = {
+            "key" : GEMINI_API_KEY
+        }
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "system_instruction": {
+            "parts":
+            {
+                "text": "Better explain a DND property on the specific topic, maybe also include an example/ or where/when this might take place. Response in html format but no ``` or code blocks are needed and no css style tags."}},
+                "contents": [
+                {
+                    "parts": [
+                        {
+                            "text": json.dumps(request.json).replace('\n', '')
+                        }
+                    ]
+                }
+            ]
+        }
+        response = requests.post(url, params=params, headers=headers, json=payload)
+        for candidate in response.json()["candidates"]:
+            candidate_content = candidate["content"]
+            text_parts = " ".join(part["text"] for part in candidate_content["parts"])
+            StringProperty += f"{text_parts}"
+    elif AI_PROVIDER == 'openai':
+        # Add OpenAI implementation here
+        pass
+    else:
+        return jsonify({"error": "Invalid AI provider configuration"})
+
+
+    return jsonify({"prop": StringProperty})
 
 @app.route('/execute', methods=['POST'])
 def execute_command():

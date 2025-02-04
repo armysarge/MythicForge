@@ -574,6 +574,7 @@ class MythicForgeWindow {
                 var html = `
                 <div class="StatBlock">
                     ${(monster.fluff)?(typeof monster.fluff.entries != "undefined" ? `<div class="windowIcon viewMonsterFluff" title='View this monster fluff data'></div>` : ""):""}
+                    <div class="windowIcon createMonsterStory" title='Create a random story for this monster'></div>
                     <div class="section-left">
                         ${monsterPicture}
                         <div class="creature-heading">
@@ -702,8 +703,20 @@ class MythicForgeWindow {
                         }
                     });
                 });
+                that.el.find(".createMonsterStory").on("click tap",function(){
+                    var story = new MythicForgeWindow(WinManager);
+                    story.createWindow(monster.name + " - story", "",{class:"storyWindow"});
+                    story.el.find(".windowContent").html("<div class='storyBlock'><div class='mythicForgeLoader'></div></div>");
+                    story.el.fadeIn();
+                    story.centerDivToScreen();
+                    that.generateMonsterStory().then(function(storyText){
+                        story.el.find(".windowContent .storyBlock").html(storyText);
+                        story.centerDivToScreen();
+                    });
+                });
                 that.el.fadeIn();
                 that.centerDivToScreen();
+                that.initPropertyBlocks(monster);
             }
         });
 
@@ -858,6 +871,7 @@ class MythicForgeWindow {
                 });
                 that.el.fadeIn();
                 that.centerDivToScreen();
+                that.initPropertyBlocks(spell);
             }
         });
     }
@@ -920,7 +934,30 @@ class MythicForgeWindow {
                 that.el.find(".windowContent").html(html);
                 that.el.fadeIn();
                 that.centerDivToScreen();
+                that.initPropertyBlocks(item);
             }
+        });
+    }
+
+    initPropertyBlocks(data){
+        var that = this;
+        that.el.find(".property-block").each(function(){
+            var propertyBlock = $(this);
+            var propertyBlockContent = propertyBlock.find("p");
+            var propertyBlockTitle = propertyBlock.find("h4");
+            propertyBlockTitle.addClass("actionable");
+            propertyBlockTitle.attr("title","Click to get a better explanation or example on this property using AI");
+            propertyBlockTitle.on("click tap",function(){
+                var propertyExplanation = new MythicForgeWindow(WinManager);
+                propertyExplanation.createWindow(propertyBlockTitle.text(), "",{class:"propertyWindow"});
+                propertyExplanation.el.find(".windowContent").html("<div class='propertyExplanation'><div class='mythicForgeLoader'></div></div>");
+                that.betterExplainProperty(data,propertyBlockTitle.text(),propertyBlockContent.text()).then(function(explanation){
+                    propertyExplanation.el.find(".windowContent .propertyExplanation").html(explanation);
+                    propertyExplanation.centerDivToScreen();
+                });
+                propertyExplanation.el.fadeIn();
+                propertyExplanation.centerDivToScreen();
+            });
         });
     }
 
@@ -1030,25 +1067,33 @@ class MythicForgeWindow {
      * @example
      * await createMonsterStory();
      */
-    async createMonsterStory(){
+    async generateMonsterStory(){
+        var StringStory = "";
         //create monster story using AI
         if (this.monster){
+            const response = await fetch('/story', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({monster: this.monster})
+            });
 
-                const response = await fetch('/story', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({monster: this.monster})
-                });
+            if (!response.ok) {
+                StringStory = `<p style='color:red'>Failed to generate monster story</p>`;
+            }else{
+                var story = await response.json();
 
-                console.log(await response.json());
-            /*
-            var monsterStory = new MythicForgeWindow();
-            monsterStory.createWindow("Monster Story", "");
-            monsterStory.el.fadeIn();
-            monsterStory.centerDivToScreen();*/
+                if (!story.error){
+                    StringStory = story.story;
+                }else{
+                    StringStory =  `<p style='color:red'>${story.error}</p>`;
+                }
+            }
+        }else{
+            StringStory = `<p style='color:red'>Monster not found</p>`;
         }
+        return StringStory;
     }
 
     /**
@@ -1059,7 +1104,29 @@ class MythicForgeWindow {
         this.el.fadeIn();
     }
 
-    betterExplainProperty(property){
+    async betterExplainProperty(topic,heading,description){
+        var StringProperty = "";
         //use AI to explain a property
+        const response = await fetch('/prop', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({topic: topic, heading: heading, description: description})
+        });
+
+        if (!response.ok) {
+            StringProperty = `<p style='color:red'>Failed to generate property explanation</p>`;
+        }else{
+            var prop = await response.json();
+
+            if (!prop.error){
+                StringProperty = prop.prop;
+            }else{
+                StringProperty =  `<p style='color:red'>${prop.error}</p>`;
+            }
+        }
+
+        return StringProperty;
     }
 }

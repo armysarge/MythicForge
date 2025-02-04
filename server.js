@@ -227,6 +227,17 @@ app.post('/story', async (req, res) => {
 });
 
 // Route to trigger a Python function
+app.post('/prop', async (req, res) => {
+    try {
+        const response = await axios.post('http://127.0.0.1:4000/prop', req.body);
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error executing Python function:', error);
+        res.status(500).send('Error executing Python function');
+    }
+});
+
+// Route to trigger a Python function
 app.post('/execute', async (req, res) => {
     try {
         const response = await axios.post('http://127.0.0.1:4000/execute', req.body);
