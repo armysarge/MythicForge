@@ -220,7 +220,7 @@ app.post('/story', async (req, res) => {
         res.json(response.data);
     } catch (error) {
         console.error('Error executing Python function:', error);
-        res.status(500).send('Error executing Python function');
+        res.status(500).send('Error executing Python function: '+error);
     }
 });
 

@@ -936,7 +936,7 @@ input::placeholder {
     font-weight: bold;
 }
 
-.itemWindow .property-block {
+.itemWindow .property-block, .storyWindow .property-block{
     line-height: 1.5em;
 }
 

@@ -1073,7 +1073,7 @@ class MythicForgeWindow {
         var StringStory = "";
         //create monster story using AI
         if (this.monster){
-            const response = await fetch('/story?userId='+userId, {
+            const response = await fetch('/story', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1109,7 +1109,7 @@ class MythicForgeWindow {
     async betterExplainProperty(topic,heading,description){
         var StringProperty = "";
         //use AI to explain a property
-        const response = await fetch('/prop?userId='+userId, {
+        const response = await fetch('/prop', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

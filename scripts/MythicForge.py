@@ -83,7 +83,7 @@ def init():
 @app.route('/story', methods=['POST'])
 def create_story():
 
-    if verifyRequest() == False:
+    if verifyRequest(request) == False:
         return jsonify({"error": "Invalid request"})
 
     StringProperty = ""
