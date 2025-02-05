@@ -188,6 +188,8 @@ diceBox.init().then(() => {
 // Document ready function
 $(document).ready(function() {
 
+    SRDonly = getUserSettings().srd_content == 1;
+
     //Load all monster data from 5etools
     DataLoader.pCacheAndGetAllSite(UrlUtil.PG_BESTIARY, 1).then(function(data) {
         AllMonsters = data;
@@ -570,7 +572,22 @@ function createItemStatBlock(item, source) {
     itemStatBlock.itemStatsHTML(item, source);
 }
 
+function getUserSettings() {
+    var settings = localStorage.getItem("userSettings");
+    if (settings) {
+        settings = JSON.parse(settings);
+    } else {
+        settings = {
+            srd_content: true,
+            using_ai: false
+        };
+        localStorage.setItem("userSettings", JSON.stringify(settings));
+    }
+    return settings;
+}
+
 Object.assign(globalThis, {
+    getUserSettings,
     diceBox,
     Roller,
     WinManager,

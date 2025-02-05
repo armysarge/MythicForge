@@ -1,8 +1,31 @@
 -- DND Character Database Schema
+CREATE TABLE IF NOT EXISTS users (
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE,
+    password TEXT,
+    email TEXT UNIQUE,
+    name TEXT,
+    surname TEXT,
+    contact_number TEXT,
+    allow_ai_use BOOLEAN NOT NULL DEFAULT 0,
+    is_admin BOOLEAN NOT NULL DEFAULT 0,
+    last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    date_joined TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS users_settings (
+    user_id INTEGER PRIMARY KEY,
+    theme TEXT NOT NULL DEFAULT 'default',
+    srd_content BOOLEAN NOT NULL DEFAULT 0,
+    using_ai BOOLEAN NOT NULL DEFAULT 0,
+    language TEXT NOT NULL DEFAULT 'en',
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
 
 -- Create table for character details
 CREATE TABLE IF NOT EXISTS characters (
     character_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
     isNPC BOOLEAN NOT NULL DEFAULT 0,
     name TEXT NOT NULL,
     race TEXT NOT NULL,
@@ -29,6 +52,7 @@ CREATE TABLE IF NOT EXISTS characters (
 -- Create table for character stats (strength, dexterity, etc.)
 CREATE TABLE IF NOT EXISTS stats (
     character_id INTEGER,
+    user_id INTEGER NOT NULL,
     stat_name TEXT NOT NULL,  -- e.g., "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"
     base_value INTEGER NOT NULL DEFAULT 10,
     modifier INTEGER NOT NULL DEFAULT 0,
@@ -38,6 +62,7 @@ CREATE TABLE IF NOT EXISTS stats (
 -- Create table for skills (based on character stats)
 CREATE TABLE IF NOT EXISTS skills (
     character_id INTEGER,
+    user_id INTEGER NOT NULL,
     skill_name TEXT NOT NULL,  -- e.g., "Athletics", "Acrobatics", "Stealth"
     associated_stat TEXT NOT NULL,  -- The stat that the skill is associated with (e.g., "Strength", "Dexterity")
     proficiency BOOLEAN NOT NULL DEFAULT 0,  -- Whether the character is proficient in the skill
@@ -49,6 +74,7 @@ CREATE TABLE IF NOT EXISTS skills (
 CREATE TABLE IF NOT EXISTS inventory (
     item_id INTEGER PRIMARY KEY AUTOINCREMENT,
     character_id INTEGER,
+    user_id INTEGER NOT NULL,
     item_name TEXT NOT NULL,
     item_type TEXT,  -- e.g., "Weapon", "Armor", "Potion"
     quantity INTEGER NOT NULL DEFAULT 1,
@@ -61,6 +87,7 @@ CREATE TABLE IF NOT EXISTS inventory (
 CREATE TABLE IF NOT EXISTS abilities (
     ability_id INTEGER PRIMARY KEY AUTOINCREMENT,
     character_id INTEGER,
+    user_id INTEGER NOT NULL,
     ability_name TEXT NOT NULL,
     description TEXT,
     uses_per_day INTEGER DEFAULT NULL,  -- How many times it can be used per day
@@ -72,6 +99,7 @@ CREATE TABLE IF NOT EXISTS abilities (
 CREATE TABLE IF NOT EXISTS spells (
     spell_id INTEGER PRIMARY KEY AUTOINCREMENT,
     character_id INTEGER,
+    user_id INTEGER NOT NULL,
     spell_name TEXT NOT NULL,
     spell_level INTEGER NOT NULL,
     casting_time TEXT,
@@ -86,6 +114,7 @@ CREATE TABLE IF NOT EXISTS spells (
 -- Create table for spell slots
 CREATE TABLE IF NOT EXISTS spell_slots (
     character_id INTEGER,
+    user_id INTEGER NOT NULL,
     spell_level INTEGER NOT NULL,
     total_slots INTEGER NOT NULL DEFAULT 0,
     used_slots INTEGER NOT NULL DEFAULT 0,
@@ -96,6 +125,7 @@ CREATE TABLE IF NOT EXISTS spell_slots (
 CREATE TABLE IF NOT EXISTS feats (
     feat_id INTEGER PRIMARY KEY AUTOINCREMENT,
     character_id INTEGER,
+    user_id INTEGER NOT NULL,
     feat_name TEXT NOT NULL,
     description TEXT,
     FOREIGN KEY (character_id) REFERENCES characters(character_id)
@@ -105,6 +135,7 @@ CREATE TABLE IF NOT EXISTS feats (
 CREATE TABLE IF NOT EXISTS conditions (
     condition_id INTEGER PRIMARY KEY AUTOINCREMENT,
     character_id INTEGER,
+    user_id INTEGER NOT NULL,
     condition_name TEXT NOT NULL,
     description TEXT,
     duration INTEGER DEFAULT NULL,  -- Duration in rounds or minutes, NULL if indefinite
@@ -115,6 +146,7 @@ CREATE TABLE IF NOT EXISTS conditions (
 CREATE TABLE IF NOT EXISTS equipment (
     equipment_id INTEGER PRIMARY KEY AUTOINCREMENT,
     character_id INTEGER,
+    user_id INTEGER NOT NULL,
     item_name TEXT NOT NULL,
     equipment_type TEXT,  -- e.g., "Weapon", "Armor", "Shield"
     is_equipped BOOLEAN NOT NULL DEFAULT 0,
@@ -127,6 +159,7 @@ CREATE TABLE IF NOT EXISTS equipment (
 CREATE TABLE IF NOT EXISTS background_features (
     feature_id INTEGER PRIMARY KEY AUTOINCREMENT,
     character_id INTEGER,
+    user_id INTEGER NOT NULL,
     feature_type TEXT NOT NULL,  -- e.g., "Skill", "Trait", "Ideal", "Bond", "Flaw"
     feature_description TEXT NOT NULL,
     FOREIGN KEY (character_id) REFERENCES characters(character_id)
@@ -136,6 +169,7 @@ CREATE TABLE IF NOT EXISTS background_features (
 CREATE TABLE IF NOT EXISTS character_notes (
     note_id INTEGER PRIMARY KEY AUTOINCREMENT,
     character_id INTEGER,
+    user_id INTEGER NOT NULL,
     title TEXT,
     content TEXT,
     date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -146,6 +180,7 @@ CREATE TABLE IF NOT EXISTS character_notes (
 CREATE TABLE IF NOT EXISTS quests (
     quest_id INTEGER PRIMARY KEY AUTOINCREMENT,
     character_id INTEGER,
+    user_id INTEGER NOT NULL,
     quest_name TEXT NOT NULL,
     description TEXT,
     is_completed BOOLEAN NOT NULL DEFAULT 0,
@@ -154,6 +189,7 @@ CREATE TABLE IF NOT EXISTS quests (
 
 CREATE TABLE IF NOT EXISTS campaigns (
     campaign_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
     campaign_name TEXT NOT NULL,
     campaign_description TEXT,
     campaign_story TEXT,
@@ -168,6 +204,7 @@ CREATE TABLE IF NOT EXISTS campaigns (
 CREATE TABLE IF NOT EXISTS campaign_characters (
     campaign_id INTEGER,
     character_id INTEGER,
+    user_id INTEGER NOT NULL,
     FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),
     FOREIGN KEY (character_id) REFERENCES characters(character_id)
 );
@@ -175,6 +212,7 @@ CREATE TABLE IF NOT EXISTS campaign_characters (
 CREATE TABLE IF NOT EXISTS event_history (
     event_id INTEGER PRIMARY KEY AUTOINCREMENT,
     campaign_id INTEGER,
+    user_id INTEGER NOT NULL,
     event_name TEXT NOT NULL,
     event_prompt TEXT,
     event_summary TEXT,

@@ -67,14 +67,12 @@ mythicforge = MythicForge(app)
 # Register close_db function to run after each request
 app.teardown_appcontext(mythicforge.close_db)
 
-@app.route('/')
-def index():
-    #redirect to the localhost:3000
-    new_url = "http://localhost:3000"
-    return redirect(new_url)
-
 @app.route('/init', methods=['GET'])
 def init():
+
+    if verifyRequest(request) == False:
+        return jsonify({"error": "Invalid request"})
+
     #get query from the request
     query = request.args.get('q')
     if query == "download_data":
@@ -84,6 +82,10 @@ def init():
 
 @app.route('/story', methods=['POST'])
 def create_story():
+
+    if verifyRequest() == False:
+        return jsonify({"error": "Invalid request"})
+
     StringProperty = ""
     #get post json data of a monster, use Google gemini AI to create a story and return it
     if AI_PROVIDER == 'gemini':
@@ -130,6 +132,10 @@ def create_story():
 
 @app.route('/prop', methods=['POST'])
 def explain_prop():
+
+    if verifyRequest(request) == False:
+        return jsonify({"error": "Invalid request"})
+
     #get post json data of a property nad explain it better
     StringProperty = ""
     if AI_PROVIDER == 'gemini':
@@ -175,6 +181,10 @@ def explain_prop():
 
 @app.route('/execute', methods=['POST'])
 def execute_command():
+
+    if verifyRequest(request) == False:
+        return jsonify({"error": "Invalid request"})
+
     db = mythicforge.get_db()
     cursor = db.cursor()
 
@@ -184,6 +194,26 @@ def execute_command():
     db.commit()
 
     return jsonify({"status": "success"})
+
+    if verifyRequest(request) == False:
+        return jsonify({"error": "Invalid request"})
+
+    db = mythicforge.get_db()
+    cursor = db.cursor()
+
+    uuid = request.args.get('userId')
+    cursor.execute('SELECT * FROM users_settings WHERE user_id = ?', (uuid))
+    rows = cursor.fetchall()
+
+    return jsonify({"usersettings": [dict(row) for row in rows]})
+
+def verifyRequest(request):
+    verified = True
+    #verify if user agent starts with axios/
+    if request.headers.get('User-Agent').startswith('axios/') == False:
+        verified = False
+
+    return verified
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=4000, debug=True)

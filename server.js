@@ -4,7 +4,8 @@ const axios = require('axios');
 const { spawn } = require('child_process');
 const app = express();
 const path = require('path');
-const PORT = 3000;
+const nodePort = 3000;
+const pythonPort = 4000;
 const fs = require('fs');
 const fsPromises = require('fs').promises;
 const fsExtra = require('fs-extra')
@@ -12,50 +13,12 @@ const https = require('https');
 const StreamZip = require('node-stream-zip');
 const AdmZip = require('adm-zip');
 const { rimraf } = require('rimraf');
+const { v4: uuidv4 } = require('uuid');
 
 const DEBUG_MODE = process.env.DEBUG_MODE === 'true' || false;
 
-class SettingsManager {
-    constructor() {
-        this.settings = {};
-        this.init();
-    }
-
-    async init() {
-        try {
-            await fs.access(SETTINGS_FILE);
-            const data = await fs.readFile(SETTINGS_FILE, 'utf8');
-            this.settings = JSON.parse(data);
-        } catch (error) {
-            // If file doesn't exist, create it with default settings
-            this.settings = {
-                theme: 'light',
-                language: 'en',
-                // Add other default settings here
-            };
-            await this.saveSettings();
-        }
-    }
-
-    async saveSettings() {
-        const dirPath = path.dirname(SETTINGS_FILE);
-        await fs.mkdir(dirPath, { recursive: true });
-        await fs.writeFile(SETTINGS_FILE, JSON.stringify(this.settings, null, 2));
-    }
-
-    async updateSettings(newSettings) {
-        this.settings = { ...this.settings, ...newSettings };
-        await this.saveSettings();
-        return this.settings;
-    }
-
-    getSettings() {
-        return this.settings;
-    }
-}
-
 // Start the Python server
-const pythonProcess = spawn('python', ['scripts/MythicForge.py', '--port', '4000'], {
+const pythonProcess = spawn('python', ['scripts/MythicForge.py', '--port', pythonPort], {
     env: { ...process.env, DEBUG_MODE: DEBUG_MODE.toString() }
 });
 
@@ -221,18 +184,14 @@ app.set('view engine', 'ejs');
 // Set the views directory
 app.set('views', path.join(__dirname, 'views'));
 
+// Route to handle the main page
 app.get('/', async (req, res) => {
     try {
-        // Fetch data from the Python API
-        //const response = await axios.get('http://127.0.0.1:4000/data');
-        //const entries = response.data;
-
-        // Render the page with data
-        entries = []
+        entries = [];
         res.render('index.ejs', { entries });
     } catch (error) {
-        console.error('Error fetching data from Python API:', error);
-        res.status(500).send('Error fetching data');
+        console.error('Error handling user session:', error);
+        res.status(500).send('Error handling user session');
     }
 });
 
@@ -241,7 +200,7 @@ app.get('/data', async (req, res) => {
         // Fetch data from the Python API
         const requestData = {
             method: 'GET',
-            url: 'http://127.0.0.1:4000/data?type='+req.query.type+'&q='+req.query.q,
+            url: 'http://127.0.0.1:'+pythonPort+'/data?type='+req.query.type+'&q='+req.query.q,
         };
         const response = await axios(requestData);
         const entries = response.data;
@@ -254,10 +213,10 @@ app.get('/data', async (req, res) => {
     }
 });
 
-// Route to trigger a Python function
+// Route to Create a monster story
 app.post('/story', async (req, res) => {
     try {
-        const response = await axios.post('http://127.0.0.1:4000/story', req.body.monster);
+        const response = await axios.post('http://127.0.0.1:'+pythonPort+'/story', req.body.monster);
         res.json(response.data);
     } catch (error) {
         console.error('Error executing Python function:', error);
@@ -265,10 +224,10 @@ app.post('/story', async (req, res) => {
     }
 });
 
-// Route to trigger a Python function
+// Route to Explain a property
 app.post('/prop', async (req, res) => {
     try {
-        const response = await axios.post('http://127.0.0.1:4000/prop', req.body);
+        const response = await axios.post('http://127.0.0.1:'+pythonPort+'/prop', req.body);
         res.json(response.data);
     } catch (error) {
         console.error('Error executing Python function:', error);
@@ -279,7 +238,7 @@ app.post('/prop', async (req, res) => {
 // Route to trigger a Python function
 app.post('/execute', async (req, res) => {
     try {
-        const response = await axios.post('http://127.0.0.1:4000/execute', req.body);
+        const response = await axios.post('http://127.0.0.1:'+pythonPort+'/execute', req.body);
         res.json(response.data);
     } catch (error) {
         console.error('Error executing Python function:', error);
@@ -287,34 +246,11 @@ app.post('/execute', async (req, res) => {
     }
 });
 
-// Route to get current settings
-app.get('/settings', async (req, res) => {
-    try {
-        const settings = settingsManager.getSettings();
-        res.json(settings);
-    } catch (error) {
-        console.error('Error fetching settings:', error);
-        res.status(500).send('Error fetching settings');
-    }
-});
-
-// Route to update settings
-app.post('/settings', async (req, res) => {
-    try {
-        const newSettings = req.body;
-        const updatedSettings = await settingsManager.updateSettings(newSettings);
-        res.json(updatedSettings);
-    } catch (error) {
-        console.error('Error updating settings:', error);
-        res.status(500).send('Error updating settings');
-    }
-});
-
 // Start the Node.js server
-app.listen(PORT, async () => {
+app.listen(nodePort, async () => {
     await downloadDataFrom5eTools();
     await downloadImagesFrom5eTools();
-    console.log(`MythicForge server running at http://127.0.0.1:${PORT}`);
+    console.log(`MythicForge server running at http://127.0.0.1:${nodePort}`);
 });
 
 // Ensure Python process is killed when Node.js exits

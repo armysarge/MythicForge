@@ -139,13 +139,17 @@ html {
     cursor: pointer;
     transition: all 0.3s ease;
 }
+.mythicForgeWindow .windowIcon.disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 
 .mythicForgeWindow .windowIcon.bottomIcon{
     top:unset;
     bottom:0;
 }
 
-.mythicForgeWindow .windowIcon:hover{
+.mythicForgeWindow .windowIcon:not(.disabled):hover{
     transform: scale(1.1);
     filter : drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
 }
