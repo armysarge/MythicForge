@@ -10,6 +10,7 @@ public/images/5eTools
 5eTools
 /dist
 venv
+settings.json
 <<<<<<< HEAD
 venv/*
 =======
