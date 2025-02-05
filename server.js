@@ -12,7 +12,6 @@ const https = require('https');
 const StreamZip = require('node-stream-zip');
 const AdmZip = require('adm-zip');
 const { rimraf } = require('rimraf');
-const settingsManager = require('./settingsManager');
 
 const DEBUG_MODE = process.env.DEBUG_MODE === 'true' || false;
 
