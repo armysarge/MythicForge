@@ -12,8 +12,48 @@ const https = require('https');
 const StreamZip = require('node-stream-zip');
 const AdmZip = require('adm-zip');
 const { rimraf } = require('rimraf');
+const settingsManager = require('./utils/settingsManager');
 
 const DEBUG_MODE = process.env.DEBUG_MODE === 'true' || false;
+
+class SettingsManager {
+    constructor() {
+        this.settings = {};
+        this.init();
+    }
+
+    async init() {
+        try {
+            await fs.access(SETTINGS_FILE);
+            const data = await fs.readFile(SETTINGS_FILE, 'utf8');
+            this.settings = JSON.parse(data);
+        } catch (error) {
+            // If file doesn't exist, create it with default settings
+            this.settings = {
+                theme: 'light',
+                language: 'en',
+                // Add other default settings here
+            };
+            await this.saveSettings();
+        }
+    }
+
+    async saveSettings() {
+        const dirPath = path.dirname(SETTINGS_FILE);
+        await fs.mkdir(dirPath, { recursive: true });
+        await fs.writeFile(SETTINGS_FILE, JSON.stringify(this.settings, null, 2));
+    }
+
+    async updateSettings(newSettings) {
+        this.settings = { ...this.settings, ...newSettings };
+        await this.saveSettings();
+        return this.settings;
+    }
+
+    getSettings() {
+        return this.settings;
+    }
+}
 
 // Start the Python server
 const pythonProcess = spawn('python', ['scripts/MythicForge.py', '--port', '4000'], {
@@ -245,6 +285,29 @@ app.post('/execute', async (req, res) => {
     } catch (error) {
         console.error('Error executing Python function:', error);
         res.status(500).send('Error executing Python function');
+    }
+});
+
+// Route to get current settings
+app.get('/settings', async (req, res) => {
+    try {
+        const settings = settingsManager.getSettings();
+        res.json(settings);
+    } catch (error) {
+        console.error('Error fetching settings:', error);
+        res.status(500).send('Error fetching settings');
+    }
+});
+
+// Route to update settings
+app.post('/settings', async (req, res) => {
+    try {
+        const newSettings = req.body;
+        const updatedSettings = await settingsManager.updateSettings(newSettings);
+        res.json(updatedSettings);
+    } catch (error) {
+        console.error('Error updating settings:', error);
+        res.status(500).send('Error updating settings');
     }
 });
 

@@ -570,6 +570,34 @@ function createItemStatBlock(item, source) {
     itemStatBlock.itemStatsHTML(item, source);
 }
 
+// get settings
+async function getSettings() {
+    try {
+        const response = await fetch('/settings');
+        const settings = await response.json();
+        return settings;
+    } catch (error) {
+        console.error('Error fetching settings:', error);
+    }
+}
+
+// save settings
+async function saveSettings(newSettings) {
+    try {
+        const response = await fetch('/settings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newSettings)
+        });
+        const updatedSettings = await response.json();
+        return updatedSettings;
+    } catch (error) {
+        console.error('Error saving settings:', error);
+    }
+}
+
 Object.assign(globalThis, {
     diceBox,
     Roller,
