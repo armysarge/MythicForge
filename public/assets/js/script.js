@@ -205,6 +205,51 @@ $(document).ready(function() {
         AllItems = data;
     });
 
+    // Open and close the settings window
+    $(".showSettings").on("click tap", function(evt) {
+        if ($(".settingsWindow").length == 0) {
+            var settingsWindow = new MythicForgeWindow(WinManager);
+            settingsWindow.createWindow("Settings", `
+                <div class="settingsContent">
+                    <div class="settingsList">
+
+                        <div class="mythicCheckbox" title="Only display content from the System Reference Document">
+                            <input class='tgl tgl-ios' id='srd_content' value="1" ${getUserSettings().srd_content == 1 ? "checked" : ""} type='checkbox'>
+                            <label class='tgl-btn' for='srd_content'>SRD Content</label>
+                        </div>
+
+                        <div class="mythicCheckbox" title="Enable or disable the AI features (Requires credentials in environment file)">
+                            <input class='tgl tgl-ios' id='using_ai' value="1" ${getUserSettings().using_ai == 1 ? "checked" : ""} type='checkbox'>
+                            <label class='tgl-btn' for='using_ai'>AI Features</label>
+                        </div>
+                    </div>
+                </div>
+            `);
+            settingsWindow.el.addClass("settingsWindow");
+            settingsWindow.el.fadeIn();
+
+            $(".settingsWindow").on("change", "#srd_content", function(evt) {
+                var settings = getUserSettings();
+                settings.srd_content = $(this).is(":checked") ? 1 : 0;
+                localStorage.setItem("userSettings", JSON.stringify(settings));
+                SRDonly = settings.srd_content == 1;
+            });
+
+            $(".settingsWindow").on("change", "#using_ai", function(evt) {
+                var settings = getUserSettings();
+                settings.using_ai = $(this).is(":checked") ? 1 : 0;
+                localStorage.setItem("userSettings", JSON.stringify(settings));
+            });
+        } else {
+            if ($(".settingsWindow").css("display") == "block" && $(".settingsWindow").hasClass("focused")) {
+                $(".settingsWindow").css("display", "none");
+                return;
+            } else {
+                $(".settingsWindow").fadeIn();
+            }
+        }
+    });
+
     //Open and close the items window
     $(".showItems").on("click tap", function(evt) {
         if ($(".itemsWindow").length == 0) {
