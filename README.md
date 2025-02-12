@@ -1,7 +1,12 @@
+[![madewithlove](https://img.shields.io/badge/made_with-%E2%9D%A4-red?style=for-the-badge&labelColor=orange)](https://github.com/armysarge/MythicForge)
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-brightgreen?logo=buymeacoffee)](https://www.buymeacoffee.com/armysarge)
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js](https://img.shields.io/badge/Node.js-14.x+-green.svg)](https://nodejs.org/)
+[![Discord](https://img.shields.io/discord/1326455989809188886)](https://dsc.gg/mythicforge)
+[![GitHub issues](https://img.shields.io/github/issues/armysarge/MythicForge)](https://github.com/armysarge/MythicForge/issues)
 
 <div align="center">
   <img src="public/assets/images/logo-big.webp" alt="MythicForge Logo" width="400px">
