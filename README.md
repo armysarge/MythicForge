@@ -5,7 +5,7 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js](https://img.shields.io/badge/Node.js-14.x+-green.svg)](https://nodejs.org/)
-[![Discord](https://img.shields.io/discord/1326455989809188886)](https://dsc.gg/mythicforge)
+[![Discord](https://img.shields.io/discord/1326455989809188886?logo=discord&logoColor=white)](https://dsc.gg/mythicforge)
 [![GitHub issues](https://img.shields.io/github/issues/armysarge/MythicForge)](https://github.com/armysarge/MythicForge/issues)
 
 <div align="center">
@@ -124,10 +124,10 @@ For offline AI functionality:
 
 - ✅ Include 5E tools (Thanks to [5eTools](https://5e.tools/))
 - ✅ Basic UI/UX Design
-- ✅ Digital Reference (In Progress)
-- ✅ Dice roller (In Progress)
+- 🟦 Digital Reference (In Progress)
+- 🟦 Dice roller (In Progress)
 - ⬛️ DM tools (encounter generator, Initiative tracker, etc.)
-- ✅ AI Integration (OpenAI, Google Gemini) (In Progress)
+- 🟦 AI Integration (OpenAI, Google Gemini) (In Progress)
 - ⬛️ AI Integration (Local AI Model, requires extra setup)
 - ⬛️ Character builder
 - ⬛️ Campaign manager
