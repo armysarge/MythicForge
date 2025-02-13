@@ -960,6 +960,9 @@ input::placeholder {
     font-style: italic;
     font-weight: bold;
 }
+.sections h4{
+    margin-right: 3px;
+}
 
 .itemWindow .property-block, .storyWindow .property-block{
     line-height: 1.5em;

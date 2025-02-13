@@ -89,17 +89,6 @@ def create_story():
     StringProperty = ""
     #get post json data of a monster, use Google gemini AI to create a story and return it
     if AI_PROVIDER == 'gemini':
-        if not GEMINI_API_KEY:
-            return jsonify({"error": "GEMINI_API_KEY is not set"})
-        #do a post request to the gemini AI
-        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
-        params = {
-            "key" : GEMINI_API_KEY
-        }
-        headers = {
-            "Content-Type": "application/json"
-        }
-
         payload = {
             "system_instruction": {
             "parts":
@@ -115,7 +104,7 @@ def create_story():
                 }
             ]
         }
-        response = requests.post(url, params=params, headers=headers, json=payload)
+        response = geminiPostRequest(payload)
 
         for candidate in response.json()["candidates"]:
             candidate_content = candidate["content"]
@@ -123,8 +112,24 @@ def create_story():
             StringProperty += f"{text_parts}"
 
     elif AI_PROVIDER == 'openai':
-        # Add OpenAI implementation here
-        pass
+        payload = {
+            "model": "gpt-3.5-turbo",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": f"You are a story teller and you are telling a DND fantasy story about a monster. You will receive json data about the monster, use it to tell a interesting short summarized back story about it. Give it a name, a plot, a setting, and a conflict as needed. Use proper HTML formatting. The story should be around 100-200 words. Use \"<div class='property-line'><h4>Heading</h4><p></p></div>\" to format any properties, <div class='sections'><h3>section name</h3><div class='property-block'><h4>Property name </h4><p></p></div></div> for sections and properties. No ``` or code blocks are needed and no css style tags: {json.dumps(request.json)}"
+                }
+            ],
+            "temperature": 1,
+            "top_p": 1,
+            "n": 1,
+            "stream": False,
+            "max_tokens": 500,
+            "presence_penalty": 0,
+            "frequency_penalty": 0
+        }
+        response = openaiPostRequest(payload)
+        StringProperty = response.json()["choices"][0]["message"]["content"]
     else:
         return jsonify({"error": "Invalid AI provider configuration"})
 
@@ -136,43 +141,51 @@ def explain_prop():
     if verifyRequest(request) == False:
         return jsonify({"error": "Invalid request"})
 
+    ThePrompt = "Better explain a DND property on the specific topic, maybe also include an example/ or where/when this might take place. Response in html format but no ``` or code blocks are needed and no css style tags. dont repeat the item details from the prompt"
+    TheItem = json.dumps(request.json).replace('\n', '')
+
     #get post json data of a property nad explain it better
     StringProperty = ""
     if AI_PROVIDER == 'gemini':
-        if not GEMINI_API_KEY:
-            return jsonify({"error": "GEMINI_API_KEY is not set"})
-        #do a post request to the gemini AI
-        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
-        params = {
-            "key" : GEMINI_API_KEY
-        }
-        headers = {
-            "Content-Type": "application/json"
-        }
-
         payload = {
             "system_instruction": {
             "parts":
             {
-                "text": "Better explain a DND property on the specific topic, maybe also include an example/ or where/when this might take place. Response in html format but no ``` or code blocks are needed and no css style tags."}},
+                "text": f"{ThePrompt}"}},
                 "contents": [
                 {
                     "parts": [
                         {
-                            "text": json.dumps(request.json).replace('\n', '')
+                            "text": TheItem
                         }
                     ]
                 }
             ]
         }
-        response = requests.post(url, params=params, headers=headers, json=payload)
+        response = geminiPostRequest(payload)
         for candidate in response.json()["candidates"]:
             candidate_content = candidate["content"]
             text_parts = " ".join(part["text"] for part in candidate_content["parts"])
             StringProperty += f"{text_parts}"
     elif AI_PROVIDER == 'openai':
-        # Add OpenAI implementation here
-        pass
+        payload = {
+            "model": "gpt-3.5-turbo",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": f"{ThePrompt}: {TheItem}"
+                }
+            ],
+            "temperature": 1,
+            "top_p": 1,
+            "n": 1,
+            "stream": False,
+            "max_tokens": 500,
+            "presence_penalty": 0,
+            "frequency_penalty": 0
+        }
+        response = openaiPostRequest(payload)
+        StringProperty = response.json()["choices"][0]["message"]["content"]
     else:
         return jsonify({"error": "Invalid AI provider configuration"})
 
@@ -206,6 +219,31 @@ def execute_command():
     rows = cursor.fetchall()
 
     return jsonify({"usersettings": [dict(row) for row in rows]})
+
+def geminiPostRequest(payload):
+    if not GEMINI_API_KEY:
+        return jsonify({"error": "GEMINI_API_KEY is not set"})
+    #do a post request to the gemini AI
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
+    params = {
+        "key" : GEMINI_API_KEY
+    }
+    headers = {
+        "Content-Type": "application/json"
+    }
+    response = requests.post(url, params=params, headers=headers, json=payload)
+    return response
+def openaiPostRequest(payload):
+    if not OPENAI_API_KEY:
+        return jsonify({"error": "OPENAI_API_KEY is not set"})
+    #do a post request to the openai API
+    url = "https://api.openai.com/v1/chat/completions"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {OPENAI_API_KEY}"
+    }
+    response = requests.post(url, headers=headers, json=payload)
+    return response
 
 def verifyRequest(request):
     verified = True
