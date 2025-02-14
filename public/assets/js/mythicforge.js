@@ -209,7 +209,7 @@ class MythicForgeWindow {
                     html = `
                     <div class="actions">
                         <h3>Legendary Actions</h3>
-                        <p>${intro.entries.join("</p><p>")}</p>
+                        <p>${that.findTagsAndRender(intro.entries.join("</p><p>"))}</p>
                         ${allLegendActions}
                     </div> <!-- actions -->`;
 
@@ -948,13 +948,16 @@ class MythicForgeWindow {
                 var propertyBlockTitle = propertyBlock.find("h4");
                 propertyBlockTitle.addClass("actionable");
                 propertyBlockTitle.attr("title","Click to get a better explanation or example on this property using AI");
-                propertyBlockTitle.on("click tap",function(){
+                propertyBlockTitle.on("click tap",function(evt){
+                    if (evt.target !== this) {
+                        return;
+                    }
                     var propertyExplanation = new MythicForgeWindow(WinManager);
                     propertyExplanation.createWindow(propertyBlockTitle.text(), "",{class:"propertyWindow"});
                     propertyExplanation.el.find(".windowContent").html("<div class='propertyExplanation'><div class='mythicForgeLoader'></div></div>");
                     if(getUserSettings().using_ai)
-                    that.betterExplainProperty(data,propertyBlockTitle.text(),propertyBlockContent.text()).then(function(explanation){
-                        propertyExplanation.el.find(".windowContent .propertyExplanation").html(explanation);
+                    that.betterExplainProperty(data,propertyBlockTitle.text(),propertyBlockContent.text(),evt).then(function(explanation){
+                        propertyExplanation.el.find(".windowContent .propertyExplanation").html(that.findTagsAndRender(explanation));
                         propertyExplanation.centerDivToScreen();
                     });
                     propertyExplanation.el.fadeIn();
@@ -1106,7 +1109,7 @@ class MythicForgeWindow {
         this.el.fadeIn();
     }
 
-    async betterExplainProperty(topic,heading,description){
+    async betterExplainProperty(topic,heading,description,evt){
         var StringProperty = "";
         //use AI to explain a property
         const response = await fetch('/prop', {

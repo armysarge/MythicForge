@@ -42,7 +42,6 @@ var WinManager = new MythicForgeWindowManager();
 //Override the dice roller to use the dice box
 Renderer.dice.bindOnclickListener = function(ele) {
     ele.addEventListener("click", (evt) => {
-
         let eleDice = null;
         if (evt.target.hasAttribute("data-packed-dice")) {
             eleDice = evt.target;
@@ -60,17 +59,15 @@ Renderer.dice.bindOnclickListener = function(ele) {
         if (packed.rollable === false) return;
         console.log(packed);
 
-        const toRoll = packed.toRoll.replace(/\+0/g, "").replace(/-0/g, "");
+        var toRoll = packed.toRoll.replace(/\+0/g, "").replace(/-0/g, "");
         const rollType = (packed.subType) ? packed.subType : "";
 
         if (packed.prompt) {
             var dicePopupHMTL = `<center><div class="dicePopup">`;
-            console.log(packed.prompt.options);
 
             //loop each object in the options object
             Object.keys(packed.prompt.options).forEach((key, i2) => {
                 var value = packed.prompt.options[key];
-                console.log(key, value);
                 if (value != '')
                     dicePopupHMTL += `<button class="diceOption" title='${packed.toRoll} + ${value}' data-packed-dice='{"type":"${packed.type}","rollable":${packed.rollable},"toRoll":"${packed.toRoll} + ${value}","displayText":"${value}","subType":"${packed.subType}"}'>Level ${key}</button>`;
             });
@@ -81,6 +78,7 @@ Renderer.dice.bindOnclickListener = function(ele) {
             dicePopup.el.addClass("dicePopupWindow");
             dicePopup.el.fadeIn();
         } else {
+
 
             switch (rollType) {
                 case "damage":
@@ -94,11 +92,15 @@ Renderer.dice.bindOnclickListener = function(ele) {
                 case "d20":
                     //if SHIFT click, roll with advantage
                     if (evt.shiftKey) {
-                        toRoll = "2d20kh1" + toRoll;
+                        toRoll = toRoll.replace("1d20", "2d20kh1");
                     } else if (evt.ctrlKey) {
-                        toRoll = "2d20kl1" + toRoll;
+                        toRoll = toRoll.replace("1d20", "2d20kl1");
                     }
                     break;
+                default:
+                    //if SHIFTor CTRL click, roll twice
+                    if (evt.shiftKey || evt.ctrlKey)
+                        toRoll = toRoll + "+" + toRoll
             }
 
             RollboxWindow.show();
@@ -107,11 +109,27 @@ Renderer.dice.bindOnclickListener = function(ele) {
             //TODO: Support for advantage/disadvantage rolls
             diceBox.clear();
             $(".diceResult").hide();
+            if (typeof packed.successMax != "undefined"){
+                var thressHold = packed.successThresh;
+                if (typeof thressHold == "undefined") thressHold = 0;
+                toRoll = ""+toRoll+">"+(packed.successMax-thressHold);
+            }
+
             $(".adv-roller--notation").val(toRoll);
-            $(".adv-roller--notation").data("subType", rollType);
-            console.log(toRoll);
+
             diceBox.onRollComplete = (rollResult) => {
                 console.log("roll results callback", rollResult)
+                $(".adv-roller--notation").data("subType", rollType);
+                if (typeof packed.successMax != "undefined"){
+                    var thressHold = packed.successThresh;
+                    if (typeof thressHold == "undefined") thressHold = 0;
+                    if (rollResult[0].value > packed.successMax-thressHold){
+                        $(".adv-roller--notation").data("subType", "<span "+(packed.isColorSuccessFail?"style='color:green'":"")+">"+packed.chanceSuccessText+"</span>");
+                    }else{
+                        $(".adv-roller--notation").data("subType", "<span "+(packed.isColorSuccessFail?"style='color:red'":"")+">"+packed.chanceFailureText+"</span>");
+                    }
+                    toRoll = ""+toRoll+">"+(packed.successMax-thressHold);
+                }
                 Roller.handleResults(rollResult);
             };
             Roller.onSubmit(Roller.DRP.parseNotation(toRoll));
@@ -135,25 +153,22 @@ const Roller = new AdvancedRoller({
     },
     onResults: (results) => {
         console.log("Results", results);
+        var subType = $(".adv-roller--notation").data("subType");
         if (typeof results.result == "undefined") results.result = results.value;
         var resultsString = "";
         if (typeof results.rolls == "undefined") {
             $.each(results.dice, function(i, dice) {
                 if (typeof dice.rolls != "undefined") {
                     if (i > 0) resultsString += ", ";
-                    resultsString += dice.rolls.map(roll => roll.value).join(", ")
+                    resultsString += dice.rolls.map(roll => roll.roll).join(", ")
                 }
             });
             resultsString += " = " + results.result;
         } else {
-            if (results.rolls.length > 1) {
-                resultsString = results.rolls.map(roll => roll.value).join(", ") + " = " + results.result;
-            } else {
-                resultsString = results.result;
-            }
+            resultsString = results.rolls.map(roll => roll.roll).join(", ") + ((results.type != "die" || subType == "damage" || (subType == "" && results.type == "die"))?" = " + results.result:"");
         }
-        if ($(".adv-roller--notation").data("subType") != "" && $(".adv-roller--notation").data("subType") != "d20")
-            resultsString += ` (${$(".adv-roller--notation").data("subType")})`;
+        if (subType != "" && subType != "d20")
+            resultsString += ` (${subType})`;
         $(".diceResult").html(resultsString);
         $(".diceResult").fadeIn();
         //displayRollResults.showResults(results);

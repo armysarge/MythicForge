@@ -141,7 +141,7 @@ def explain_prop():
     if verifyRequest(request) == False:
         return jsonify({"error": "Invalid request"})
 
-    ThePrompt = "Better explain a DND property on the specific topic, maybe also include an example/ or where/when this might take place. Response in html format but no ``` or code blocks are needed and no css style tags. dont repeat the item details from the prompt"
+    ThePrompt = "Better explain a DND property on the specific topic, maybe also include an example/ or where/when this might take place. Response in html format but no ``` or code blocks are needed and no css style tags. dont repeat the item details from the prompt any dice notation should be wrapped like {@dice 1d20} as an example following roll20 notation format."
     TheItem = json.dumps(request.json).replace('\n', '')
 
     #get post json data of a property nad explain it better
