@@ -84,9 +84,9 @@ Renderer.dice.bindOnclickListener = function(ele) {
                 case "damage":
                     //if SHIFT click, roll critical
                     if (evt.shiftKey) {
-                        toRoll = "2" + toRoll;
+                        toRoll = toRoll + "+" + toRoll;
                     } else if (evt.ctrlKey) {
-                        toRoll = "0" + toRoll;
+                        toRoll = "floor(" + toRoll + "/2)";
                     }
                     break;
                 case "d20":
