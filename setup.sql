@@ -28,8 +28,11 @@ CREATE TABLE IF NOT EXISTS characters (
     user_id INTEGER NOT NULL,
     isNPC BOOLEAN NOT NULL DEFAULT 0,
     name TEXT NOT NULL,
+    age INTEGER,
     race TEXT NOT NULL,
     class TEXT NOT NULL,
+    height INTEGER, -- in cm
+    weight REAL DEFAULT 0.0, -- in kg
     level INTEGER NOT NULL DEFAULT 1,
     alignment TEXT,
     background TEXT,
@@ -38,15 +41,38 @@ CREATE TABLE IF NOT EXISTS characters (
     copper INTEGER NOT NULL DEFAULT 0,
     experience_points INTEGER NOT NULL DEFAULT 0,
     hit_points INTEGER NOT NULL DEFAULT 0,
+    temporary_hit_points INTEGER NOT NULL DEFAULT 0,
     max_hit_points INTEGER NOT NULL DEFAULT 0,
     armor_class INTEGER NOT NULL DEFAULT 10,
     initiative INTEGER NOT NULL DEFAULT 0,
+    inspiration BOOLEAN NOT NULL DEFAULT 0,
     speed INTEGER NOT NULL DEFAULT 30,
     alive BOOLEAN NOT NULL DEFAULT 1,
     resurrectable BOOLEAN NOT NULL DEFAULT 1,
     proficiency_bonus INTEGER NOT NULL DEFAULT 2,
     story TEXT,
     notes TEXT
+);
+
+-- Create table for notes or journal entries related to the character
+CREATE TABLE IF NOT EXISTS character_notes (
+    note_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    character_id INTEGER,
+    user_id INTEGER NOT NULL,
+    title TEXT,
+    content TEXT,
+    date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (character_id) REFERENCES characters(character_id)
+);
+
+CREATE TABLE IF NOT EXISTS character_relationships (
+    relationship_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    character_id INTEGER,
+    related_character_id INTEGER,
+    relationship_type TEXT NOT NULL,
+    relationship_description TEXT,
+    FOREIGN KEY (character_id) REFERENCES characters(character_id),
+    FOREIGN KEY (related_character_id) REFERENCES characters(character_id)
 );
 
 -- Create table for character stats (strength, dexterity, etc.)
@@ -149,6 +175,10 @@ CREATE TABLE IF NOT EXISTS equipment (
     user_id INTEGER NOT NULL,
     item_name TEXT NOT NULL,
     equipment_type TEXT,  -- e.g., "Weapon", "Armor", "Shield"
+    weight REAL DEFAULT 0.0,
+    rarity TEXT,  -- e.g., "Common", "Uncommon", "Rare", "Very Rare", "Legendary"
+    requires_attunement BOOLEAN NOT NULL DEFAULT 0,
+    is_attuned BOOLEAN NOT NULL DEFAULT 0,
     is_equipped BOOLEAN NOT NULL DEFAULT 0,
     attack_bonus INTEGER DEFAULT 0,
     damage TEXT,  -- e.g., "1d8+2"
@@ -162,17 +192,6 @@ CREATE TABLE IF NOT EXISTS background_features (
     user_id INTEGER NOT NULL,
     feature_type TEXT NOT NULL,  -- e.g., "Skill", "Trait", "Ideal", "Bond", "Flaw"
     feature_description TEXT NOT NULL,
-    FOREIGN KEY (character_id) REFERENCES characters(character_id)
-);
-
--- Create table for notes or journal entries related to the character
-CREATE TABLE IF NOT EXISTS character_notes (
-    note_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    character_id INTEGER,
-    user_id INTEGER NOT NULL,
-    title TEXT,
-    content TEXT,
-    date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (character_id) REFERENCES characters(character_id)
 );
 
@@ -197,6 +216,8 @@ CREATE TABLE IF NOT EXISTS campaigns (
     campaign_start_level INTEGER NOT NULL DEFAULT 1,
     campaign_difficulty TEXT NOT NULL DEFAULT 'NORMAL',
     campaign_dm TEXT,
+    campaign_setting TEXT,
+    campaign_level_cap INTEGER NOT NULL DEFAULT 20,
     campaign_start_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     campaign_status TEXT NOT NULL DEFAULT 'INTRO'
 );
@@ -207,6 +228,16 @@ CREATE TABLE IF NOT EXISTS campaign_characters (
     user_id INTEGER NOT NULL,
     FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),
     FOREIGN KEY (character_id) REFERENCES characters(character_id)
+);
+
+CREATE TABLE IF NOT EXISTS campaign_sessions (
+    session_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    campaign_id INTEGER,
+    session_number INTEGER,
+    session_date TIMESTAMP,
+    session_summary TEXT,
+    next_session_date TIMESTAMP,
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id)
 );
 
 CREATE TABLE IF NOT EXISTS event_history (
