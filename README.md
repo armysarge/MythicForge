@@ -15,7 +15,7 @@
 ---
 
 <div align="center">
-  <strong>🏰 A powerful D&D 5E campaign management, digital reference, character creation and various tools powered by AI. MythicForge combines traditional tabletop gaming with advanced AI capabilities to enhance your roleplaying experience. 🧙‍♂️</strong>
+  <strong>🏰 A powerful VTT, digital reference and various other tools powered by AI. MythicForge combines traditional VTT gaming with advanced AI capabilities to enhance your roleplaying experience. 🧙‍♂️</strong>
 </div>
 
 ---
@@ -24,7 +24,7 @@
 
 ## ✨ Planned Features
 
-- **Complete D&D 5E Database**
+- **D&D 5E digital reference**
   - Spells, items, monsters, and more
   - Quick search and filtering
 
@@ -34,7 +34,10 @@
   - Character sheet export/import
   - Custom character artwork integration
 
-- **AI-Powered Campaign Tools**
+- **AI-Powered Campaign Management & Tools**
+  - Campaign creation and management
+  - Session tracking and notes
+  - Player character tracking
   - AI Dungeon Master mode
   - Dynamic NPC generation
   - Intelligent encounter scaling
@@ -127,8 +130,8 @@ For offline AI functionality:
 - 🟦 Digital Reference (In Progress)
 - 🟦 Dice roller (In Progress)
 - ⬛️ DM tools (encounter generator, Initiative tracker, etc.)
-- 🟦 AI Integration (OpenAI, Google Gemini) (In Progress)
-- ⬛️ AI Integration (Local AI Model, requires extra setup)
+- 🟦 Remote AI Integration (OpenAI, Google Gemini, etc) (In Progress)
+- ⬛️ Local AI Integration (Local AI Model, requires extra setup)
 - ⬛️ Character builder
 - ⬛️ Campaign manager
 - ⬛️ Run campaign with AI as DM or as player
@@ -160,7 +163,7 @@ This project is licensed under the AGPL License - see the [LICENSE](LICENSE) fil
 ## 🙏 Acknowledgements
 
 - OpenAI and Google for AI capabilities
-- The data was taken from [5eTools](https://5e.tools/).
+- The digital reference data was taken from [5eTools](https://5e.tools/).
 All data is owned by Wizards of the Coast.
 The data is licensed under the Open Gaming License.
 - 3d-dice for the dice rolling animation and logic [3d-dice](https://github.com/3d-dice)
