@@ -50,6 +50,8 @@ CREATE TABLE IF NOT EXISTS characters (
     alive BOOLEAN NOT NULL DEFAULT 1,
     resurrectable BOOLEAN NOT NULL DEFAULT 1,
     proficiency_bonus INTEGER NOT NULL DEFAULT 2,
+    avatar blob,
+    token blob,
     story TEXT,
     notes TEXT
 );

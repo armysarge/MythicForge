@@ -197,19 +197,29 @@ app.get('/', async (req, res) => {
 
 app.get('/data', async (req, res) => {
     try {
-        // Fetch data from the Python API
+        if (!req.query.type) {
+            return res.status(400).json({ error: 'Missing required parameters' });
+        }
+
         const requestData = {
             method: 'GET',
-            url: 'http://127.0.0.1:'+pythonPort+'/data?type='+req.query.type+'&q='+req.query.q,
+            url: `http://127.0.0.1:${pythonPort}/data`,
+            params: {
+                type: req.query.type,
+                q: req.query.q
+            }
         };
-        const response = await axios(requestData);
-        const entries = response.data;
 
-        // Render the page with data
-        res.json(entries);
+        const response = await axios(requestData);
+
+        if (!response.data) {
+            return res.status(404).json({ error: 'No data found' });
+        }
+
+        res.json(response.data);
     } catch (error) {
         console.error('Error fetching data from Python API:', error);
-        res.status(500).send('Error fetching data');
+        res.status(500).json({ error: 'Error fetching data' });
     }
 });
 

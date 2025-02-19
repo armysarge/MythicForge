@@ -67,6 +67,28 @@ mythicforge = MythicForge(app)
 # Register close_db function to run after each request
 app.teardown_appcontext(mythicforge.close_db)
 
+@app.route('/data', methods=['GET'])
+def get_data():
+    if verifyRequest(request) == False:
+        return jsonify({"error": "Invalid request"})
+
+    # Get query parameters
+    data_type = request.args.get('type')
+    query = request.args.get('q')
+
+    db = mythicforge.get_db()
+    cursor = db.cursor()
+
+    # Example query - modify according to your database schema
+    if data_type == 'characters':
+        cursor.execute('SELECT character_id, name, race, class, level, avatar FROM characters')
+    elif data_type == 'monsters':
+        cursor.execute('SELECT * FROM monsters WHERE name LIKE ?', (f'%{query}%',))
+    # Add more data types as needed
+
+    rows = cursor.fetchall()
+    return jsonify([dict(row) for row in rows])
+
 @app.route('/init', methods=['GET'])
 def init():
 
@@ -233,6 +255,7 @@ def geminiPostRequest(payload):
     }
     response = requests.post(url, params=params, headers=headers, json=payload)
     return response
+
 def openaiPostRequest(payload):
     if not OPENAI_API_KEY:
         return jsonify({"error": "OPENAI_API_KEY is not set"})

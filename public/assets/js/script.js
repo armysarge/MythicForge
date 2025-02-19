@@ -497,6 +497,37 @@ $(document).ready(function() {
         }
     });
 
+    $(".showChars").on("click tap", function(evt) {
+        if ($(".charsWindow").length == 0) {
+            var charsWindow = new MythicForgeWindow(WinManager);
+            charsWindow.createWindow("Characters", `
+                <div class="charsContent">
+                    <div class="charsList">
+                        <div class='mythicForgeLoader'></div>
+                    </div>
+                    <div class="charsControls" style='display:none'>
+                        <button class="btn fantasy-button fixed-width btn-lg">New Character</button>
+                    </div>
+                </div>
+            `);
+
+            charsWindow.el.addClass("charsWindow");
+            charsWindow.el.fadeIn();
+
+            $.get("/data?type=characters", function(data) {
+                var charsList = $(".charsWindow .charsList");
+                charsList.find(".mythicForgeLoader").remove();
+            });
+
+        } else {
+            if ($(".charsWindow").css("display") == "block" && $(".charsWindow").hasClass("focused")) {
+                $(".charsWindow").css("display", "none");
+                return;
+            } else {
+                $(".charsWindow").fadeIn();
+            }
+        }
+    });
     console.log(diceBox);
 });
 
