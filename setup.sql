@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS characters (
     isNPC BOOLEAN NOT NULL DEFAULT 0,
     name TEXT NOT NULL,
     age INTEGER,
+    gender TEXT,
     race TEXT NOT NULL,
     class TEXT NOT NULL,
     height INTEGER, -- in cm

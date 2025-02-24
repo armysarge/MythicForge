@@ -497,7 +497,7 @@ $(document).ready(function() {
         }
     });
 
-    $(".showChars").on("click tap", function(evt) {
+    $(".showChars").off("click tap").on("click tap", function(evt) {
         if ($(".charsWindow").length == 0) {
             var charsWindow = new MythicForgeWindow(WinManager);
             charsWindow.createWindow("Characters", `
@@ -505,9 +505,7 @@ $(document).ready(function() {
                     <div class="charsList">
                         <div class='mythicForgeLoader'></div>
                     </div>
-                    <div class="charsControls" style='display:none'>
-                        <button class="btn fantasy-button fixed-width btn-lg">New Character</button>
-                    </div>
+                    <button style='display:none' class="btn fantasy-button fixed-width btn-lg addChar">New Character</button>
                 </div>
             `);
 
@@ -515,10 +513,33 @@ $(document).ready(function() {
             charsWindow.el.fadeIn();
 
             $.get("/data?type=characters", function(data) {
-                var charsList = $(".charsWindow .charsList");
-                charsList.find(".mythicForgeLoader").remove();
-            });
+                if (data !== ""){
+                    var AllCharacters = data;
+                    charsWindow.el.find(".charsList").find(".mythicForgeLoader").remove();
+                    charsWindow.el.find(".charsContent").find(".addChar").show();
 
+                    if (AllCharacters.length>0){
+                        $.each(AllCharacters, function(i, character) {
+
+                            if (character.avatar == null)
+                                character.avatar = `/assets/images/ui/${character.gender}-avatar.webp`;
+
+                            var tr = `<div class='charItem' data-id="${character.id}">
+                                <div class='charAvatar'><img src='${character.avatar}'></div>
+                                <div class='charStats'>
+                                    <div class='charName'>${character.name}</div>
+                                    <div class='charLevel'>${character.level}</div>
+                                    <div class='charRace'>${character.race}</div>
+                                    <div class='charClass'>${character.class}</div>
+                                </div>
+                            </div>`;
+                            charsWindow.el.find(".charsList").append(tr);
+                        });
+                    }else{
+                        charsWindow.el.find(".charsList").append("<div class='noChars'>No characters found</div>");
+                    }
+                }
+            });
         } else {
             if ($(".charsWindow").css("display") == "block" && $(".charsWindow").hasClass("focused")) {
                 $(".charsWindow").css("display", "none");
