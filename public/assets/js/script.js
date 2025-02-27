@@ -1,6 +1,5 @@
 import DiceBox from "/assets/plugins/dice-box/dist/dice-box.es.js";
 import AdvancedRoller from "/assets/plugins/dice-ui/src/advancedRoller/advancedRoller.js";
-import DisplayResults from "/assets/plugins/dice-ui/src/DisplayResults/DisplayResults.js";
 
 /**
  * @file script.js
@@ -182,8 +181,6 @@ const Roller = new AdvancedRoller({
     }
 });
 RollboxWindow.el.show();
-
-//var displayRollResults = new DisplayResults('.rollboxWindow .windowContent .adv-roller');
 
 diceBox = new DiceBox(".rollboxWindow .windowContent .rollWindow", {
     assetPath: "/assets/",
@@ -549,7 +546,6 @@ $(document).ready(function() {
             }
         }
     });
-    console.log(diceBox);
 });
 
 /**
@@ -684,6 +680,12 @@ function createItemStatBlock(item, source) {
     itemStatBlock.itemStatsHTML(item, source);
 }
 
+/**
+ * Retrieves user settings from localStorage or creates default settings if none exist
+ * @returns {Object} The user settings object containing:
+ *  - srd_content {boolean} Whether SRD content is enabled
+ *  - using_ai {boolean} Whether AI features are enabled
+ */
 function getUserSettings() {
     var settings = localStorage.getItem("userSettings");
     if (settings) {
@@ -698,7 +700,7 @@ function getUserSettings() {
     return settings;
 }
 
-Object.assign(globalThis, {
+/*Object.assign(globalThis, {
     getUserSettings,
     diceBox,
     Roller,
@@ -706,4 +708,4 @@ Object.assign(globalThis, {
     createMonsterStatBlock,
     createSpellStatBlock,
     SearchAll
-});
+});*/
