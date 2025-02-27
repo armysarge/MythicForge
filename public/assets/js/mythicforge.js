@@ -14,6 +14,7 @@ class MythicForgeWindowManager {
         window.destroy();
     }
 }
+
 class MythicForgeWindow {
     constructor(theWinManager) {
         this.el = null;

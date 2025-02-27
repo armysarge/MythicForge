@@ -494,6 +494,7 @@ $(document).ready(function() {
         }
     });
 
+    // Open and close the characters window
     $(".showChars").off("click tap").on("click tap", function(evt) {
         if ($(".charsWindow").length == 0) {
             var charsWindow = new MythicForgeWindow(WinManager);
@@ -518,19 +519,42 @@ $(document).ready(function() {
                     if (AllCharacters.length>0){
                         $.each(AllCharacters, function(i, character) {
 
-                            if (character.avatar == null)
+                            if (character.avatar == null){
                                 character.avatar = `/assets/images/ui/${character.gender}-avatar.webp`;
+                            }else{
+                                //convert sqlite blob to base64
+                                var base64Flag = 'data:image/jpeg;base64,';
+                                var imageStr = arrayBufferToBase64(character.avatar.data);
+                                character.avatar = base64Flag + imageStr;
+                            }
 
-                            var tr = `<div class='charItem' data-id="${character.id}">
+                            var tr = `<div class='charItem' title='Edit ${character.name}'>
                                 <div class='charAvatar'><img src='${character.avatar}'></div>
                                 <div class='charStats'>
                                     <div class='charName'>${character.name}</div>
-                                    <div class='charLevel'>${character.level}</div>
-                                    <div class='charRace'>${character.race}</div>
-                                    <div class='charClass'>${character.class}</div>
+                                    <div class='charLevel'>Level:&nbsp;${character.level}</div>
+                                    <div class='charRace'>Race:&nbsp;${StrUtil.uppercaseFirst(character.race)}</div>
+                                    <div class='charClass'>Class:&nbsp;${StrUtil.uppercaseFirst(character.class)}</div>
                                 </div>
                             </div>`;
                             charsWindow.el.find(".charsList").append(tr);
+                            charsWindow.el.find(".charsList").find(".charItem").last().data("id", character.character_id);
+                        });
+
+                        charsWindow.el.find(".charsList").off("click tap", ".charItem").on("click tap", ".charItem", function(evt) {
+                            var characterID = $(this).data("id");
+                            charsWindow.destroy();
+                            $.get("/data?type=character&q="+characterID, function(data) {
+                                var character = data[0];
+                                var charWindow = new MythicForgeWindow(WinManager);
+                                charWindow.createWindow(character.name, `
+                                    <div class="charContent">
+                                    Coming Soon
+                                    </div>
+                                `);
+                                charWindow.el.addClass("charWindow");
+                                charWindow.el.fadeIn();
+                            });
                         });
                     }else{
                         charsWindow.el.find(".charsList").append("<div class='noChars'>No characters found</div>");

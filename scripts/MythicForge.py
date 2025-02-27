@@ -82,6 +82,8 @@ def get_data():
     # Example query - modify according to your database schema
     if data_type == 'characters':
         cursor.execute('SELECT character_id, name, gender, race, class, level, avatar FROM characters')
+    elif data_type == 'character':
+        cursor.execute('SELECT * FROM characters WHERE character_id = ?', query)
     elif data_type == 'monsters':
         cursor.execute('SELECT * FROM monsters WHERE name LIKE ?', (f'%{query}%',))
     # Add more data types as needed
