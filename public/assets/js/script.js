@@ -73,8 +73,7 @@ Renderer.dice.bindOnclickListener = function(ele) {
 
             dicePopupHMTL += `</div></center>`;
             var dicePopup = new MythicForgeWindow(WinManager);
-            dicePopup.createWindow(packed.prompt.entry, dicePopupHMTL);
-            dicePopup.el.addClass("dicePopupWindow");
+            dicePopup.createWindow(packed.prompt.entry, dicePopupHMTL,{class: "dicePopupWindow"});
             dicePopup.el.fadeIn();
         } else {
 
@@ -143,8 +142,7 @@ Renderer.dice.bindOnclickListener = function(ele) {
 }
 
 RollboxWindow = new MythicForgeWindow(WinManager);
-RollboxWindow.createWindow('Roll Box', "<div class='rollWindow'></div><div class='diceResult'></div><center></center>");
-RollboxWindow.el.addClass("rollboxWindow notInitialized");
+RollboxWindow.createWindow('Roll Box', "<div class='rollWindow'></div><div class='diceResult'></div><center></center>",{class: "rollboxWindow notInitialized"});
 const Roller = new AdvancedRoller({
     target: '.rollboxWindow .windowContent center',
     onSubmit: (notation) => {
@@ -236,8 +234,7 @@ $(document).ready(function() {
                         </div>
                     </div>
                 </div>
-            `);
-            settingsWindow.el.addClass("settingsWindow");
+            `,{class: "settingsWindow"});
             settingsWindow.el.fadeIn();
 
             $(".settingsWindow").on("change", "#srd_content", function(evt) {
@@ -281,9 +278,8 @@ $(document).ready(function() {
                     <tbody></tbody>
                 </table>
                 </div>
-            `);
+            `,{class: "itemsWindow"});
 
-            itemsWindow.el.addClass("itemsWindow");
             itemsWindow.el.fadeIn();
 
             $(".itemsWindow").on("click tap", ".itemsList .itemItem", function(evt) {
@@ -350,9 +346,8 @@ $(document).ready(function() {
                     <tbody></tbody>
                 </table>
                 </div>
-            `);
+            `,{class: "spellsWindow"});
 
-            spellsWindow.el.addClass("spellsWindow");
             spellsWindow.el.fadeIn();
 
             $(".spellsWindow").on("click tap", ".spellsList .spellItem", function(evt) {
@@ -431,9 +426,8 @@ $(document).ready(function() {
                     <tbody></tbody>
                 </table>
                 </div>
-            `);
+            `,{class: "bestiaryWindow"});
 
-            bestiaryWindow.el.addClass("bestiaryWindow");
             bestiaryWindow.el.fadeIn();
 
             $(".bestiaryWindow").on("click tap", ".bestiaryList .bestiaryItem", function(evt) {
@@ -505,9 +499,10 @@ $(document).ready(function() {
                     </div>
                     <button style='display:none' class="btn fantasy-button fixed-width btn-lg addChar">New Character</button>
                 </div>
-            `);
+            `,{
+                class: "charsWindow",
+            });
 
-            charsWindow.el.addClass("charsWindow");
             charsWindow.el.fadeIn();
 
             $.get("/data?type=characters", function(data) {
@@ -546,14 +541,132 @@ $(document).ready(function() {
                             charsWindow.destroy();
                             $.get("/data?type=character&q="+characterID, function(data) {
                                 var character = data[0];
-                                var charWindow = new MythicForgeWindow(WinManager);
+
+                                if (character.avatar == null){
+                                    character.avatar = `/assets/images/ui/${character.gender}-avatar.webp`;
+                                }else{
+                                    //convert sqlite blob to base64
+                                    var base64Flag = 'data:image/jpeg;base64,';
+                                    var imageStr = arrayBufferToBase64(character.avatar.data);
+                                    character.avatar = base64Flag + imageStr;
+                                }
+
+                                var charWindow = new MythicForgeWindow(WinManager,"char"+characterID);
+                                console.log(charWindow);
                                 charWindow.createWindow(character.name, `
                                     <div class="charContent">
-                                    Coming Soon
+                                        <div class="container">
+                                            <!-- Left Panel - Character Summary -->
+                                            <div class="character-panel">
+
+                                                <!-- Avatar Section -->
+                                                <div class="avatar-container">
+                                                    <div class="avatar" title="Click to upload avatar">
+                                                        <img src="${character.avatar}">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <input type="text" id="character-name" title='Character Name' placeholder="Enter name" value="${character.name}">
+                                                </div>
+
+                                                <div class="character-basic-info">
+                                                    <div class="form-group">
+                                                        <label>Race</label>
+                                                        <div class="stat-item">
+                                                            <span id="selected-race">${StrUtil.uppercaseFirst(character.race)}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Class</label>
+                                                        <div class="stat-item">
+                                                            <span id="selected-class">${StrUtil.uppercaseFirst(character.class)}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group" style='display:none'>
+                                                    <label>Ability Scores</label>
+                                                    <div class="ability-scores">
+                                                        <div class="stat-item">
+                                                            <div class="stat-label">STR</div>
+                                                            <div class="stat-value">10</div>
+                                                            <div class="stat-modifier">+0</div>
+                                                        </div>
+                                                        <div class="stat-item">
+                                                            <div class="stat-label">DEX</div>
+                                                            <div class="stat-value">10</div>
+                                                            <div class="stat-modifier">+0</div>
+                                                        </div>
+                                                        <div class="stat-item">
+                                                            <div class="stat-label">CON</div>
+                                                            <div class="stat-value">10</div>
+                                                            <div class="stat-modifier">+0</div>
+                                                        </div>
+                                                        <div class="stat-item">
+                                                            <div class="stat-label">INT</div>
+                                                            <div class="stat-value">10</div>
+                                                            <div class="stat-modifier">+0</div>
+                                                        </div>
+                                                        <div class="stat-item">
+                                                            <div class="stat-label">WIS</div>
+                                                            <div class="stat-value">10</div>
+                                                            <div class="stat-modifier">+0</div>
+                                                        </div>
+                                                        <div class="stat-item">
+                                                            <div class="stat-label">CHA</div>
+                                                            <div class="stat-value">10</div>
+                                                            <div class="stat-modifier">+0</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Combat</label>
+                                                    <div class="combat-stats">
+                                                        <div class="stat-item">
+                                                            <div class="stat-label">HP</div>
+                                                            <div class="stat-value" contenteditable="true">${character.hit_points}</div>
+                                                        </div>
+                                                        <div class="stat-item">
+                                                            <div class="stat-label">AC</div>
+                                                            <div class="stat-value">${character.armor_class}</div>
+                                                        </div>
+                                                        <div class="stat-item">
+                                                            <div class="stat-label">Initiative</div>
+                                                            <div class="stat-value">${character.initiative}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Right Panel Container -->
+                                            <div class="creation-panel">
+                                                <!-- Top Panel - Content changes based on selection -->
+                                                <div class="content-panel" id="content-area">
+
+                                                </div>
+
+                                                <!-- Bottom Panel - Navigation -->
+                                                <div class="navigation-panel">
+                                                    <div class="tab-buttons">
+                                                        <button class="tab-button active">Race</button>
+                                                        <button class="tab-button">Class</button>
+                                                        <button class="tab-button">Abilities</button>
+                                                        <button class="tab-button">Background</button>
+                                                        <button class="tab-button">Equipment</button>
+                                                        <button class="tab-button">Spells</button>
+                                                        <button class="tab-button">Review</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                `);
-                                charWindow.el.addClass("charWindow");
-                                charWindow.el.fadeIn();
+                                `,{
+                                    class: "charWindow",
+                                });
+                                charWindow.char = character;
+                                if(charWindow.el != null)charWindow.el.fadeIn();
                             });
                         });
                     }else{
@@ -676,7 +789,7 @@ function SearchAll(term, where) {
  * @async - Contains asynchronous operation via Promise
  */
 function createMonsterStatBlock(monster, source) {
-    var monsterStatBlock = new MythicForgeWindow(WinManager);
+    var monsterStatBlock = new MythicForgeWindow(WinManager,monster+source);
     monsterStatBlock.monsterStatsHTML(monster, source);
 }
 
@@ -688,7 +801,7 @@ function createMonsterStatBlock(monster, source) {
  * @async - Contains asynchronous operation via Promise
  */
 function createSpellStatBlock(spell, source) {
-    var spellStatBlock = new MythicForgeWindow(WinManager);
+    var spellStatBlock = new MythicForgeWindow(WinManager,spell+source);
     spellStatBlock.spellStatsHTML(spell, source);
 }
 
@@ -700,7 +813,7 @@ function createSpellStatBlock(spell, source) {
  * @async - Contains asynchronous operation via Promise
  */
 function createItemStatBlock(item, source) {
-    var itemStatBlock = new MythicForgeWindow(WinManager);
+    var itemStatBlock = new MythicForgeWindow(WinManager,item+source);
     itemStatBlock.itemStatsHTML(item, source);
 }
 
@@ -724,12 +837,7 @@ function getUserSettings() {
     return settings;
 }
 
-/*Object.assign(globalThis, {
-    getUserSettings,
-    diceBox,
-    Roller,
+Object.assign(globalThis, {
     WinManager,
-    createMonsterStatBlock,
-    createSpellStatBlock,
-    SearchAll
-});*/
+    getUserSettings
+});

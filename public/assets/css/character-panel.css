@@ -1,0 +1,270 @@
+.mythicForgeWindow.charWindow .container {
+    display: flex;
+    width: 100%;
+}
+
+/* Left Panel */
+.mythicForgeWindow.charWindow .character-panel {
+    flex: 1;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    overflow:hidden;
+    max-width:300px;
+}
+
+.mythicForgeWindow.charWindow .avatar-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.mythicForgeWindow.charWindow .avatar {
+    width: 100%;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border: 2px solid #78140f;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.mythicForgeWindow.charWindow .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mythicForgeWindow.charWindow .character-header {
+    margin-bottom: 10px;
+}
+
+.mythicForgeWindow.charWindow .form-group {
+    margin-bottom: 10px;
+}
+
+.mythicForgeWindow.charWindow .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.mythicForgeWindow.charWindow .form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #78140f;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: rgba(0, 0, 0, 0.1)
+}
+
+.mythicForgeWindow.charWindow .character-basic-info {
+    display: flex;
+    gap: 10px;
+}
+
+.mythicForgeWindow.charWindow .character-basic-info > div {
+    flex: 1;
+}
+
+.mythicForgeWindow.charWindow .stat-item {
+    padding: 8px;
+    border: 1px solid #78140f;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.mythicForgeWindow.charWindow .stat-label {
+    font-size: 12px;
+    color: #666;
+}
+
+.mythicForgeWindow.charWindow .stat-value {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.mythicForgeWindow.charWindow .stat-modifier {
+    font-size: 12px;
+}
+
+.mythicForgeWindow.charWindow .ability-scores {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.mythicForgeWindow.charWindow .combat-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Right Panel */
+.mythicForgeWindow.charWindow .creation-panel {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.mythicForgeWindow.charWindow .content-panel {
+    flex-grow: 1;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-left: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    min-height: 420px;
+}
+
+.mythicForgeWindow.charWindow .navigation-panel {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-left: 10px;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+.mythicForgeWindow.charWindow .tab-buttons {
+    display: flex;
+    overflow-x: auto;
+    gap: 2px;
+}
+
+.mythicForgeWindow.charWindow .tab-button {
+    padding: 8px 16px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    white-space: nowrap;
+}
+
+.mythicForgeWindow.charWindow .tab-button.active {
+    background-color: transparent;
+    border-bottom: 2px solid #78140f;
+    font-weight: bold;
+}
+
+.mythicForgeWindow.charWindow .section-title {
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.mythicForgeWindow.charWindow .grid-selection {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.mythicForgeWindow.charWindow .selection-item {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.mythicForgeWindow.charWindow .selection-item:hover {
+    background-color: #f5f5f5;
+}
+
+.mythicForgeWindow.charWindow .ability-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.mythicForgeWindow.charWindow .ability-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mythicForgeWindow.charWindow .ability-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mythicForgeWindow.charWindow .ability-button {
+    width: 30px;
+    height: 30px;
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mythicForgeWindow.charWindow .ability-value {
+    width: 30px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.mythicForgeWindow.charWindow .section-title {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .mythicForgeWindow.charWindow .container {
+        flex-direction: column;
+    }
+
+    .mythicForgeWindow.charWindow .character-panel, .mythicForgeWindow.charWindow .creation-panel {
+        width: 100%;
+    }
+
+    .mythicForgeWindow.charWindow .ability-scores, .mythicForgeWindow.charWindow .combat-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .mythicForgeWindow.charWindow .grid-selection {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .mythicForgeWindow.charWindow .character-basic-info {
+        flex-direction: column;
+    }
+
+    .mythicForgeWindow.charWindow .ability-scores, .combat-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .mythicForgeWindow.charWindow .grid-selection {
+        grid-template-columns: 1fr;
+    }
+
+    .mythicForgeWindow.charWindow .tab-buttons {
+        flex-wrap: wrap;
+    }
+
+    .mythicForgeWindow.charWindow .tab-button {
+        flex: 1;
+        text-align: center;
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .mythicForgeWindow.charWindow .button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}

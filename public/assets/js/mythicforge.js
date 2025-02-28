@@ -16,13 +16,33 @@ class MythicForgeWindowManager {
 }
 
 class MythicForgeWindow {
-    constructor(theWinManager) {
+    constructor(theWinManager,UniqueID) {
         this.el = null;
         this.title = "";
         this.content = "";
         this.options = {};
-        this.manager = theWinManager;
-        theWinManager.addWindow(this);
+        this.manager = null;
+        this.id = null;
+
+        //find an existing window with the same ID, if it exists, show it and destroy this one
+        if (UniqueID){
+            this.id = CryptUtil.hashCode(UniqueID);
+            var existingWindow = theWinManager.windows.find(w => w.id == this.id);
+            if (existingWindow){
+                setTimeout(() => {
+                    existingWindow.show();
+                    existingWindow.centerDivToScreen();
+                }, 1);
+                this.destroy();
+                return;
+            }else{
+                this.manager = theWinManager;
+                theWinManager.addWindow(this);
+            }
+        }else{
+            this.manager = theWinManager;
+            theWinManager.addWindow(this);
+        }
     }
 
     /**
@@ -48,26 +68,28 @@ class MythicForgeWindow {
      * @property {Object} options - Stored options value
      */
     createWindow(title, content, options) {
-        if (typeof options == "undefined") options = {};
-        this.title = title;
-        this.content = content;
-        this.options = options;
-        var html = `<div class="mythicForgeWindow ${(typeof options.class) == "string"?options.class:""}" style='display:none'>
-            <div class="windowHeader">${this.title}</div>
-            <div class="windowContent"></div>
-            <div class="windowClose" title="Close this window"><i class='bx bx-x'></i></div>
-        </div>`;
-        this.el = $(html);
-        $("body").append(this.el);
-        if (typeof content === "string") {
-            this.el.find(".windowContent").html(content);
-        } else if (content instanceof HTMLElement) {
-            this.el.find(".windowContent").append(content);
+        if (this.manager != null){
+            if (typeof options == "undefined") options = {};
+            this.title = title;
+            this.content = content;
+            this.options = options;
+            var html = `<div class="mythicForgeWindow ${(typeof options.class) == "string"?options.class:""}" style='display:none'>
+                <div class="windowHeader">${this.title}</div>
+                <div class="windowContent"></div>
+                <div class="windowClose" title="Close this window"><i class='bx bx-x'></i></div>
+            </div>`;
+            this.el = $(html);
+            $("body").append(this.el);
+            if (typeof content === "string") {
+                this.el.find(".windowContent").html(content);
+            } else if (content instanceof HTMLElement) {
+                this.el.find(".windowContent").append(content);
+            }
+            setTimeout(() => {
+                this.centerDivToScreen();
+                this.initEvents();
+            }, 1);
         }
-        setTimeout(() => {
-            this.centerDivToScreen();
-            this.initEvents();
-        }, 1);
     }
 
     /**
@@ -364,7 +386,7 @@ class MythicForgeWindow {
     static async openInlineContent(type, source, hash) {
 
         DataLoader.pCacheAndGet(type, source, hash).then(function(data) {
-            var inlineContent = new MythicForgeWindow(WinManager);
+            var inlineContent = new MythicForgeWindow(WinManager,hash);
             inlineContent.inlineContentHtml(data, type).then(function(theContent) {
                 if (theContent != "") {
                     if (type.split(".")[0] == "spells") {
@@ -1016,9 +1038,8 @@ class MythicForgeWindow {
         var highestZ = 10;
         $(".mythicForgeWindow").each(function() {
             var currentZ = parseInt($(this).css("z-index"));
-            if (currentZ > highestZ) {
+            if (currentZ > highestZ)
                 highestZ = currentZ;
-            }
         });
 
         this.el.css("z-index", highestZ + 1);
