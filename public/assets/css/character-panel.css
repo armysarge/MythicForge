@@ -55,13 +55,20 @@
     font-weight: bold;
 }
 
-.mythicForgeWindow.charWindow .form-group input {
+.mythicForgeWindow.charWindow .form-group input:not(.stat-value) {
     width: 100%;
     padding: 8px;
     border: 1px solid #78140f;
     border-radius: 4px;
     font-size: 14px;
     background-color: rgba(0, 0, 0, 0.1)
+}
+
+.mythicForgeWindow.charWindow .form-group input.stat-value {
+    border:none;
+    text-align: center;
+    width:100%;
+    background-color: transparent;
 }
 
 .mythicForgeWindow.charWindow .character-basic-info {
@@ -74,16 +81,55 @@
 }
 
 .mythicForgeWindow.charWindow .stat-item {
-    padding: 8px;
+    padding: 2px;
     border: 1px solid #78140f;
     border-radius: 4px;
     text-align: center;
     font-size: 14px;
 }
 
+.mythicForgeWindow.charWindow .stat-item:has(.male-icon) {
+    border: none;
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+    padding:0px;
+    justify-self: flex-start;
+}
+
+.mythicForgeWindow.charWindow .stat-item .male-icon,
+.mythicForgeWindow.charWindow .stat-item .female-icon {
+    margin: 0 auto;
+    width:30px;
+    height: 27px;
+    border-radius: 5px;
+    color: #78140f;
+    cursor: pointer;
+    border: 1px solid #78140f;
+    display: block;
+}
+
+.mythicForgeWindow.charWindow .stat-item .male-icon{
+    margin-left:0px;
+}
+.mythicForgeWindow.charWindow .stat-item .female-icon{
+    margin-left:5px;
+}
+
+.mythicForgeWindow.charWindow .stat-item .male-icon.active,
+.mythicForgeWindow.charWindow .stat-item .female-icon.active {
+    background-color: #78140f;
+    color: #fff;
+}
+
+.mythicForgeWindow.charWindow .stat-item .male-icon:not(.active):hover,
+.mythicForgeWindow.charWindow .stat-item .female-icon:not(.active):hover {
+    transform: scale(1.05);
+}
+
 .mythicForgeWindow.charWindow .stat-label {
     font-size: 12px;
-    color: #666;
+    color: #000000;
 }
 
 .mythicForgeWindow.charWindow .stat-value {

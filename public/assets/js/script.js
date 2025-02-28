@@ -572,14 +572,21 @@ $(document).ready(function() {
 
                                                 <div class="character-basic-info">
                                                     <div class="form-group">
-                                                        <label>Race</label>
+                                                        <label>Gender</label>
                                                         <div class="stat-item">
+                                                            <span title='Male' class='male-icon ${(character.gender == "male")?"active":""}'><box-icon name='male-sign'></box-icon></span>
+                                                            <span title='Female' class='female-icon ${(character.gender == "female")?"active":""}'><box-icon name='female-sign'></box-icon></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Race</label>
+                                                        <div class="stat-item" title='Click to choose race'>
                                                             <span id="selected-race">${StrUtil.uppercaseFirst(character.race)}</span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label>Class</label>
-                                                        <div class="stat-item">
+                                                        <div class="stat-item" title='Click to choose class'>
                                                             <span id="selected-class">${StrUtil.uppercaseFirst(character.class)}</span>
                                                         </div>
                                                     </div>
@@ -626,7 +633,7 @@ $(document).ready(function() {
                                                     <div class="combat-stats">
                                                         <div class="stat-item">
                                                             <div class="stat-label">HP</div>
-                                                            <div class="stat-value" contenteditable="true">${character.hit_points}</div>
+                                                            <input class="stat-value" value="${character.hit_points}"/>
                                                         </div>
                                                         <div class="stat-item">
                                                             <div class="stat-label">AC</div>
@@ -643,20 +650,16 @@ $(document).ready(function() {
                                             <!-- Right Panel Container -->
                                             <div class="creation-panel">
                                                 <!-- Top Panel - Content changes based on selection -->
-                                                <div class="content-panel" id="content-area">
-
-                                                </div>
+                                                <div class="content-panel" id="content-area"></div>
 
                                                 <!-- Bottom Panel - Navigation -->
                                                 <div class="navigation-panel">
                                                     <div class="tab-buttons">
-                                                        <button class="tab-button active">Race</button>
-                                                        <button class="tab-button">Class</button>
-                                                        <button class="tab-button">Abilities</button>
+                                                        <button class="tab-button active">Abilities</button>
                                                         <button class="tab-button">Background</button>
+                                                        <button class="tab-button">Feats</button>
                                                         <button class="tab-button">Equipment</button>
                                                         <button class="tab-button">Spells</button>
-                                                        <button class="tab-button">Review</button>
                                                     </div>
                                                 </div>
                                             </div>
