@@ -22,6 +22,11 @@
     margin-bottom: 10px;
 }
 
+.mythicForgeWindow.charWindow .selected-race,
+.mythicForgeWindow.charWindow .selected-class {
+    cursor: pointer;
+}
+
 .mythicForgeWindow.charWindow .avatar {
     width: 100%;
     height: 250px;

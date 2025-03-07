@@ -566,6 +566,32 @@ class MythicForgeWindow {
         });
     }
 
+    getRaceByName(name, source) {
+        return new Promise((resolve, reject) => {
+            DataLoader.pCacheAndGetHash(UrlUtil.PG_RACES, UrlUtil.URL_TO_HASH_BUILDER[UrlUtil.PG_RACES]({name: name, source: source})).then(theRace => {
+                if (!theRace) {
+                    reject("Race not found");
+                    return;
+                }else{
+                    resolve(theRace);
+                }
+            });
+        });
+    }
+
+    getClassByName(name, source) {
+        return new Promise((resolve, reject) => {
+            DataLoader.pCacheAndGetHash(UrlUtil.PG_CLASSES, UrlUtil.URL_TO_HASH_BUILDER[UrlUtil.PG_CLASSES]({name: name, source: source})).then(theClass => {
+                if (!theClass) {
+                    reject("Class not found");
+                    return;
+                } else {
+                    resolve(theClass);
+                }
+            });
+        });
+    }
+
     /**
      * Creates and displays a monster stat block in the UI.
      * @param {string} name - The name of the monster to display
