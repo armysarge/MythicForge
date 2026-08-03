@@ -4,8 +4,10 @@
   "main": "server.js",
   "logo": "assets/icons/icon-small.webp",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "python scripts/migrate.py --selfcheck && python scripts/build_5e_data.py --selfcheck && python scripts/forge_tools.py --selfcheck && python scripts/mcp_server.py --selfcheck && node auth.test.js && node server.test.js",
+    "start": "node server.js",
+    "build-data": "python scripts/build_5e_data.py",
+    "mcp": "python scripts/mcp_server.py"
   },
   "keywords": [
     "D&D",

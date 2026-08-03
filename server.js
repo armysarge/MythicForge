@@ -1,11 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
+const crypto = require('node:crypto');
+const auth = require('./auth');
 const app = express();
 const path = require('path');
-const nodePort = 3000;
-const pythonPort = 4000;
+const nodePort = Number(process.env.MYTHICFORGE_PORT) || 3000;
+const pythonPort = Number(process.env.MYTHICFORGE_PYTHON_PORT) || 4000;
+const dbPath = process.env.MYTHICFORGE_DB || 'MythicForge.db';
+// Tests boot the server without pulling ~100MB of 5eTools data over the network.
+const skipDownloads = process.env.MYTHICFORGE_SKIP_DOWNLOADS === 'true';
 const fs = require('fs');
 const fsPromises = require('fs').promises;
 const fsExtra = require('fs-extra')
@@ -17,9 +22,41 @@ const { v4: uuidv4 } = require('uuid');
 
 const DEBUG_MODE = process.env.DEBUG_MODE === 'true' || false;
 
+// Bring MythicForge.db up to date before anything opens it. scripts/migrate.py is
+// the single owner of schema changes; Node just invokes it.
+const migration = spawnSync('python', ['scripts/migrate.py'], {
+    encoding: 'utf8',
+    env: { ...process.env, MYTHICFORGE_DB: dbPath },
+});
+if (migration.status !== 0) {
+    console.error('Database migration failed, refusing to start:\n' +
+        (migration.stderr || migration.error?.message || `exit ${migration.status}`));
+    process.exit(1);
+}
+if (migration.stdout.trim()) console.log(migration.stdout.trim());
+
+const db = auth.openDb(dbPath);
+const purged = auth.purgeExpiredSessions(db);
+if (purged) console.log(`Purged ${purged} expired session(s)`);
+
+// Shared secret for the internal Node -> Flask hop. Regenerated every boot, so a
+// stale value cannot be replayed, and never leaves this machine.
+const INTERNAL_SECRET = crypto.randomBytes(32).toString('hex');
+
 // Start the Python server
 const pythonProcess = spawn('python', ['scripts/MythicForge.py', '--port', pythonPort], {
-    env: { ...process.env, DEBUG_MODE: DEBUG_MODE.toString() }
+    env: {
+        ...process.env,
+        DEBUG_MODE: DEBUG_MODE.toString(),
+        MYTHICFORGE_INTERNAL_SECRET: INTERNAL_SECRET,
+        MYTHICFORGE_DB: dbPath,
+    }
+});
+
+/** Headers identifying the calling user on every internal request to Flask. */
+const internalHeaders = (req) => ({
+    'X-Forge-Secret': INTERNAL_SECRET,
+    'X-Forge-User': String(req.user.user_id),
 });
 
 // Listen for output from the Python server (for debugging)
@@ -176,16 +213,99 @@ const downloadImagesFrom5eTools = async () => {
         }
     }
 };
-// Middleware to serve static files
-app.use(express.static('public'));
+// Build 5etools.db + vault/ from public/data. Skipped once 5etools.db exists;
+// run `npm run build-data` to rebuild after the 5etools data is updated.
+const build5eData = async () => {
+    if (fs.existsSync('5etools.db')) return;
+    console.log('Building 5e reference database and vault, this takes a minute...');
+    await new Promise((resolve) => {
+        const proc = spawn('python', ['scripts/build_5e_data.py'], { stdio: 'inherit' });
+        proc.on('close', (code) => {
+            if (code !== 0) {
+                console.error(`build_5e_data.py exited with ${code}; the MCP server ` +
+                    'will not work until it succeeds. Run: npm run build-data');
+            }
+            resolve();
+        });
+        proc.on('error', (err) => {
+            console.error('Could not run build_5e_data.py:', err.message);
+            resolve();
+        });
+    });
+};
+
+// Middleware to serve static files.
+// redirect:false matters: public/data is a real directory, so the default
+// behaviour 301s /data -> /data/ and shadows the /data API route below.
+app.use(express.static('public', { redirect: false }));
 app.use(bodyParser.json());
 app.set('view engine', 'ejs');
+app.set('trust proxy', 1);  // so req.ip is the client, not a reverse proxy
 
 // Set the views directory
 app.set('views', path.join(__dirname, 'views'));
 
+const requireAuth = auth.requireAuth(db);
+const authLimiter = auth.rateLimiter();
+
+// --- authentication ----------------------------------------------------------
+
+app.get('/login', (req, res) => {
+    const session = auth.getSession(db, auth.parseCookies(req.headers.cookie)[auth.SESSION_COOKIE]);
+    if (session) return res.redirect('/');
+    res.render('login.ejs', { minPassword: auth.MIN_PASSWORD });
+});
+
+const startSession = (req, res, userId) => {
+    const { sessionId, expires } = auth.createSession(db, userId, req.headers['user-agent']);
+    auth.setSessionCookie(res, sessionId, expires);
+};
+
+app.post('/register', authLimiter, async (req, res) => {
+    try {
+        const { username, email, password } = req.body || {};
+        const { userId, isAdmin } = await auth.registerUser(db, { username, email, password });
+        startSession(req, res, userId);
+        res.json({ ok: true, isAdmin });
+    } catch (error) {
+        if (error instanceof auth.AuthError) return res.status(error.status).json({ error: error.message });
+        console.error('Registration failed:', error);
+        res.status(500).json({ error: 'Could not create the account' });
+    }
+});
+
+app.post('/login', authLimiter, async (req, res) => {
+    try {
+        const { username, password } = req.body || {};
+        const userId = await auth.authenticate(db, username, password);
+        startSession(req, res, userId);
+        res.json({ ok: true });
+    } catch (error) {
+        if (error instanceof auth.AuthError) return res.status(error.status).json({ error: error.message });
+        console.error('Login failed:', error);
+        res.status(500).json({ error: 'Could not sign in' });
+    }
+});
+
+app.post('/logout', (req, res) => {
+    auth.destroySession(db, auth.parseCookies(req.headers.cookie)[auth.SESSION_COOKIE]);
+    auth.clearSessionCookie(res);
+    res.json({ ok: true });
+});
+
+app.get('/me', requireAuth, (req, res) => {
+    res.json({
+        userId: req.user.user_id,
+        username: req.user.username,
+        isAdmin: !!req.user.is_admin,
+        allowAiUse: !!req.user.allow_ai_use,
+    });
+});
+
+// --- application -------------------------------------------------------------
+
 // Route to handle the main page
-app.get('/', async (req, res) => {
+app.get('/', requireAuth, async (req, res) => {
     try {
         entries = [];
         res.render('index.ejs', { entries });
@@ -195,7 +315,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.get('/data', async (req, res) => {
+app.get('/data', requireAuth, async (req, res) => {
     try {
         if (!req.query.type) {
             return res.status(400).json({ error: 'Missing required parameters' });
@@ -204,6 +324,7 @@ app.get('/data', async (req, res) => {
         const requestData = {
             method: 'GET',
             url: `http://127.0.0.1:${pythonPort}/data`,
+            headers: internalHeaders(req),
             params: {
                 type: req.query.type,
                 q: req.query.q
@@ -223,10 +344,22 @@ app.get('/data', async (req, res) => {
     }
 });
 
+// One shared API key serves every account, so AI is opt-in per user. The flag
+// lives in users.allow_ai_use and defaults to 0.
+const requireAiEnabled = (req, res, next) => {
+    if (!req.user.allow_ai_use) {
+        return res.status(403).json({
+            error: 'AI features are not enabled for this account. An admin can enable them.'
+        });
+    }
+    next();
+};
+
 // Route to Create a monster story
-app.post('/story', async (req, res) => {
+app.post('/story', requireAuth, requireAiEnabled, async (req, res) => {
     try {
-        const response = await axios.post('http://127.0.0.1:'+pythonPort+'/story', req.body.monster);
+        const response = await axios.post('http://127.0.0.1:'+pythonPort+'/story',
+            req.body.monster, { headers: internalHeaders(req) });
         res.json(response.data);
     } catch (error) {
         console.error('Error executing Python function:', error);
@@ -235,9 +368,10 @@ app.post('/story', async (req, res) => {
 });
 
 // Route to Explain a property
-app.post('/prop', async (req, res) => {
+app.post('/prop', requireAuth, requireAiEnabled, async (req, res) => {
     try {
-        const response = await axios.post('http://127.0.0.1:'+pythonPort+'/prop', req.body);
+        const response = await axios.post('http://127.0.0.1:'+pythonPort+'/prop',
+            req.body, { headers: internalHeaders(req) });
         res.json(response.data);
     } catch (error) {
         console.error('Error executing Python function:', error);
@@ -245,21 +379,43 @@ app.post('/prop', async (req, res) => {
     }
 });
 
-// Route to trigger a Python function
-app.post('/execute', async (req, res) => {
+/**
+ * Proxy a request to the Flask process, passing through its status code so a
+ * 404 from a tool does not arrive at the browser as a 500.
+ */
+const proxyToPython = async (req, res, method, urlPath, body) => {
     try {
-        const response = await axios.post('http://127.0.0.1:'+pythonPort+'/execute', req.body);
-        res.json(response.data);
+        const response = await axios({
+            method,
+            url: `http://127.0.0.1:${pythonPort}${urlPath}`,
+            headers: internalHeaders(req),
+            data: body,
+            validateStatus: () => true,
+        });
+        res.status(response.status).json(response.data);
     } catch (error) {
-        console.error('Error executing Python function:', error);
-        res.status(500).send('Error executing Python function');
+        console.error(`Error calling Python ${urlPath}:`, error.message);
+        res.status(502).json({ error: 'The application server is unavailable' });
     }
-});
+};
+
+// The write API. One dispatch route over the tool registry in
+// scripts/forge_tools.py, shared with the MCP server, so the UI, external MCP
+// clients and the Phase 5 agent all drive the same implementation.
+app.get('/api/tools', requireAuth, (req, res) =>
+    proxyToPython(req, res, 'GET', '/api/tools'));
+
+app.post('/api/tool/:name', requireAuth, (req, res) =>
+    proxyToPython(req, res, 'POST', `/api/tool/${encodeURIComponent(req.params.name)}`,
+        req.body || {}));
 
 // Start the Node.js server
 app.listen(nodePort, async () => {
-    await downloadDataFrom5eTools();
-    await downloadImagesFrom5eTools();
+    if (!skipDownloads) {
+        await downloadDataFrom5eTools();
+        await build5eData();
+        await downloadImagesFrom5eTools();
+    }
     console.log(`MythicForge server running at http://127.0.0.1:${nodePort}`);
 });
 

@@ -105,6 +105,98 @@ python scripts/update.py
 
 The application will be available at `http://localhost:3000`
 
+## 📚 5e Reference Database & Obsidian Vault
+
+On first boot the server downloads the 5eTools JSON to `public/data/`, then
+builds two things from it with `scripts/build_5e_data.py`:
+
+- **`5etools.db`** — 23,594 entries across 84 kinds (monsters, spells, items,
+  class features, adventure chapters…) in one `entity` table, with an FTS5
+  search index and a `link` table holding the ~114,000 cross-references between
+  them, 97% of which resolve to a target.
+- **`vault/`** — the same content as one Markdown note per entry at
+  `vault/<kind>/<source>/<slug>.md`, with a map-of-content index per kind. Open
+  the folder as an Obsidian vault; links between notes are relative Markdown
+  links, which Obsidian indexes for graph view and backlinks.
+
+Both are gitignored and regenerable. Rebuild after a 5eTools data update:
+
+```bash
+npm run build-data
+```
+
+An entry's `id` (`monster/MM/goblin`) is its primary key in `5etools.db`, its
+path in `vault/`, and the `reference_id` that campaign records in
+`MythicForge.db` use to point at it. One string joins all three.
+
+## 🔌 MCP Server
+
+All 21 operations live in `scripts/forge_tools.py` and are reached three ways — over
+MCP, over the web API, and (later) by the in-app AI agent. One implementation, so a
+tool added to the registry appears everywhere at once:
+
+```bash
+python scripts/forge_tools.py --list
+```
+
+The web API is a single dispatch route rather than 21 hand-written ones:
+`GET /api/tools` describes the registry, `POST /api/tool/<name>` invokes one with a
+JSON object of arguments. The caller's identity comes from their session and is
+rejected if it appears in the request body, so nobody can act as another account.
+
+`scripts/mcp_server.py` exposes the same tools to any MCP client (Claude Code,
+Claude Desktop, etc.) over stdio:
+
+- **5e reference, read-only** — `search_5e`, `find_5e_by_name`, `get_5e_entity`,
+  `backlinks_5e`, `list_5e_kinds`
+- **Campaign, read** — `list_campaigns`, `list_characters`, `get_character`,
+  `get_inventory`, `list_encounters`, `get_encounter`
+- **Campaign, write** — `add_inventory_item`, `remove_inventory_item`,
+  `update_hp`, `log_event`, `create_encounter`, `add_combatant`,
+  `set_initiative`, `set_conditions`, `advance_turn`, `end_encounter`
+
+Every write is a named tool with fixed, parameterised SQL, and each one verifies that
+the character, encounter or campaign it touches belongs to the caller. There is no
+arbitrary-SQL tool, so a model cannot invent a statement that empties a campaign. The
+reference database is opened read-only.
+
+Copy the `mcpServers` block from [mcp.example.json](mcp.example.json) into your
+client's config and set the absolute path. Then, in a session:
+
+> *"Roll initiative — Thorin plus four goblins from the Monster Manual"*
+> *"The goblin crits Thorin for 9"*
+> *"What's in Thorin's pack, and what does the bag of holding actually do?"*
+
+Run the test suites with:
+
+```bash
+npm test
+```
+
+## 👥 Accounts
+
+MythicForge is multi-user. The first visit lands on `/login`, where you can register;
+**the first account created becomes the admin**. Everything else in the app requires a
+session, and characters, campaigns and encounters are scoped to their owner.
+
+Passwords are salted scrypt via Node's built-in `crypto` — nothing is stored in plain
+text, and no external hashing dependency is needed.
+
+Because a single API key from `.env` serves every account, **AI features are off by
+default** (`users.allow_ai_use` starts at 0). Enable it per account before `/story` and
+`/prop` will answer. Registration is open, so leave this off for accounts you do not
+recognise.
+
+Optional environment variables:
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `MYTHICFORGE_PORT` | `3000` | web server port |
+| `MYTHICFORGE_PYTHON_PORT` | `4000` | internal Flask port (loopback only) |
+| `MYTHICFORGE_DB` | `MythicForge.db` | campaign database path |
+| `MYTHICFORGE_SKIP_DOWNLOADS` | — | `true` skips the 5eTools download and build on boot |
+| `DEBUG_MODE` | `false` | verbose output from the Python process |
+
 ## 🔧 Configuration
 
 ### AI Provider Setup
@@ -125,8 +217,15 @@ For offline AI functionality:
 
 ## 📋 Roadmap
 
+> Per-item build plans and the decisions behind them live in [PLAN.md](PLAN.md).
+
 - ✅ Include 5E tools (Thanks to [5eTools](https://5e.tools/))
 - ✅ Basic UI/UX Design
+- ✅ 5e reference database + Obsidian vault (`npm run build-data`)
+- ✅ MCP server (campaign read/write + 5e reference for AI clients)
+- ✅ Multi-user accounts, sessions and per-user data isolation
+- ✅ Shared tool layer (one implementation behind MCP, REST and the coming AI agent)
+- ✅ Server-side 5e querying (filter monsters by CR, spells by level, with paging)
 - 🟦 Digital Reference (In Progress)
 - 🟦 Dice roller (In Progress)
 - ⬛️ DM tools (encounter generator, Initiative tracker, etc.)

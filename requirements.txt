@@ -1,4 +1,4 @@
 flask
 requests
-mysql-connector-python
 python-dotenv
+mcp>=2.0

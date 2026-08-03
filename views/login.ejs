@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MythicForge - Sign In</title>
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+    <style>
+        .auth-shell { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .auth-card { width: 100%; max-width: 25rem; padding: 2rem; }
+        .auth-card .logo { text-align: center; margin-bottom: 1.5rem; }
+        .auth-card .logo img { max-width: 15rem; height: auto; }
+        .auth-tabs { display: flex; gap: .5rem; margin-bottom: 1.25rem; }
+        .auth-tabs button { flex: 1; }
+        .auth-error { display: none; margin-bottom: 1rem; }
+        .auth-hint { font-size: .85rem; opacity: .75; margin-top: .75rem; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="auth-shell">
+        <div class="auth-card mythicForgeWindow">
+            <div class="windowContent">
+                <div class="logo"><img src="/assets/images/logo-small.webp" alt="MythicForge"></div>
+
+                <div class="auth-tabs">
+                    <button type="button" class="btn fantasy-button" data-mode="login">Sign In</button>
+                    <button type="button" class="btn fantasy-button" data-mode="register">Register</button>
+                </div>
+
+                <div class="alert alert-danger auth-error" role="alert"></div>
+
+                <form id="authForm" autocomplete="on" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label" for="username">Username</label>
+                        <input class="form-control" id="username" name="username"
+                               autocomplete="username" required autofocus>
+                    </div>
+                    <div class="mb-3 field-email" style="display:none">
+                        <label class="form-label" for="email">Email <span class="opacity-50">(optional)</span></label>
+                        <input class="form-control" id="email" name="email" type="email"
+                               autocomplete="email">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="password">Password</label>
+                        <input class="form-control" id="password" name="password" type="password"
+                               autocomplete="current-password" required>
+                    </div>
+                    <button class="btn fantasy-button w-100 btn-lg" type="submit">Sign In</button>
+                </form>
+
+                <div class="auth-hint">
+                    Passwords must be at least <%= minPassword %> characters.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var mode = 'login';
+            var form = document.getElementById('authForm');
+            var errorBox = document.querySelector('.auth-error');
+            var submit = form.querySelector('button[type=submit]');
+            var emailField = document.querySelector('.field-email');
+            var password = document.getElementById('password');
+
+            function setMode(next) {
+                mode = next;
+                var registering = mode === 'register';
+                emailField.style.display = registering ? '' : 'none';
+                submit.textContent = registering ? 'Create Account' : 'Sign In';
+                password.setAttribute('autocomplete', registering ? 'new-password' : 'current-password');
+                document.querySelectorAll('.auth-tabs button').forEach(function (b) {
+                    b.classList.toggle('active', b.dataset.mode === mode);
+                });
+                errorBox.style.display = 'none';
+            }
+
+            document.querySelectorAll('.auth-tabs button').forEach(function (b) {
+                b.addEventListener('click', function () { setMode(b.dataset.mode); });
+            });
+
+            function showError(message) {
+                errorBox.textContent = message;
+                errorBox.style.display = 'block';
+            }
+
+            form.addEventListener('submit', async function (evt) {
+                evt.preventDefault();
+                errorBox.style.display = 'none';
+                submit.disabled = true;
+                try {
+                    var res = await fetch('/' + mode, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify({
+                            username: form.username.value.trim(),
+                            email: form.email.value.trim() || undefined,
+                            password: form.password.value,
+                        }),
+                    });
+                    var data = await res.json().catch(function () { return {}; });
+                    if (res.ok) {
+                        window.location.href = '/';
+                        return;
+                    }
+                    showError(data.error || 'Something went wrong. Try again.');
+                } catch (err) {
+                    showError('Could not reach the server.');
+                } finally {
+                    submit.disabled = false;
+                }
+            });
+
+            setMode('login');
+        })();
+    </script>
+</body>
+</html>

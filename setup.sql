@@ -1,17 +1,39 @@
 -- DND Character Database Schema
+--
+-- Schema changes go here, but note that CREATE TABLE IF NOT EXISTS silently
+-- skips tables that already exist. Any new column on an existing table, or any
+-- new constraint, also needs a step in scripts/migrate.py or databases created
+-- before the change will never get it.
 CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE,
-    password TEXT,
+    username TEXT UNIQUE NOT NULL,
+    -- scrypt(password, salt) as hex; never store a password itself
+    password_hash TEXT NOT NULL,
+    password_salt TEXT NOT NULL,
+    password_algo TEXT NOT NULL DEFAULT 'scrypt',
     email TEXT UNIQUE,
     name TEXT,
     surname TEXT,
     contact_number TEXT,
-    allow_ai_use BOOLEAN NOT NULL DEFAULT 0,
+    allow_ai_use BOOLEAN NOT NULL DEFAULT 0,  -- off by default: one shared API key
     is_admin BOOLEAN NOT NULL DEFAULT 0,
     last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     date_joined TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Login sessions. session_id is 32 random bytes, so it is unguessable and is
+-- validated against this table on every request -- signing the cookie would add
+-- nothing on top of that.
+CREATE TABLE IF NOT EXISTS sessions (
+    session_id TEXT PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL,
+    user_agent TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS ix_sessions_user ON sessions(user_id);
+CREATE INDEX IF NOT EXISTS ix_sessions_expires ON sessions(expires_at);
 
 CREATE TABLE IF NOT EXISTS users_settings (
     user_id INTEGER PRIMARY KEY,
@@ -109,6 +131,7 @@ CREATE TABLE IF NOT EXISTS inventory (
     quantity INTEGER NOT NULL DEFAULT 1,
     weight REAL DEFAULT 0.0,
     description TEXT,
+    reference_id TEXT,  -- optional 5etools.db entity.id, e.g. 'item/DMG/bag-of-holding'
     FOREIGN KEY (character_id) REFERENCES characters(character_id)
 );
 
@@ -211,7 +234,7 @@ CREATE TABLE IF NOT EXISTS quests (
 
 CREATE TABLE IF NOT EXISTS campaigns (
     campaign_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL REFERENCES users(user_id),
     campaign_name TEXT NOT NULL,
     campaign_description TEXT,
     campaign_story TEXT,
@@ -226,9 +249,10 @@ CREATE TABLE IF NOT EXISTS campaigns (
 );
 
 CREATE TABLE IF NOT EXISTS campaign_characters (
-    campaign_id INTEGER,
-    character_id INTEGER,
+    campaign_id INTEGER NOT NULL,
+    character_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
+    PRIMARY KEY (campaign_id, character_id),  -- a character joins a campaign once
     FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id),
     FOREIGN KEY (character_id) REFERENCES characters(character_id)
 );
@@ -242,6 +266,50 @@ CREATE TABLE IF NOT EXISTS campaign_sessions (
     next_session_date TIMESTAMP,
     FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id)
 );
+
+-- Create table for encounters (combat or otherwise) within a campaign
+CREATE TABLE IF NOT EXISTS encounters (
+    encounter_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    campaign_id INTEGER,
+    user_id INTEGER NOT NULL,
+    encounter_name TEXT NOT NULL,
+    description TEXT,
+    location TEXT,
+    difficulty TEXT NOT NULL DEFAULT 'MEDIUM',  -- EASY, MEDIUM, HARD, DEADLY
+    status TEXT NOT NULL DEFAULT 'PLANNED',     -- PLANNED, ACTIVE, COMPLETED
+    round INTEGER NOT NULL DEFAULT 0,           -- 0 until initiative is rolled
+    turn_index INTEGER NOT NULL DEFAULT 0,      -- position in the initiative order
+    notes TEXT,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id)
+);
+
+-- One row per participant in an encounter. A combatant is either a character
+-- from this database (character_id) or a 5e statblock (reference_id, matching
+-- entity.id in 5etools.db, e.g. 'monster/MM/goblin'). Several combatants may
+-- share one reference_id -- four goblins are four rows.
+CREATE TABLE IF NOT EXISTS encounter_combatants (
+    combatant_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    encounter_id INTEGER NOT NULL,
+    character_id INTEGER,
+    reference_id TEXT,
+    display_name TEXT NOT NULL,  -- "Goblin 2", so duplicates stay tellable apart
+    initiative INTEGER,
+    hit_points INTEGER NOT NULL DEFAULT 0,
+    max_hit_points INTEGER NOT NULL DEFAULT 0,
+    temporary_hit_points INTEGER NOT NULL DEFAULT 0,
+    armor_class INTEGER NOT NULL DEFAULT 10,
+    is_hostile BOOLEAN NOT NULL DEFAULT 1,
+    conditions TEXT,  -- comma-separated, e.g. 'prone,poisoned'
+    notes TEXT,
+    FOREIGN KEY (encounter_id) REFERENCES encounters(encounter_id),
+    FOREIGN KEY (character_id) REFERENCES characters(character_id),
+    CHECK (character_id IS NOT NULL OR reference_id IS NOT NULL)
+);
+
+CREATE INDEX IF NOT EXISTS ix_encounters_campaign ON encounters(campaign_id);
+CREATE INDEX IF NOT EXISTS ix_combatants_encounter ON encounter_combatants(encounter_id);
+CREATE INDEX IF NOT EXISTS ix_inventory_character ON inventory(character_id);
 
 CREATE TABLE IF NOT EXISTS event_history (
     event_id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -1,0 +1,22 @@
+{
+  "_comment": [
+    "Copy the mcpServers block into your MCP client's config and set the two",
+    "absolute paths below. Claude Code: .mcp.json in a project, or `claude mcp",
+    "add`. Claude Desktop: claude_desktop_config.json.",
+    "",
+    "Run `npm run build-data` at least once first -- the reference tools need",
+    "5etools.db to exist.",
+    "",
+    "MYTHICFORGE_USER_ID picks which user's campaigns the server operates on.",
+    "It defaults to 1 and only matters if you have several users in the DB."
+  ],
+  "mcpServers": {
+    "mythicforge": {
+      "command": "python",
+      "args": ["C:/path/to/MythicForge/scripts/mcp_server.py"],
+      "env": {
+        "MYTHICFORGE_USER_ID": "1"
+      }
+    }
+  }
+}

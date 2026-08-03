@@ -1,9 +1,14 @@
 import os,requests,tempfile,shutil
+import hmac
 import json,time,sqlite3,sys
 from flask import Flask, jsonify, request, g
 from pathlib import Path
 from typing import List, Dict
 from dotenv import load_dotenv
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import migrate
+import forge_tools
 
 ####################################################################################
 ############################# CHECK ENVIRONMENT VARIABLES ##########################
@@ -20,6 +25,7 @@ if not env_path.exists():
 load_dotenv(env_path)
 
 # Get environment variables with validation
+DEBUG_MODE = os.getenv('DEBUG_MODE', 'false').lower() == 'true'
 AI_PROVIDER = os.getenv('AI_PROVIDER', 'none')  # Set default to 'none'
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
@@ -35,6 +41,15 @@ if AI_PROVIDER == 'openai' and not OPENAI_API_KEY:
 if AI_PROVIDER == 'gemini' and not GEMINI_API_KEY:
     AI_PROVIDER = 'none'
 
+# Shared secret for the internal hop from the Node server, which generates it at
+# boot and passes it in the environment. Authentication happens in Express; this
+# process only needs to know the call really came from it, and who it is for.
+INTERNAL_SECRET = os.getenv('MYTHICFORGE_INTERNAL_SECRET')
+if not INTERNAL_SECRET:
+    print("MYTHICFORGE_INTERNAL_SECRET is not set. Start this via `npm start`, "
+          "which generates one; running it directly leaves it unable to serve "
+          "any request.", file=sys.stderr)
+
 ####################################################################################
 ############################# MYTHIC FORGE CLASS ###################################
 ####################################################################################
@@ -42,17 +57,18 @@ if AI_PROVIDER == 'gemini' and not GEMINI_API_KEY:
 class MythicForge:
     def __init__(self, app):
         self.app = app
-        self.db_path = 'MythicForge.db'
+        self.db_path = str(migrate.FORGE_DB)
 
-        # Initialize database schema
-        with sqlite3.connect(self.db_path) as conn:
-            with open('setup.sql', 'r', encoding='utf-8') as f:
-                conn.executescript(f.read())
+        # scripts/migrate.py owns the schema; it is idempotent and safe to call.
+        migrate.ensure_db(self.db_path)
 
     def get_db(self):
         if 'main_db' not in g:
             g.main_db = sqlite3.connect(self.db_path)
             g.main_db.row_factory = sqlite3.Row
+            # Node holds the same file open, so wait rather than failing outright.
+            g.main_db.execute('PRAGMA busy_timeout = 5000')
+            g.main_db.execute('PRAGMA foreign_keys = ON')
         return g.main_db
 
 
@@ -69,8 +85,9 @@ app.teardown_appcontext(mythicforge.close_db)
 
 @app.route('/data', methods=['GET'])
 def get_data():
-    if verifyRequest(request) == False:
-        return jsonify({"error": "Invalid request"})
+    user_id, error = guard(request)
+    if error:
+        return error
 
     # Get query parameters
     data_type = request.args.get('type')
@@ -79,36 +96,41 @@ def get_data():
     db = mythicforge.get_db()
     cursor = db.cursor()
 
-    # Example query - modify according to your database schema
+    # Every query is scoped to the caller. Without the user_id predicate these
+    # endpoints return every user's rows.
     if data_type == 'characters':
-        cursor.execute('SELECT character_id, name, gender, race, class, level, avatar FROM characters')
+        cursor.execute('SELECT character_id, name, gender, race, class, level, avatar '
+                       'FROM characters WHERE user_id = ?', (user_id,))
     elif data_type == 'character':
-        cursor.execute('SELECT * FROM characters WHERE character_id = ?', query)
-    elif data_type == 'monsters':
-        cursor.execute('SELECT * FROM monsters WHERE name LIKE ?', (f'%{query}%',))
-    # Add more data types as needed
+        cursor.execute('SELECT * FROM characters WHERE character_id = ? AND user_id = ?',
+                       (query, user_id))
+    elif data_type == 'campaigns':
+        cursor.execute('SELECT * FROM campaigns WHERE user_id = ?', (user_id,))
+    else:
+        return jsonify({"error": f"Unknown data type '{data_type}'"}), 400
 
     rows = cursor.fetchall()
     return jsonify([dict(row) for row in rows])
 
-@app.route('/init', methods=['GET'])
-def init():
+def aiAllowed(user_id):
+    """Whether this account may spend the shared API key.
 
-    if verifyRequest(request) == False:
-        return jsonify({"error": "Invalid request"})
+    Express checks this too. It is repeated here because the flag guards real
+    spending, and this process should not depend on a caller having been careful.
+    """
+    row = mythicforge.get_db().execute(
+        'SELECT allow_ai_use FROM users WHERE user_id = ?', (user_id,)).fetchone()
+    return bool(row and row['allow_ai_use'])
 
-    #get query from the request
-    query = request.args.get('q')
-    if query == "download_data":
-        mythicforge.download_data_from5etools()
-        mythicforge.download_images_from5etools()
-    return jsonify({"status": "success"})
 
 @app.route('/story', methods=['POST'])
 def create_story():
 
-    if verifyRequest(request) == False:
-        return jsonify({"error": "Invalid request"})
+    user_id, error = guard(request)
+    if error:
+        return error
+    if not aiAllowed(user_id):
+        return jsonify({"error": "AI features are not enabled for this account"}), 403
 
     StringProperty = ""
     #get post json data of a monster, use Google gemini AI to create a story and return it
@@ -162,10 +184,13 @@ def create_story():
 @app.route('/prop', methods=['POST'])
 def explain_prop():
 
-    if verifyRequest(request) == False:
-        return jsonify({"error": "Invalid request"})
+    user_id, error = guard(request)
+    if error:
+        return error
+    if not aiAllowed(user_id):
+        return jsonify({"error": "AI features are not enabled for this account"}), 403
 
-    ThePrompt = "Better explain a DND property on the specific topic, maybe also include an example/ or where/when this might take place. Response in html format but no ``` or code blocks are needed and no css style tags. dont repeat the item details from the prompt any dice notation should be wrapped like {@dice 1d20} as an example following roll20 notation format."
+    ThePrompt ="Better explain a DND property on the specific topic, maybe also include an example/ or where/when this might take place. Response in html format but no ``` or code blocks are needed and no css style tags. dont repeat the item details from the prompt any dice notation should be wrapped like {@dice 1d20} as an example following roll20 notation format."
     TheItem = json.dumps(request.json).replace('\n', '')
 
     #get post json data of a property nad explain it better
@@ -216,33 +241,54 @@ def explain_prop():
 
     return jsonify({"prop": StringProperty})
 
-@app.route('/execute', methods=['POST'])
-def execute_command():
+@app.route('/settings', methods=['GET'])
+def get_settings():
+    user_id, error = guard(request)
+    if error:
+        return error
+    row = mythicforge.get_db().execute(
+        'SELECT * FROM users_settings WHERE user_id = ?', (user_id,)).fetchone()
+    return jsonify(dict(row) if row else {})
 
-    if verifyRequest(request) == False:
-        return jsonify({"error": "Invalid request"})
 
-    db = mythicforge.get_db()
-    cursor = db.cursor()
+@app.route('/api/tools', methods=['GET'])
+def list_tools():
+    """Describe every callable tool, so the UI does not hard-code the list."""
+    user_id, error = guard(request)
+    if error:
+        return error
+    return jsonify([
+        {
+            "name": name,
+            "scope": "user" if takes_user else "public",
+            "description": (fn.__doc__ or "").strip(),
+            "arguments": forge_tools.describe_arguments(fn, skip_user_id=takes_user),
+        }
+        for name, (fn, takes_user) in sorted(forge_tools.TOOLS.items())
+    ])
 
-    data = request.json
-    cursor.execute('INSERT INTO example_table (name, description) VALUES (?, ?)',
-                  (data['name'], data['description']))
-    db.commit()
 
-    return jsonify({"status": "success"})
+@app.route('/api/tool/<name>', methods=['POST'])
+def call_tool(name):
+    """Invoke one tool by name with a JSON object of arguments.
 
-    if verifyRequest(request) == False:
-        return jsonify({"error": "Invalid request"})
+    One dispatch route rather than 21 hand-written ones: the registry in
+    forge_tools is the allowlist, so a tool added there is reachable here with
+    no change to this file, and nothing outside it is reachable at all.
 
-    db = mythicforge.get_db()
-    cursor = db.cursor()
-
-    uuid = request.args.get('userId')
-    cursor.execute('SELECT * FROM users_settings WHERE user_id = ?', (uuid))
-    rows = cursor.fetchall()
-
-    return jsonify({"usersettings": [dict(row) for row in rows]})
+    `user_id` comes from the authenticated session that Express verified. It is
+    never read from the body, so a caller cannot act as another account.
+    """
+    user_id, error = guard(request)
+    if error:
+        return error
+    arguments = request.get_json(silent=True)
+    if arguments is None:
+        arguments = {}
+    try:
+        return jsonify({"result": forge_tools.call(name, user_id, arguments)})
+    except forge_tools.ToolError as e:
+        return jsonify({"error": str(e)}), e.status
 
 def geminiPostRequest(payload):
     if not GEMINI_API_KEY:
@@ -271,12 +317,44 @@ def openaiPostRequest(payload):
     return response
 
 def verifyRequest(request):
-    verified = True
-    #verify if user agent starts with axios/
-    if request.headers.get('User-Agent').startswith('axios/') == False:
-        verified = False
+    """True when the call carries the internal secret Node was started with.
 
-    return verified
+    Replaces a User-Agent check, which any client could set. Compared with
+    hmac.compare_digest so a wrong secret cannot be found a byte at a time.
+    """
+    if not INTERNAL_SECRET:
+        return False
+    supplied = request.headers.get('X-Forge-Secret', '')
+    return hmac.compare_digest(supplied, INTERNAL_SECRET)
+
+
+def currentUserId(request):
+    """The user Express authenticated, or None if the header is missing or junk."""
+    raw = request.headers.get('X-Forge-User', '')
+    try:
+        user_id = int(raw)
+    except (TypeError, ValueError):
+        return None
+    return user_id if user_id > 0 else None
+
+
+def guard(request):
+    """(user_id, None) when the request may proceed, else (None, error response)."""
+    if not verifyRequest(request):
+        return None, (jsonify({"error": "Forbidden"}), 403)
+    user_id = currentUserId(request)
+    if user_id is None:
+        return None, (jsonify({"error": "Missing user context"}), 400)
+    return user_id, None
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=4000, debug=True)
+    # server.js passes --port; honour it rather than assuming 4000.
+    port = 4000
+    if '--port' in sys.argv:
+        port = int(sys.argv[sys.argv.index('--port') + 1])
+
+    # Loopback only: this process trusts whoever presents the internal secret and
+    # is not meant to be reachable from the network. Express is the public face.
+    # The reloader is off even in debug, since it would fork a second process
+    # holding the same SQLite file.
+    app.run(host='127.0.0.1', port=port, debug=DEBUG_MODE, use_reloader=False)
